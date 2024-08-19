@@ -44,9 +44,9 @@ const toggleDrawer = () => {
 };
 
 const items = ref([
-    { title: "Admin", link: "home" },
-    // { title: "Calendario", link: "dashboard" },
-    // { title: "Menu", link: "dashboard.menu" },
+    { title: "Home", link: "home" },
+    { title: "Dashboard", link: "admin.dashboard" },
+    { title: "Panoramica", link: "admin.dashboard.overview" },
     // { title: "Newsletter", link: "dashboard.newsletter" },
     // // { title: "Contatti", link: "" },
     { title: "Logout", link: "logout" },

@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-class Product extends Model
-{
+class Product extends Model {
     use HasFactory;
 
     protected $fillable = [
@@ -23,32 +23,32 @@ class Product extends Model
     ];
 
     // Relazione con SubCategory (un prodotto appartiene a una sub-categoria)
-    public function subCategory(): BelongsTo
-    {
+    public function subCategory(): BelongsTo {
         return $this->belongsTo(SubCategory::class);
     }
 
     // Relazione con Category (un prodotto appartiene a una categoria)
-    public function category(): BelongsTo
-    {
+    public function category(): BelongsTo {
         return $this->belongsTo(Category::class);
     }
 
     // Relazione con CategoryDetail (un prodotto può avere un dettaglio di categoria opzionale)
-    public function categoryDetail(): BelongsTo
-    {
+    public function categoryDetail(): BelongsTo {
         return $this->belongsTo(CategoryDetail::class);
     }
 
     // Relazione con Orders (un prodotto può appartenere a molti ordini)
-    public function orders(): BelongsToMany
-    {
+    public function orders(): BelongsToMany {
         return $this->belongsToMany(Order::class, 'order_product')->withPivot('price_at_order', 'order_quantity');
     }
 
     // Relazione con ProductReviews (un prodotto può avere molte recensioni)
-    public function reviews(): HasMany
-    {
+    public function reviews(): HasMany {
         return $this->hasMany(ProductReview::class);
+    }
+
+    // Relazione polimorfica con gli sconti
+    public function discounts(): MorphToMany {
+        return $this->morphToMany(Discount::class, 'discountable');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\OverviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/dashboard/sales', [OverviewController::class, 'getSalesData']);
+    Route::get('/dashboard/traffic', [OverviewController::class, 'getTrafficData']);
+    Route::get('/dashboard/top-products', [OverviewController::class, 'getTopProductsData']);
 });

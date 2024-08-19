@@ -26,10 +26,19 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('/admin/dashboard', function () {
-    return Inertia::render('Admin/AdminDashboard');
-})->middleware(['auth', 'verified'])->name('admin.dashboard');
+// ADMIN
+Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Admin/AdminDashboard');
+    })->name('admin.dashboard');
 
+    Route::get('/overview', function () {
+        return Inertia::render('Admin/DashboardOverview');
+    })->name('admin.dashboard.overview');
+    // Aggiungi qui altre rotte admin
+});
+
+// USER
 Route::get('/dashboard', function () {
     return Inertia::render('User/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -41,4 +50,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
