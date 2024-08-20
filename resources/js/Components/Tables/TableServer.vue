@@ -18,6 +18,8 @@
   </v-data-table-server>
 </template>
 <script setup>
+// TO-DO riportare tutto su pinia
+
 import { ref, watch } from 'vue'
       const props = defineProps({
       items: {
