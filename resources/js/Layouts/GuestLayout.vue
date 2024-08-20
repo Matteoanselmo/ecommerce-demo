@@ -1,7 +1,8 @@
 <template>
     <v-app>
-        <v-app-bar app color="white">
+        <v-app-bar app color="white" class="d-flex align-center justify-between">
             <v-img left contain src="/images/logo/logo.jpg" />
+
             <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
         </v-app-bar>
 
@@ -104,6 +105,7 @@ const drawer = ref(false);
 const currentYear = new Date().getFullYear();
 const showButtons = ref(false);
 const languages = ["IT", "EN", "FR"];
+const productsToSearch = ref([]);
 
 const mouseX = ref(0);
 const mouseY = ref(0);

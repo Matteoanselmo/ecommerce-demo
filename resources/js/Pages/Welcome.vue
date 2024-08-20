@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-
+import { ref } from 'vue';
+const productsToSearch = ref([])
 defineProps({
     canLogin: {
         type: Boolean,
@@ -21,7 +22,27 @@ defineProps({
 
 <template>
     <Head title="Home" />
-
+    <v-container>
+        <v-row>
+            <v-col cols="12">
+                <v-autocomplete
+            :items="productsToSearch"
+            append-inner-icon="mdi-microphone"
+            class="mx-auto"
+            density="comfortable"
+            menu-icon=""
+            placeholder="Cerca il prodotto giusto per te"
+            prepend-inner-icon="mdi-magnify"
+            style="max-width: 100%;"
+            theme="light"
+            variant="solo"
+            auto-select-first
+            item-props
+            rounded
+          ></v-autocomplete>
+            </v-col>
+        </v-row>
+    </v-container>
     <div>
         questo è welcome
     </div>

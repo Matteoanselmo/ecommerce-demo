@@ -32,10 +32,16 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
         return Inertia::render('Admin/AdminDashboard');
     })->name('admin.dashboard');
 
-    Route::get('/overview', function () {
-        return Inertia::render('Admin/DashboardOverview');
-    })->name('admin.dashboard.overview');
-    // Aggiungi qui altre rotte admin
+    Route::get('/orders', function () {
+        return Inertia::render('Admin/AdminOrders');
+    })->name('admin.orders');
+
+
+
+    // Route::get('/overview', function () {
+    //     return Inertia::render('Admin/DashboardOverview');
+    // })->name('admin.dashboard.overview');
+    // // Aggiungi qui altre rotte admin
 });
 
 // USER
