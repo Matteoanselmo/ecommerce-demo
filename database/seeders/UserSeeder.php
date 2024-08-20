@@ -22,12 +22,15 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password123'), // Ricorda di cambiare la password in produzione
         ]);
 
-        // Creare l'utente normale
-        User::create([
-            'name' => 'Regular User',
-            'email' => 'user@example.com',
-            'role' => 'user',
-            'password' => Hash::make('password123'), // Ricorda di cambiare la password in produzione
-        ]);
+        // Creare più utenti normali
+        $numberOfUsers = 10; // Numero di utenti 'user' da creare
+        for ($i = 1; $i <= $numberOfUsers; $i++) {
+            User::create([
+                'name' => "Regular User $i",
+                'email' => "user$i@example.com",
+                'role' => 'user',
+                'password' => Hash::make('password123'), // Ricorda di cambiare la password in produzione
+            ]);
+        }
     }
 }

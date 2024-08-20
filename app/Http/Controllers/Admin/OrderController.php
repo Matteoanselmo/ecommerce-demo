@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller {
     public function index() {
-        $orders = Order::with('products', 'user')->paginate(10);
+        $orders = Order::with('products', 'user')->paginate(5);
 
         return response()->json($orders);
     }
