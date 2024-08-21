@@ -1,4 +1,5 @@
 <template>
+    <Head title="Ordini" />
     <v-container>
         <v-row>
             <v-col>
@@ -8,6 +9,9 @@
                     :itemsPerPage="itemsPerPage"
                     :headers="headers"
                     :loading="loading"
+                    :type="'order'"
+                    :page="page"
+                    @updateItems="fetchOrders"
                 />
             </v-col>
         </v-row>
@@ -17,56 +21,79 @@
 <script setup>
 import TableServer from '@/Components/Tables/TableServer.vue';
 import { ref } from 'vue';
+import { Head } from '@inertiajs/vue3';
+import axios from 'axios';
+
 const orders = ref([]);
-const totalItems = ref();
-const itemsPerPage = ref(0);
+const totalItems = ref(0);
+const itemsPerPage = ref(10);
 const page = ref(1);
 const loading = ref(true);
 
 const headers = ref([
     {
-      title: 'Utente',
-      align: 'start',
-      sortable: false,
-      key: 'user.name',
+        title: 'Utente',
+        align: 'start',
+        sortable: false,
+        key: 'user.name',
     },
     {
-      title: 'Data',
-      align: 'start',
-      sortable: false,
-      key: 'order_date',
+        title: 'Data',
+        align: 'start',
+        sortable: false,
+        key: 'order_date',
     },
     {
-      title: 'Stato',
-      align: 'start',
-      sortable: false,
-      key: 'status',
+        title: 'Stato',
+        align: 'start',
+        sortable: false,
+        key: 'status',
     },
     {
-      title: 'Numero spedizione',
-      align: 'start',
-      sortable: false,
-      key: 'shipping_number',
+        title: 'Numero spedizione',
+        align: 'start',
+        sortable: false,
+        key: 'shipping_number',
     },
-])
-function fetchOrders () {
+]);
+function fetchOrders(options = {}) {
+    loading.value = true;
+
+    const currentPage = options.page || page.value;
+    const currentItemsPerPage = options.itemsPerPage || itemsPerPage.value;
+    const sortBy = options.sortBy || 'id';
+    const sortDirection = options.sortDirection || 'asc';
+    const searchQuery = options.search || { name: '', shippingNumber: '' };
+
     axios
-        .get(`/api/orders?page=${page.value}`)
+        .get(`/api/orders`, {
+            params: {
+                page: currentPage,
+                per_page: currentItemsPerPage,
+                sort_by: sortBy,
+                sort_direction: sortDirection,
+                search_name: searchQuery.name,
+                search_shipping_number: searchQuery.shippingNumber, // Aggiungi il parametro di ricerca per il numero di spedizione
+            },
+        })
         .then((res) => {
-            itemsPerPage.value = res.data.per_page;
             orders.value = res.data.data;
             totalItems.value = res.data.total;
+            page.value = res.data.current_page;
             loading.value = false;
-            console.log(res.data);
         })
         .catch((e) => {
             console.log(e);
+            loading.value = false;
         });
-};
+}
 
-fetchOrders();
+
+
+// Caricamento iniziale dei dati
+// fetchOrders();
 </script>
 
 <style>
-
+/* Il tuo stile qui */
 </style>

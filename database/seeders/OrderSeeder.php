@@ -13,7 +13,7 @@ class OrderSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 1; $i <= 6; $i++) {
+        for ($i = 1; $i <= 41; $i++) {
             DB::table('orders')->insert([
                 'status' => 'confirmed', // Utilizza vari stati se necessario
                 'shipping_number' => Str::random(10), // Genera un numero di spedizione casuale

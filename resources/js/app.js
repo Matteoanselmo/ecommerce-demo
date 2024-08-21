@@ -14,6 +14,8 @@ import GuestLayout from './Layouts/GuestLayout.vue';
 import AuthenticatedLayout from './Layouts/AuthenticatedLayout.vue';
 import AdminLayout from './Layouts/AdminLayout.vue'; // Importa AdminLayout
 
+
+
 const pinia = createPinia();
 const appName = import.meta.env.VITE_APP_NAME || 'Security Fire';
 
