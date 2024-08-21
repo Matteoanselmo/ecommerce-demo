@@ -27,4 +27,23 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception)
+{
+    $statusCode = 500;
+    $message = 'Something went wrong';
+
+    if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+        $statusCode = 404;
+        $message = 'Page not found';
+    } elseif ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+        $statusCode = $exception->getStatusCode();
+        $message = $exception->getMessage() ?: 'Something went wrong';
+    }
+
+    return inertia('ErrorPage', [
+        'statusCode' => $statusCode,
+        'message' => $message
+    ]);
+}
 }
