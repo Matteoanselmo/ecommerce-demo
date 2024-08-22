@@ -38,6 +38,12 @@ const headers = ref([
         key: 'user.name',
     },
     {
+        title: 'Numero Ordine',
+        align: 'start',
+        sortable: false,
+        key: 'order_number',
+    },
+    {
         title: 'Data',
         align: 'start',
         sortable: false,
@@ -55,6 +61,11 @@ const headers = ref([
         sortable: false,
         key: 'shipping_number',
     },
+    {
+        title: "Azioni",
+        key: "actions",
+        sortable: false
+    },
 ]);
 function fetchOrders(options = {}) {
     loading.value = true;
@@ -63,7 +74,8 @@ function fetchOrders(options = {}) {
     const currentItemsPerPage = options.itemsPerPage || itemsPerPage.value;
     const sortBy = options.sortBy || 'id';
     const sortDirection = options.sortDirection || 'asc';
-    const searchQuery = options.search || { name: '', shippingNumber: '' };
+    const searchQuery = options.search || { name: '', shippingNumber: '', orderNumber: '' };
+
 
     axios
         .get(`/api/orders`, {
@@ -73,7 +85,8 @@ function fetchOrders(options = {}) {
                 sort_by: sortBy,
                 sort_direction: sortDirection,
                 search_name: searchQuery.name,
-                search_shipping_number: searchQuery.shippingNumber, // Aggiungi il parametro di ricerca per il numero di spedizione
+                search_shipping_number: searchQuery.shippingNumber,
+                search_order_number: searchQuery.orderNumber,
             },
         })
         .then((res) => {
@@ -88,10 +101,6 @@ function fetchOrders(options = {}) {
         });
 }
 
-
-
-// Caricamento iniziale dei dati
-// fetchOrders();
 </script>
 
 <style>

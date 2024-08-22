@@ -13,6 +13,7 @@ class OrderController extends Controller {
         $sortDirection = $request->input('sort_direction', 'asc'); // Direzione di default (ascendente)
         $searchName = $request->input('search_name', ''); // Parametro di ricerca per nome
         $searchShippingNumber = $request->input('search_shipping_number', ''); // Parametro di ricerca per numero di spedizione
+        $searchOrderNumber = $request->input('search_order_number', ''); // Parametro di ricerca per numero d'ordine
         $itemsPerPage = $request->input('per_page', 10); // Numero di elementi per pagina (default a 10)
 
         // Esegui la query con il filtraggio e l'ordinamento
@@ -27,11 +28,16 @@ class OrderController extends Controller {
                 // Filtraggio per numero di spedizione
                 return $query->orWhere('shipping_number', 'like', "%$searchShippingNumber%");
             })
+            ->when($searchOrderNumber, function ($query, $searchOrderNumber) {
+                // Filtraggio per numero d'ordine
+                return $query->orWhere('order_number', 'like', "%$searchOrderNumber%");
+            })
             ->orderBy($sortField, $sortDirection) // Ordinamento basato sui parametri
             ->paginate($itemsPerPage); // Paginazione dinamica basata sul parametro 'per_page'
 
         return response()->json($orders);
     }
+
 
 
 

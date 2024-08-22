@@ -14,6 +14,7 @@ class Order extends Model {
         'status',
         'order_date',
         'shipping_number',
+        'order_number',
         'total_amount',
         'user_id',
     ];
