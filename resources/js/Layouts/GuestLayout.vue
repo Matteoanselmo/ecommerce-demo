@@ -1,12 +1,17 @@
 <template>
     <v-app>
 
-        <v-app-bar app  class="d-flex align-center justify-between py-1">
-            <DarkMode
-            />
-            <v-img left contain src="/images/logo/logo.jpg"  />
-
-            <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
+        <v-app-bar app class=" py-1">
+            <template v-slot:prepend>
+                <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
+            </template>
+            <v-app-bar-title>
+                <v-img contain src="/images/logo/logo.jpg" max-width="229" />
+            </v-app-bar-title>
+            <v-spacer></v-spacer>
+            <template v-slot:append>
+                <DarkMode/>
+            </template>
         </v-app-bar>
 
         <!-- temporary -->
@@ -15,8 +20,8 @@
             v-model="drawer"
             app
             color="secondary"
-            location="right"
-            permanent
+            location="left"
+
         >
             <v-list
                 lines="one"
