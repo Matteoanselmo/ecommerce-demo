@@ -1,7 +1,14 @@
 <template>
-    <v-app>
-        <v-app-bar app color="white" class="d-flex align-center justify-between">
-            <v-img left contain src="/images/logo/logo.jpg" />
+    <v-app :theme="currentTheme">
+
+        <v-app-bar app  class="d-flex align-center justify-between py-1">
+            <v-switch v-model="isDarkMode" >
+                <template v-slot:label >
+                    <v-icon v-if="isDarkMode">mdi-weather-night</v-icon>
+                    <v-icon v-else>mdi-white-balance-sunny</v-icon>
+                </template>
+            </v-switch>
+            <v-img left contain src="/images/logo/logo.jpg"  />
 
             <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
         </v-app-bar>
@@ -11,7 +18,7 @@
             mobile-breakpoint="sm"
             v-model="drawer"
             app
-            color="primary"
+            color="secondary"
             location="right"
             permanent
         >
@@ -28,7 +35,7 @@
                     width="100%"
                 >
                     <Link
-                        class="text-decoration-none text-black text-h6"
+                        class="text-decoration-none  text-h6"
                         :href="route(item.link)"
                         :text="item.title"
                     />
@@ -99,8 +106,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { Link } from "@inertiajs/vue3";
+import { useTheme } from 'vuetify';
 const drawer = ref(false);
 const currentYear = new Date().getFullYear();
 const showButtons = ref(false);
@@ -140,6 +148,18 @@ const onMouseMove = (event) => {
     mouseX.value = event.clientX;
     mouseY.value = event.clientY;
 };
+
+
+const theme = useTheme();
+const isDarkMode = ref(false);
+
+const currentTheme = computed(() => {
+    return isDarkMode.value ? 'myCustomThemeDark' : 'myCustomTheme';
+});
+
+watch(isDarkMode, (newValue) => {
+    theme.global.name.value = currentTheme.value;
+});
 
 onMounted(() => {
     window.addEventListener("scroll", onScroll);
@@ -189,7 +209,7 @@ onUnmounted(() => {
     position: fixed;
     width: 65px;
     height: 65px;
-    background-color: rgba(238, 238, 238, 0.5);
+    background-color: rgba(49, 142, 136, 0.5);
     border-radius: 50%;
     pointer-events: none;
     transform: translate(-50%, -50%);

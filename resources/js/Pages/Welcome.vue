@@ -1,6 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import Banner from '@/Components/Banner.vue';
 const productsToSearch = ref([])
 defineProps({
     canLogin: {
@@ -22,6 +23,7 @@ defineProps({
 
 <template>
     <Head title="Home" />
+    <Banner/>
     <v-container>
         <v-row>
             <v-col cols="12">

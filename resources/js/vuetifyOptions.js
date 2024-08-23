@@ -21,14 +21,31 @@ const vuetify = createVuetify({
             myCustomTheme: {
                 dark: false,
                 colors: {
-                    primary: '#BAC8D0',
+                    primary: '#CF3825',
                     secondary: '#318E88', // Sostituisci con il colore che desideri
+                    tertiary: '#CF3825',
                     accent: '#CF3825', // Sostituisci con il colore che desideri
                     error: '#FF5252', // Sostituisci con il colore che desideri
                     info: '#2196F3', // Sostituisci con il colore che desideri
                     success: '#4CAF50', // Sostituisci con il colore che desideri
                     warning: '#FFC107', // Sostituisci con il colore che desideri
-                    danger: '#F44336'
+                    danger: '#F44336',
+                    background: '#F5F5F5', // Colore di sfondo personalizzato
+                },
+            },
+            myCustomThemeDark: {
+                dark: true,
+                colors: {
+                    primary: '#B71C1C', // Colore principale scurito
+                    secondary: '#005F56', // Colore secondario scurito
+                    tertiary: '#B71C1C',
+                    accent: '#B71C1C',
+                    error: '#D32F2F',
+                    info: '#1976D2',
+                    success: '#388E3C',
+                    warning: '#F57C00',
+                    danger: '#D32F2F',
+                    background: '#333333', // Grigio molto scuro per sfondo
                 },
             },
         },
