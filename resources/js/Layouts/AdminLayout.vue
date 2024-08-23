@@ -1,16 +1,27 @@
 <template>
     <v-app>
-        <v-app-bar app color="white">
-            <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
-            <v-img left contain src="/images/logo/logo.jpg" />
+        <v-app-bar app class=" py-1">
+            <template v-slot:prepend>
+                <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
+            </template>
+            <v-app-bar-title>
+                <v-img contain src="/images/logo/logo.jpg" max-width="229" />
+            </v-app-bar-title>
+            <v-spacer></v-spacer>
+            <template v-slot:append>
+                <dark-mode></dark-mode>
+            </template>
         </v-app-bar>
 
-        <v-navigation-drawer v-model="drawer" app color="primary">
-            <v-list density="compact">
-                <v-list-item v-for="item in items" :key="item.title">
+        <v-navigation-drawer v-model="drawer" app color="secondary" location="left" mobile-breakpoint="sm">
+            <v-list lines="one">
+                <v-list-item v-for="item in items" :key="item.title" variant="plain"
+                    class="text-start hoverable-list-item"
+                    width="100%"
+                    >
                     <Link
                         v-if="item.link !== 'logout'"
-                        class="text-decoration-none text-black"
+                        class="text-decoration-none font-weight-black "
                         :href="route(item.link)"
                         :text="item.title"
                     />
@@ -18,7 +29,7 @@
                         v-else
                         method="POST"
                         as="button"
-                        class="text-black"
+                        class="text-danger font-weight-black"
                         :href="route(item.link)"
                     >
                         {{ item.title }}

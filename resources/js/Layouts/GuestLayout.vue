@@ -10,7 +10,7 @@
             </v-app-bar-title>
             <v-spacer></v-spacer>
             <template v-slot:append>
-                <DarkMode/>
+                <dark-mode></dark-mode>
             </template>
         </v-app-bar>
 
@@ -108,7 +108,6 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import DarkMode from "@/Components/DarkMode.vue";
 import { Link } from "@inertiajs/vue3";
 const drawer = ref(false);
 const currentYear = new Date().getFullYear();

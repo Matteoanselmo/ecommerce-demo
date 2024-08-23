@@ -1,13 +1,21 @@
 <template>
     <v-app>
-        <v-app-bar app color="white">
-            <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
-            <v-img left contain src="/images/logo/logo.jpg" />
+        <v-app-bar app class=" py-1">
+            <template v-slot:prepend>
+                <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
+            </template>
+            <v-app-bar-title>
+                <v-img contain src="/images/logo/logo.jpg" max-width="229" />
+            </v-app-bar-title>
+            <v-spacer></v-spacer>
+            <template v-slot:append>
+                <dark-mode></dark-mode>
+            </template>
         </v-app-bar>
 
-        <v-navigation-drawer v-model="drawer" app color="primary">
+        <v-navigation-drawer v-model="drawer" app color="secondary">
             <v-list density="compact">
-                <v-list-item v-for="item in items" :key="item.title">
+                <v-list-item v-for="item in items" :key="item.title" color="white">
                     <Link
                         v-if="item.link !== 'logout'"
                         class="text-decoration-none text-black"

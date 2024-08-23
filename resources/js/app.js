@@ -14,6 +14,8 @@ import GuestLayout from './Layouts/GuestLayout.vue';
 import AuthenticatedLayout from './Layouts/AuthenticatedLayout.vue';
 import AdminLayout from './Layouts/AdminLayout.vue'; // Importa AdminLayout
 
+import DarkMode from './Components/DarkMode.vue';
+
 
 
 const pinia = createPinia();
@@ -43,6 +45,7 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(pinia)
             .use(i18n)
+            .component('dark-mode', DarkMode)
             .use(vuetify);
 
         app.mount(el);
