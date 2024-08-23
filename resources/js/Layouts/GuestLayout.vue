@@ -1,13 +1,9 @@
 <template>
-    <v-app :theme="currentTheme">
+    <v-app>
 
         <v-app-bar app  class="d-flex align-center justify-between py-1">
-            <v-switch v-model="isDarkMode" >
-                <template v-slot:label >
-                    <v-icon v-if="isDarkMode">mdi-weather-night</v-icon>
-                    <v-icon v-else>mdi-white-balance-sunny</v-icon>
-                </template>
-            </v-switch>
+            <DarkMode
+            />
             <v-img left contain src="/images/logo/logo.jpg"  />
 
             <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
@@ -106,9 +102,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed, watch } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
+import DarkMode from "@/Components/DarkMode.vue";
 import { Link } from "@inertiajs/vue3";
-import { useTheme } from 'vuetify';
 const drawer = ref(false);
 const currentYear = new Date().getFullYear();
 const showButtons = ref(false);
@@ -149,17 +145,6 @@ const onMouseMove = (event) => {
     mouseY.value = event.clientY;
 };
 
-
-const theme = useTheme();
-const isDarkMode = ref(false);
-
-const currentTheme = computed(() => {
-    return isDarkMode.value ? 'myCustomThemeDark' : 'myCustomTheme';
-});
-
-watch(isDarkMode, (newValue) => {
-    theme.global.name.value = currentTheme.value;
-});
 
 onMounted(() => {
     window.addEventListener("scroll", onScroll);
