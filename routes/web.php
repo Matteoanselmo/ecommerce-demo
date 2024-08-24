@@ -26,6 +26,10 @@ Route::get('/', function () {
 })->name('home');
 
 
+Route::get('/prodotti', function () {
+    return Inertia::render('ProductsList');
+})->name('products.list');
+
 // ADMIN
 Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/', function () {

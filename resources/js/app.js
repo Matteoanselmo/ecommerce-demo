@@ -15,6 +15,7 @@ import AuthenticatedLayout from './Layouts/AuthenticatedLayout.vue';
 import AdminLayout from './Layouts/AdminLayout.vue'; // Importa AdminLayout
 
 import DarkMode from './Components/DarkMode.vue';
+import UserMenu from './Components/UserMenu.vue';
 
 
 
@@ -46,6 +47,7 @@ createInertiaApp({
             .use(pinia)
             .use(i18n)
             .component('dark-mode', DarkMode)
+            .component('user-menu', UserMenu)
             .use(vuetify);
 
         app.mount(el);

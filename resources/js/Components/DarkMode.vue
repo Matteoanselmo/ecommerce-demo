@@ -1,5 +1,5 @@
 <template>
-    <v-switch v-model="isDarkMode">
+    <v-switch v-model="isDarkMode" hide-details="auto">
         <template v-slot:label>
             <v-icon v-if="isDarkMode">mdi-weather-night</v-icon>
             <v-icon v-else>mdi-white-balance-sunny</v-icon>
@@ -27,3 +27,4 @@ watch(isDarkMode, (newValue) => {
     emit('update:theme', theme.global.name.value);
 });
 </script>
+

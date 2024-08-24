@@ -10,6 +10,7 @@
             <v-spacer></v-spacer>
             <template v-slot:append>
                 <dark-mode></dark-mode>
+                <user-menu></user-menu>
             </template>
         </v-app-bar>
 
@@ -57,7 +58,6 @@ const items = ref([
     // { title: "Menu", link: "dashboard.menu" },
     // { title: "Newsletter", link: "dashboard.newsletter" },
     // // { title: "Contatti", link: "" },
-    { title: "Logout", link: "logout" },
 ]);
 
 const changeLanguage = (lang) => {

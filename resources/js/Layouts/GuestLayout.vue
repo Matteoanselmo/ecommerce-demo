@@ -10,8 +10,11 @@
             </v-app-bar-title>
             <v-spacer></v-spacer>
             <template v-slot:append>
+            <v-container class="d-flex align-center justify-end" fluid>
                 <dark-mode></dark-mode>
-            </template>
+                <user-menu class="ml-3"></user-menu> <!-- Aggiunto margine sinistro per separazione -->
+            </v-container>
+        </template>
         </v-app-bar>
 
         <!-- temporary -->
@@ -25,14 +28,14 @@
         >
             <v-list
                 lines="one"
-                class="d-flex flex-column justify-center align-center"
+                class="d-flex flex-column justify-start align-start"
                 height="100%"
             >
                 <v-list-item
                     v-for="item in items"
                     :key="item.title"
                     variant="plain"
-                    class="text-center hoverable-list-item"
+                    class="text-start hoverable-list-item"
                     width="100%"
                 >
                     <Link
@@ -57,16 +60,6 @@
         </v-footer>
 
         <!-- Buttons that appear on scroll -->
-
-        <Link
-            :href="route('prenota')"
-            v-if="showButtons"
-            as="button"
-            class="v-btn booking-btn"
-            rounded="0"
-        >
-            <v-btn color="primary" dark> Prenota </v-btn>
-        </Link>
         <v-menu
             v-if="showButtons"
             :close-on-content-click="false"
@@ -124,14 +117,24 @@ const toggleDrawer = () => {
 
 const items = ref([
     { title: "Home", link: "home" },
-    { title: "Login", link: "login" },
-    // { title: "Menu", link: "menu" },
-    // { title: "Chi Siamo", link: "about" },
 ]);
 
 const changeLanguage = (lang) => {
     console.log(`Changed language to: ${lang}`);
 };
+
+function fetchCategorie (){
+    axios.get('/api/categories')
+    .then((res) => {
+
+        res.data.forEach(category => {
+            const route = {};
+            route.title = category.name;
+            route.link = 'products.list'
+            items.value.push(route);
+        });
+    })
+}
 
 let lastScrollY = window.scrollY;
 
@@ -149,10 +152,13 @@ const onMouseMove = (event) => {
     mouseY.value = event.clientY;
 };
 
+fetchCategorie();
 
 onMounted(() => {
     window.addEventListener("scroll", onScroll);
     window.addEventListener("mousemove", onMouseMove);
+
+
 });
 
 onUnmounted(() => {
