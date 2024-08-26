@@ -51,4 +51,18 @@ class Product extends Model {
     public function discounts(): MorphToMany {
         return $this->morphToMany(Discount::class, 'discountable');
     }
+
+    // Relazione con ProductImage
+    public function images(): HasMany {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    // Funzione per ottenere l'immagine di copertina completa (con estensione)
+    public function coverImage() {
+        $image = $this->images()->first();
+        if ($image) {
+            return "{$image->image_url}.{$image->extension}";
+        }
+        return null; // Ritorna null se non ci sono immagini
+    }
 }
