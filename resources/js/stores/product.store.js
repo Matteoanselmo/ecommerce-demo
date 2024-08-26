@@ -47,6 +47,9 @@ export const useProductStore = defineStore({
         setCategory(category) {
             this.category = category;
         },
+        resetPage() {
+            this.page = 1;
+        }
     },
     persist: true,
 });

@@ -13,6 +13,7 @@
             <v-container class="d-flex align-center justify-end" fluid>
                 <dark-mode></dark-mode>
                 <user-menu class="ml-3"></user-menu> <!-- Aggiunto margine sinistro per separazione -->
+                <CartDropdown/>
             </v-container>
         </template>
         </v-app-bar>
@@ -116,6 +117,7 @@ const currentYear = new Date().getFullYear();
 const showButtons = ref(false);
 const languages = ["IT", "EN", "FR"];
 import { useProductStore } from "@/stores/product.store";
+import CartDropdown from "@/Components/CartDropdown.vue";
 const productsToSearch = ref([]);
 
 const mouseX = ref(0);

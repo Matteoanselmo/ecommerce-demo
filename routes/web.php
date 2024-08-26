@@ -25,6 +25,10 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+Route::get('/carello', function () {
+    return Inertia::render('CartPage');
+})->name('cart');
+
 
 Route::get('/{category}/prodotti', function ($category) {
     return Inertia::render('ProductsList', ['category' => $category]);

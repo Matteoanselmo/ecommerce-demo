@@ -30,7 +30,6 @@ import axios from 'axios';
 const page = usePage();
 const authUser = ref(page.props.auth.user);
 
-console.log(authUser);
 
 const productsToSearch = ref([]);
 
@@ -39,7 +38,6 @@ const saveSearch = (searchQuery) => {
     if (authUser.value) {
     axios.post('/api/user-searches', { search_query: searchQuery })
         .then(response => {
-        console.log('Search saved:', response.data);
         })
         .catch(error => {
         console.error('Error saving search:', error);

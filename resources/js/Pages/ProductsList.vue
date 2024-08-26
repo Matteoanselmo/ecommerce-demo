@@ -33,5 +33,7 @@ const onPageChange = () => {
 watch(() => productsStore.page, (newPage) => {
     productsStore.getProducts(newPage);
 });
+
+productsStore.resetPage();
 productsStore.getProducts();
 </script>

@@ -51,6 +51,11 @@
             <v-spacer></v-spacer>
             <span class="text-h6 font-weight-bold">${{ product.price }}</span>
         </v-card-actions>
+        <v-card-actions class="justify-between">
+            <v-spacer></v-spacer>
+            <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="warning" @click="cartStore.addItem(product)">
+            </v-btn>
+        </v-card-actions>
         </v-card>
     </template>
     </v-lazy>
@@ -58,12 +63,15 @@
 
 <script setup>
 import { useProductStore } from "@/stores/product.store";
+import { useCartStore } from "@/stores/cartStore";
 const props = defineProps({
     product: {
     type: Object,
     required: true,
     },
 });
+
+const cartStore = useCartStore();
 
 const productsStore = useProductStore();
 </script>
