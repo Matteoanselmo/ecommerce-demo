@@ -31,6 +31,7 @@
                 class="d-flex flex-column justify-start align-start"
                 height="100%"
             >
+
                 <v-list-item
                     v-for="item in items"
                     :key="item.title"
@@ -39,6 +40,14 @@
                     width="100%"
                 >
                     <Link
+                    v-if="(item.name !== 'Home' )"
+                        class="text-decoration-none  text-h6"
+                        :href="route(item.link, item.params)"
+                        :text="item.title"
+                        @click=" productsStore.setCategory(item.params.category);"
+                    />
+                    <Link
+                    v-else
                         class="text-decoration-none  text-h6"
                         :href="route(item.link)"
                         :text="item.title"
@@ -106,10 +115,13 @@ const drawer = ref(false);
 const currentYear = new Date().getFullYear();
 const showButtons = ref(false);
 const languages = ["IT", "EN", "FR"];
+import { useProductStore } from "@/stores/product.store";
 const productsToSearch = ref([]);
 
 const mouseX = ref(0);
 const mouseY = ref(0);
+
+const productsStore = useProductStore();
 
 const toggleDrawer = () => {
     drawer.value = !drawer.value;
@@ -126,11 +138,12 @@ const changeLanguage = (lang) => {
 function fetchCategorie (){
     axios.get('/api/categories')
     .then((res) => {
-
         res.data.forEach(category => {
-            const route = {};
-            route.title = category.name;
-            route.link = 'products.list'
+            const route = {
+                title: category.name,
+                link: 'products.list',  // Nome della rotta Laravel
+                params: { category: category.name.toLowerCase() } // Parametro dinamico
+            };
             items.value.push(route);
         });
     })

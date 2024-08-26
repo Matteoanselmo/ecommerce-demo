@@ -4,6 +4,7 @@ import 'aos/dist/aos.css'; // Importa i file CSS di AOS
 import AOS from 'aos'; // Importa AOS
 import vuetify from "./vuetifyOptions";
 import i18n from './Modules/i18n';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
@@ -20,6 +21,7 @@ import UserMenu from './Components/UserMenu.vue';
 
 
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate)
 const appName = import.meta.env.VITE_APP_NAME || 'Security Fire';
 
 createInertiaApp({

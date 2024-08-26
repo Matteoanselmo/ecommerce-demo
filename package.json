@@ -31,6 +31,7 @@
         "lodash": "^4.17.21",
         "pdf-vue3": "^1.0.12",
         "pinia": "^2.2.2",
+        "pinia-plugin-persistedstate": "^3.2.1",
         "vue-i18n": "^9.13.1",
         "vue-pdf": "^4.3.0",
         "vue3-pdfjs": "^0.1.6"

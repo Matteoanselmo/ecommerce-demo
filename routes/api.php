@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/get-products', [ProductController::class, 'getProductsByCategory']);
 // Admin
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/dashboard/sales', [OverviewController::class, 'getSalesData']);

@@ -5,13 +5,11 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ProductSeeder extends Seeder
-{
+class ProductSeeder extends Seeder {
     /**
      * Run the database seeds.
      */
-    public function run()
-    {
+    public function run() {
         // Prodotti di esempio
         $products = [
             [
@@ -67,7 +65,133 @@ class ProductSeeder extends Seeder
                 'price' => 89.99,
                 'categorydetails_id' => 6,
                 'stock_quantity' => 70
-            ]
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
+            [
+                'name' => 'Scarpe antinfortunistiche',
+                'description' => 'Scarpe con punta rinforzata per massima sicurezza sul lavoro.',
+                'subcategory_id' => 6,
+                'category_id' => 2,
+                'price' => 89.99,
+                'categorydetails_id' => 6,
+                'stock_quantity' => 70
+            ],
         ];
 
         foreach ($products as $product) {

@@ -26,8 +26,8 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('/prodotti', function () {
-    return Inertia::render('ProductsList');
+Route::get('/{category}/prodotti', function ($category) {
+    return Inertia::render('ProductsList', ['category' => $category]);
 })->name('products.list');
 
 // ADMIN
