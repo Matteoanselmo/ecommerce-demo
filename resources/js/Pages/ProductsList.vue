@@ -1,6 +1,6 @@
 <template>
     <Head title="Prodotti" />
-
+    <search-bar></search-bar>
     <v-container>
         <v-row>
             <v-col aria-colspan="12" sm="6" md="4" lg="3" v-for="(product, i) in productsStore.products" :key="i">

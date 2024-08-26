@@ -21,8 +21,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+//Guest
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/get-products', [ProductController::class, 'getProductsByCategory']);
+
+Route::post('/user-searches', [UserSearchController::class, 'store']);
+Route::get('/user-searches', [UserSearchController::class, 'index']);
 // Admin
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/dashboard/sales', [OverviewController::class, 'getSalesData']);

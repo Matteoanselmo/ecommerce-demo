@@ -17,6 +17,7 @@ import AdminLayout from './Layouts/AdminLayout.vue'; // Importa AdminLayout
 
 import DarkMode from './Components/DarkMode.vue';
 import UserMenu from './Components/UserMenu.vue';
+import ProductSearcBar from './Components/Products/ProductSearcBar.vue';
 
 
 
@@ -50,6 +51,7 @@ createInertiaApp({
             .use(i18n)
             .component('dark-mode', DarkMode)
             .component('user-menu', UserMenu)
+            .component('search-bar', ProductSearcBar)
             .use(vuetify);
 
         app.mount(el);

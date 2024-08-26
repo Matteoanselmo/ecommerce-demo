@@ -9,8 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
-{
+class User extends Authenticatable {
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -45,14 +44,17 @@ class User extends Authenticatable
     ];
 
     // Relazione con Orders (un utente può avere molti ordini)
-    public function orders(): HasMany
-    {
+    public function orders(): HasMany {
         return $this->hasMany(Order::class);
     }
 
     // Relazione con ProductReviews (un utente può avere molte recensioni)
-    public function reviews(): HasMany
-    {
+    public function reviews(): HasMany {
         return $this->hasMany(ProductReview::class);
+    }
+
+    // Relazione con le ricerche dell'utente
+    public function searches() {
+        return $this->hasMany(UserSearch::class);
     }
 }
