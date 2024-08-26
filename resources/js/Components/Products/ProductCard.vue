@@ -52,6 +52,11 @@
                 <v-spacer></v-spacer>
                 <span class="text-h6 font-weight-bold text-primary" >${{ product.price }}</span>
             </v-card-actions>
+            <v-card-actions class="justify-center" color="primary" width="100%">
+                <RatingStars
+                    :ratings="product.rating_star"
+                />
+            </v-card-actions>
             <v-card-actions class="justify-between">
                 <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product)">
                 </v-btn>
@@ -64,6 +69,7 @@
 <script setup>
 import { useProductStore } from "@/stores/product.store";
 import { useCartStore } from "@/stores/cartStore";
+import RatingStars from "../Reviews/RatingStars.vue";
 const props = defineProps({
     product: {
     type: Object,

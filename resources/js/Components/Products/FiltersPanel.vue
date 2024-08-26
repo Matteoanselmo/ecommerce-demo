@@ -1,74 +1,71 @@
 <template>
-    <v-container class="position-sticky top-0">
-    <!-- Intestazione con il pulsante per aprire/chiudere i filtri -->
-    <v-row align="center" justify="space-between" class="mb-4">
-        <v-btn icon @click="toggleFilters">
-        <v-icon>{{ filtersOpen ? 'mdi-chevron-left' : 'mdi-filter' }}</v-icon>
-        <span v-if="filtersOpen">Filtri</span>
+    <v-container>
+    <v-row>
+        <!-- Bottone per aprire/chiudere il pannello dei filtri -->
+        <v-btn
+        color="primary"
+        @click="expand = !expand"
+        class="mb-4"
+        variant="outlined"
+        >
+        {{ expand ? 'Filtri' : 'Filtri' }}
         </v-btn>
-        <v-btn text color="error" @click="clearFilters">
-        Elimina Filtri
-        </v-btn>
-    </v-row>
 
-    <!-- Sezione Categorie -->
-    <v-row v-if="filtersOpen">
-        <v-col cols="12">
-        <h5>Categorie</h5>
+        <!-- Pannello laterale che si espande orizzontalmente -->
+        <v-expand-transition max-width="800">
+        <v-col v-if="expand" class="sidebar-panel">
+            <v-card class="py-4 px-3">
+            <v-toolbar flat>
+                <v-toolbar-title>Filtri</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="expand = false">
+                <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-toolbar>
+
+            <v-divider></v-divider>
+
+            <!-- Sezione Categorie -->
+            <v-list dense>
+                <v-subheader>Categorie</v-subheader>
+                <CategoryCards />
+            </v-list>
+
+            <v-divider class="my-4"></v-divider>
+
+            <!-- Sezione Filtri -->
+            <v-expansion-panels>
+                <v-expansion-panel v-for="(filter, index) in filterOptions" :key="index">
+                <v-expansion-panel-title>{{ filter.name }}</v-expansion-panel-title>
+                <v-expansion-panel-text>
+                    <!-- Contenuto dinamico dei filtri -->
+                </v-expansion-panel-text>
+                </v-expansion-panel>
+            </v-expansion-panels>
+            </v-card>
         </v-col>
-        <v-col>
-            <CategoryCards/>
-        </v-col>
+        </v-expand-transition>
     </v-row>
-
-    <v-divider v-if="filtersOpen" class="my-4"></v-divider>
-
-    <!-- Sezione Filtri -->
-    <v-accordion v-if="filtersOpen" v-model="expandedFilters">
-        <v-expansion-panels>
-        <v-expansion-panel v-for="(filter, index) in filterOptions" :key="index">
-            <v-expansion-panel-title>{{ filter.name }}</v-expansion-panel-title>
-            <v-expansion-panel-text>
-            <!-- Contenuto dinamico dei filtri -->
-            </v-expansion-panel-text>
-        </v-expansion-panel>
-        </v-expansion-panels>
-    </v-accordion>
     </v-container>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import CategoryCards from './CategoryCards.vue';
-const filtersOpen = ref(true);
-const expandedFilters = ref([]);
-const categories = ref([
-    { title: 'Sedie Girevoli' },
-    { title: 'Sedie e Poltrone' },
-    { title: 'Mobili e Complementi' },
-]);
 
+const expand = ref(false);
 const filterOptions = ref([
     { name: 'Prezzo' },
     { name: 'Tipologia' },
 ]);
-
-const toggleFilters = () => {
-    filtersOpen.value = !filtersOpen.value;
-};
-
-const clearFilters = () => {
-    expandedFilters.value = [];
-    // Logica per resettare i filtri
-};
 </script>
 
 <style scoped>
-.v-btn {
-    font-weight: bold;
+.sidebar-panel {
+    max-width: 300px;
 }
 
-.v-divider {
-    margin: 10px 0;
+.v-toolbar-title {
+    font-weight: bold;
 }
 </style>

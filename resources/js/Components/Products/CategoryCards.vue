@@ -1,10 +1,9 @@
 <template>
-    <div class="d-flex category-scroll">
+    <div class="d-flex category-scroll" :max-width="maxWidth">
 
         <v-card v-for="(item, index) in items"
         :key="index"
         class="text-center"
-        outlined
         rounded
         elevation="0"
         >
@@ -20,7 +19,13 @@
 import { ref, computed, onMounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import axios from 'axios';
-
+const props = defineProps({
+    maxWidth: {
+        required: false,
+        type: String,
+        default: '800'
+    }
+})
 const items = ref([]);
 
 function fetchCategorie() {
@@ -53,7 +58,6 @@ onMounted(() => {
 
 <style scoped>
 .category-scroll {
-    max-width: 800px;
     display: flex;
     overflow-x: auto;
     padding-bottom: 10px;
@@ -75,12 +79,17 @@ onMounted(() => {
 }
 
 .v-card {
-    min-width: 200px; /* Imposta una larghezza minima per le card */
-    height: 150px;
+    min-width: 100px; /* Imposta una larghezza minima per le card */
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 10px;
+}
+
+.v-card:hover {
+    transform: scale(1.05);
+    transition: all .125s;
 }
 
 .v-card-text {

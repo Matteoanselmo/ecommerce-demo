@@ -3,10 +3,10 @@
     <search-bar></search-bar>
     <v-container>
         <v-row>
-
-        </v-row>
-        <v-row>
-            <v-col>
+            <v-col cols="12">
+                <CategoryCards/>
+            </v-col>
+            <v-col cols="12">
                 <FiltersPanel/>
             </v-col>
             <v-col aria-colspan="12" sm="6" md="4" lg="3" v-for="(product, i) in productsStore.products" :key="i">
@@ -29,6 +29,7 @@ import { useProductStore } from "@/stores/product.store";
 import { watch } from 'vue';
 import ProductCard from '@/Components/Products/ProductCard.vue';
 import FiltersPanel from '@/Components/Products/FiltersPanel.vue';
+import CategoryCards from '@/Components/Products/CategoryCards.vue';
 const productsStore = useProductStore();
 
 const onPageChange = () => {

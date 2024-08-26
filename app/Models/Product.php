@@ -57,6 +57,10 @@ class Product extends Model {
         return $this->hasMany(ProductImage::class);
     }
 
+    public function reviewRatings() {
+        return $this->reviews()->pluck('rating_star');
+    }
+
     // Funzione per ottenere l'immagine di copertina completa (con estensione)
     public function coverImage() {
         $image = $this->images()->first();

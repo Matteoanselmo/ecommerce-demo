@@ -19,6 +19,7 @@ class ProductController extends Controller {
 
         $products->getCollection()->transform(function ($product) {
             $product->cover_image_url = $product->coverImage();
+            $product->rating_star = $product->reviewRatings();
             return $product;
         });
 
