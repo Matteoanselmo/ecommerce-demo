@@ -22,7 +22,7 @@
         color="transparent"
         >
         <v-img
-            src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg"
+            :src="product.cover_image_url"
             alt="Product Image"
             height="400px"
             class="rounded-lg p-2"

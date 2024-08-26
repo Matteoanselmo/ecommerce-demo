@@ -17,6 +17,10 @@ class ProductController extends Controller {
 
         $products = $category->products()->paginate($request->input('per_page', 10));
 
+        $products->getCollection()->transform(function ($product) {
+            $product->cover_image_url = $product->coverImage();
+            return $product;
+        });
 
         return response()->json($products);
     }
