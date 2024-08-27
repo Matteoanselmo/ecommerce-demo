@@ -4,22 +4,28 @@
     <v-container class="product-detail-container" >
     <v-row>
         <v-col cols="12" md="6">
-        <!-- <v-img
-            :src="product.cover_image_url"
-            alt="Product Image"
-            height="400px"
-            contain
-        /> -->
-        <v-carousel>
+            <v-carousel>
             <v-carousel-item
-                v-for="(image, i ) in product.images" :key="i"
+                v-for="(image, i) in product.images"
+                :key="i"
                 :src="image.image_url"
                 cover
-            ></v-carousel-item>
-        </v-carousel>
+                >
+                <v-overlay
+                    v-model="overlays[i]"
+                    absolute
+                    color="rgba(0, 0, 0, 0.7)"
+                    @click="enlargeImage(image.image_url)"
+                >
+                    <v-btn icon>
+                    <v-icon>mdi-magnify</v-icon>
+                    </v-btn>
+                </v-overlay>
+                </v-carousel-item>
+            </v-carousel>
         </v-col>
 
-        <v-col cols="12" md="6" class="d-flex flex-column justify-space-between">
+        <v-col cols="12" md="6" class="d-flex flex-column justify-start align-start">
         <div>
             <!-- <v-rating
             v-model="calculatedRating"
@@ -96,6 +102,14 @@ const cartStore = useCartStore();
 const tab = ref(0);
 const calculatedRating = ref(product.value.rating_star); // Use product.value because it's a computed property
 
+const overlays = ref(new Array(props.product.images.length).fill(false));
+const dialog = ref(false);
+const enlargedImage = ref('');
+
+function enlargeImage(imageUrl) {
+    enlargedImage.value = imageUrl;
+    dialog.value = true;
+}
 function handlePreview() {
     // Handle preview logic here
 }
