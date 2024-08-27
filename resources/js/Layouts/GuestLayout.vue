@@ -39,20 +39,23 @@
                     variant="plain"
                     class="text-start hoverable-list-item"
                     width="100%"
+                    :prepend-icon="item.icon"
                 >
                     <Link
                     v-if="(item.name !== 'Home' )"
                         class="text-decoration-none  text-h6"
                         :href="route(item.link, item.params)"
                         :text="item.title"
-                        @click=" productsStore.setCategory(item.params.category);"
+                        @click="item.params && item.params.category ? productsStore.setCategory(item.params.category) : null"
                     />
                     <Link
                     v-else
                         class="text-decoration-none  text-h6"
                         :href="route(item.link)"
                         :text="item.title"
-                    />
+                    >
+                    {{ item.icon }}
+                    </Link>
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
@@ -118,7 +121,6 @@ const showButtons = ref(false);
 const languages = ["IT", "EN", "FR"];
 import { useProductStore } from "@/stores/product.store";
 import CartDropdown from "@/Components/CartDropdown.vue";
-const productsToSearch = ref([]);
 
 const mouseX = ref(0);
 const mouseY = ref(0);
@@ -130,7 +132,7 @@ const toggleDrawer = () => {
 };
 
 const items = ref([
-    { title: "Home", link: "home" },
+    { title: "Home", link: "home", icon: "mdi mdi-home" },
 ]);
 
 const changeLanguage = (lang) => {
@@ -144,10 +146,15 @@ function fetchCategorie (){
             const route = {
                 title: category.name,
                 link: 'products.list',  // Nome della rotta Laravel
+                icon: category.icon,
                 params: { category: category.name.toLowerCase() } // Parametro dinamico
             };
             items.value.push(route);
         });
+
+        console.log(items.value)
+    }).catch((err) => {
+        console.error(err)
     })
 }
 
@@ -167,9 +174,9 @@ const onMouseMove = (event) => {
     mouseY.value = event.clientY;
 };
 
-fetchCategorie();
 
 onMounted(() => {
+    fetchCategorie();
     window.addEventListener("scroll", onScroll);
     window.addEventListener("mousemove", onMouseMove);
 

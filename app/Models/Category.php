@@ -11,7 +11,8 @@ class Category extends Model {
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'name',
+        'icon',
     ];
 
     // Relazione con SubCategory (una categoria può avere molte sub-categorie)
