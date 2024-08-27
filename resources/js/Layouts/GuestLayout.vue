@@ -151,8 +151,6 @@ function fetchCategorie (){
             };
             items.value.push(route);
         });
-
-        console.log(items.value)
     }).catch((err) => {
         console.error(err)
     })

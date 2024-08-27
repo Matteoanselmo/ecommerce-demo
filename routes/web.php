@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,11 @@ Route::get('/carello', function () {
 })->name('cart');
 
 
-Route::get('/{category}/prodotti', function ($category) {
+Route::get('/prodotti', function (Request $request) {
+    $category = $request->input('category', null); // Recupera la categoria dalla query string
     return Inertia::render('ProductsList', ['category' => $category]);
 })->name('products.list');
+
 
 // ADMIN
 Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->group(function () {
