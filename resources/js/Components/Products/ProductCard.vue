@@ -35,7 +35,7 @@
                     dark
                     style="border-radius: 8px;"
                     text="Maggiori informazioni"
-
+                    @click="goToProductDetail"
                 >
                 </v-btn>
                 </div>
@@ -70,16 +70,22 @@
 import { useProductStore } from "@/stores/product.store";
 import { useCartStore } from "@/stores/cartStore";
 import RatingStars from "../Reviews/RatingStars.vue";
+import { router } from '@inertiajs/vue3';
+
 const props = defineProps({
     product: {
-    type: Object,
-    required: true,
+        type: Object,
+        required: true,
     },
 });
 
 const cartStore = useCartStore();
 
 const productsStore = useProductStore();
+
+function goToProductDetail() {
+    router.get(route('product.detail', { product: props.product }));
+}
 </script>
 
 <style scoped>

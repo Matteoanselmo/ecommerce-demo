@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,7 @@ Route::get('/prodotti', function (Request $request) {
     return Inertia::render('ProductsList', ['category' => $category]);
 })->name('products.list');
 
+Route::get('/prodotti/{product}', [ProductController::class, 'show'])->name('product.detail');
 
 // ADMIN
 Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->group(function () {

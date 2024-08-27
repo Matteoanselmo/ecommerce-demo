@@ -25,9 +25,7 @@ defineProps({
     <Head title="Home" />
     <Banner/>
     <search-bar></search-bar>
-    <div>
-        questo è welcome
-    </div>
+
 </template>
 
 <style>
