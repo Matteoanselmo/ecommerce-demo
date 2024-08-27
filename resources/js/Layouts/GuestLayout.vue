@@ -23,7 +23,7 @@
             mobile-breakpoint="sm"
             v-model="drawer"
             app
-            color="secondary"
+            color="white"
             location="left"
 
         >

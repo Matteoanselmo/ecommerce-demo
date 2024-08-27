@@ -21,8 +21,8 @@ const vuetify = createVuetify({
             myCustomTheme: {
                 dark: false,
                 colors: {
-                    primary: '#CF3825',
-                    secondary: '#318E88', // Sostituisci con il colore che desideri
+                    primary: '#00238C',
+                    secondary: '#CF3825', // Sostituisci con il colore che desideri
                     tertiary: '#CF3825',
                     accent: '#CF3825', // Sostituisci con il colore che desideri
                     error: '#FF5252', // Sostituisci con il colore che desideri
@@ -36,8 +36,8 @@ const vuetify = createVuetify({
             myCustomThemeDark: {
                 dark: true,
                 colors: {
-                    primary: '#B71C1C', // Colore principale scurito
-                    secondary: '#005F56', // Colore secondario scurito
+                    primary: '#2f4eaa', // Colore principale scurito
+                    secondary: '#B71C1C', // Colore secondario scurito
                     tertiary: '#B71C1C',
                     accent: '#B71C1C',
                     error: '#D32F2F',

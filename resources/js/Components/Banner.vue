@@ -1,6 +1,6 @@
 <template>
     <v-banner
-            style="background-color: #f44336;"
+            bg-color="primary"
             class="d-flex justify-center"
             :stacked="false"
         >
