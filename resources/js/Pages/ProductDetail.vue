@@ -1,6 +1,6 @@
 <template>
     <Head :title="product.name" />
-    <!-- The rest of your component -->
+    <search-bar></search-bar>
     <v-container class="product-detail-container" >
     <v-row>
         <v-col cols="12" md="6">
