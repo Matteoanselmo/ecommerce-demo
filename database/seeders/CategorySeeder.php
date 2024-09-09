@@ -12,8 +12,8 @@ class CategorySeeder extends Seeder {
     public function run() {
         // Lista di categorie da inserire
         $categories = [
-            ['name' => 'Viso', 'icon' => 'mdi mdi-face'],
-            ['name' => 'Mani', 'icon' => 'mdi mdi-hand'],
+            ['name' => 'Viso', 'icon' => 'mdi mdi-face-man'],
+            ['name' => 'Mani', 'icon' => 'mdi mdi-hand-back-right-outline'],
             ['name' => 'Capo', 'icon' => 'mdi mdi-hat-fedora'],
             ['name' => 'Corpo', 'icon' => 'mdi mdi-human'],
             ['name' => 'Piedi', 'icon' => 'mdi mdi-shoe-sneaker'],

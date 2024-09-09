@@ -20,7 +20,7 @@ class ProductImageSeeder extends Seeder {
             for ($i = 0; $i < 3; $i++) { // Ad esempio, assegna 3 immagini a ciascun prodotto
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image_url' => 'https://cdn.vuetifyjs.com/images/parallax/material2', // Solo il percorso senza estensione
+                    'image_url' => 'https://picsum.photos/200/300', // Solo il percorso senza estensione
                     'extension' => 'jpg', // Estensione dell'immagine
                 ]);
             }

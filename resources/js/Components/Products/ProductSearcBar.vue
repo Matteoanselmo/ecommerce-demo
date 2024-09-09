@@ -1,94 +1,70 @@
 <template>
     <v-container fluid>
-    <v-row>
-        <v-col cols="12">
-        <v-autocomplete
-            :items="productsToSearch"
-            class="mx-auto"
-            density="comfortable"
-            placeholder="Cerca il prodotto giusto per te"
-            prepend-inner-icon="mdi-magnify"
-            style="max-width: 100%;"
-            variant="solo"
-            auto-select-first
-            item-props
-            rounded
-            v-model:search="productsStore.searchString"
-            @update:search="handleInputChange"
-        ></v-autocomplete>
-        </v-col>
-    </v-row>
+        <v-row>
+            <v-col cols="12">
+                <v-autocomplete
+                    :loading="loading"
+                    :items="productsToSearch"
+                    density="comfortable"
+                    placeholder="Cerca il prodotto giusto per te"
+                    prepend-inner-icon="mdi-magnify"
+                    variant="solo"
+                    item-value="id"
+                    item-title="name"
+                    rounded
+                    v-model="selectedProductId"
+                    @update:search="handleInputChange"
+
+                >
+                    <template v-slot:item="{ item, attrs }">
+                        <v-list-item
+                        v-bind="attrs"
+                        @click="navigateToProduct(item.raw.id)"
+                        :title="item.title"
+                        :prepend-avatar="item.raw.cover_image_url">
+                        </v-list-item>
+                    </template>
+                </v-autocomplete>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { router, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
-import { useProductStore } from "@/stores/product.store";
-const productsStore = useProductStore();
+import { router } from '@inertiajs/vue3';
 
-const page = usePage();
-const authUser = ref(page.props.auth.user);
-
+const loading = ref(false);
 const productsToSearch = ref([]);
+const selectedProductId = ref(null);
 
 // Funzione per gestire il cambiamento di input con debounce
 const handleInputChange = debounce((value) => {
-    console.log(value)
-    if(value !== ''){
-        productsStore.performSearch();
+    if (value !== '') {
+        fetchSearchResults(value);
     }
-}, 500); // ritardo di 300ms
+}, 300); // ritardo di 300ms
 
+function fetchSearchResults (query) {
+    loading.value = true;
+    axios.get('/api/search-products', {
+        params: { query }
+    }).then((res) => {
+        loading.value = false;
+        productsToSearch.value = res.data;
+        console.log(productsToSearch.value)
+    }).catch((err) => {
+        console.log(err)
+    })
+}
 
-// const saveSearch = (searchQuery) => {
-//     if (authUser.value) {
-//     axios.post('/api/user-searches', { search_query: searchString.value })
-//         .then(response => {
-//             performSearch(searchQuery);
-//         })
-//         .catch(error => {
-//         console.error('Error saving search:', error);
-//         });
-//     } else {
-//     console.log('User not logged in. Search not saved.');
-//     performSearch(searchQuery);
-//     }
-// };
+// Funzione per navigare alla pagina del prodotto selezionato
+function navigateToProduct(productId) {
+    if (productId) {
+        router.get(route('product.detail', { product: productId }));
+    }
+}
 
-// const performSearch = (searchQuery) => {
-//     axios.post('/api/search', { query: searchString.value })
-//     .then(response => {
-//         const products = response.data;
-//         console.log(response.data)
-//         // router.push({ name: 'products.list', params: { products } });
-//     })
-//     .catch(error => {
-//         console.error('Error performing search:', error);
-//     });
-// };
-
-
-//     }).catch((err) => {
-//         console.error(err)
-//     })
-// }
-
-// const getUserSearches = () => {
-//     if (authUser.value) {
-//     axios.get('/api/user-searches')
-//         .then(response => {
-//         productsToSearch.value = response.data.map(search => search.search_query);
-//         })
-//         .catch(error => {
-//         console.error('Error fetching user searches:', error);
-//         });
-//     }
-// };
-
-// onMounted(() => {
-//     getUserSearches();
-// });
 </script>

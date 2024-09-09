@@ -26,8 +26,7 @@
             <v-divider></v-divider>
 
             <!-- Sezione Categorie -->
-            <v-list dense>
-                <v-subheader>Categorie</v-subheader>
+            <v-list subtitle="Categorie" dense>
                 <CategoryCards />
             </v-list>
 

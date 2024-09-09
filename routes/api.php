@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\OverviewController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserSearchController;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,15 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/get-products', [ProductController::class, 'getProductsByCategory']);
 
 Route::post('/search', [UserSearchController::class, 'search']);
+
+Route::get('/search-products', function (Request $request) {
+    $searchTerm = $request->input('query'); // Recupera il termine di ricerca dalla query string
+    $products = Product::where('name', 'like', '%' . $searchTerm . '%')->get(); // Cerca nei nomi dei prodotti
+    foreach ($products as $product) {
+        $product->cover_image_url = $product->coverImage();
+    }
+    return response()->json($products); // Restituisci i risultati in formato JSON
+});
 
 Route::post('/user-searches', [UserSearchController::class, 'store']);
 Route::get('/user-searches', [UserSearchController::class, 'index']);

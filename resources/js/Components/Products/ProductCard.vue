@@ -44,13 +44,12 @@
             <v-card-subtitle color="black" class="text-h6 mt-3 mb-1">
                 {{ product.name }}
             </v-card-subtitle>
-            <v-card-text class="grey--text text--darken-2 mb-2">
-                {{ product.description }}
+            <v-card-text class="grey--text text--darken-2 mb-2" :html="product.description">
             </v-card-text>
 
             <v-card-actions class="justify-between" color="primary">
                 <v-spacer></v-spacer>
-                <span class="text-h6 font-weight-bold text-primary" >${{ product.price }}</span>
+                <span class="text-h6 font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span>
             </v-card-actions>
             <v-card-actions class="justify-center" color="primary" width="100%">
                 <RatingStars

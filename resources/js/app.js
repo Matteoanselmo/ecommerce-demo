@@ -25,6 +25,12 @@ const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
 const appName = import.meta.env.VITE_APP_NAME || 'Security Fire';
 
+const formatPrice = (price) => {
+    // Dividi il prezzo per ottenere due cifre decimali
+    let formattedPrice = (price / 100).toFixed(2).replace('.', ',');
+    return formattedPrice + ' €';
+};
+
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => {
@@ -53,6 +59,8 @@ createInertiaApp({
             .component('user-menu', UserMenu)
             .component('search-bar', ProductSearcBar)
             .use(vuetify);
+
+        app.config.globalProperties.$formatPrice = formatPrice;
 
         app.mount(el);
 

@@ -4,23 +4,23 @@
     <v-container class="product-detail-container" >
     <v-row>
         <v-col cols="12" md="6">
-            <v-carousel>
-            <v-carousel-item
-                v-for="(image, i) in product.images"
-                :key="i"
-                :src="image.image_url"
-                cover
-                >
-                <v-overlay
-                    v-model="overlays[i]"
-                    absolute
-                    color="rgba(0, 0, 0, 0.7)"
-                    @click="enlargeImage(image.image_url)"
-                >
-                    <v-btn icon>
-                    <v-icon>mdi-magnify</v-icon>
-                    </v-btn>
-                </v-overlay>
+            <v-carousel show-arrows="hover">
+                <v-carousel-item
+                    v-for="(image, i) in product.images"
+                    :key="i"
+                    :src="image.image_url"
+                    cover
+                    >
+                    <v-overlay
+                        v-model="overlays[i]"
+                        absolute
+                        color="rgba(0, 0, 0, 0.7)"
+                        @click="enlargeImage(image.image_url)"
+                    >
+                        <v-btn icon>
+                        <v-icon>mdi-magnify</v-icon>
+                        </v-btn>
+                    </v-overlay>
                 </v-carousel-item>
             </v-carousel>
         </v-col>
@@ -37,17 +37,8 @@
                     :ratings="product.rating_star"
                 />
             <h1 class="text-h4 font-weight-bold mb-2">{{ product.name }}</h1>
-            <p class="text-body-1 mb-4">{{ product.description }}</p>
-            <span class="text-h6 font-weight-bold text-primary" >${{ product.price }}</span>
-        </div>
-
-        <div class="mt-4">
-            <h2 class="text-h6 font-weight-bold mb-2">Highlights</h2>
-            <ul>
-            <li v-for="highlight in product.highlights" :key="highlight">
-                {{ highlight }}
-            </li>
-            </ul>
+            <p class="text-body-1 mb-4" v-html="product.description"> </p>
+            <span class="text-h6 font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span>
         </div>
         </v-col>
     </v-row>
