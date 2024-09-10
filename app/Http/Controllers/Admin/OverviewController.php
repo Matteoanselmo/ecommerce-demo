@@ -40,4 +40,23 @@ class OverviewController extends Controller {
 
         return response()->json($topProducts);
     }
+
+    public function getDiskSpace() {
+        // Ottieni i valori in byte
+        $totalSpace = disk_total_space('/');
+        $freeSpace = disk_free_space('/');
+        $usedSpace = $totalSpace - $freeSpace;
+
+        // Converti in MB
+        $totalSpaceMB = $totalSpace / (1024 * 1024);
+        $freeSpaceMB = $freeSpace / (1024 * 1024);
+        $usedSpaceMB = $usedSpace / (1024 * 1024);
+
+        // Restituire i dati come una risposta JSON in MB
+        return response()->json([
+            'total' => round($totalSpaceMB, 2),  // Arrotondamento a 2 decimali
+            'free' => round($freeSpaceMB, 2),
+            'used' => round($usedSpaceMB, 2),
+        ]);
+    }
 }

@@ -15,6 +15,7 @@ const canvas = ref(null);
 let chartInstance;
 
 onMounted(() => {
+    canvas.value.height = 300;
     chartInstance = new Chart(canvas.value, {
     type: 'bar',
     data: props.chartData,

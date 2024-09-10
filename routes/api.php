@@ -45,6 +45,7 @@ Route::get('/user-searches', [UserSearchController::class, 'index']);
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/dashboard/sales', [OverviewController::class, 'getSalesData']);
     Route::get('/dashboard/traffic', [OverviewController::class, 'getTrafficData']);
+    Route::get('/dashboard/disk-space', [OverviewController::class, 'getDiskSpace']);
     Route::get('/dashboard/top-products', [OverviewController::class, 'getTopProductsData']);
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

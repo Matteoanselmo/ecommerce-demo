@@ -6,34 +6,35 @@ import { Chart, LineController, LineElement, PointElement, LinearScale, Title, C
 Chart.register(LineController, LineElement, PointElement, LinearScale, Title, CategoryScale);
 
 const props = defineProps({
-  chartData: {
+chartData: {
     type: Object,
     required: true,
-  },
+},
 });
 
 const canvas = ref(null);
 let chartInstance;
 
 onMounted(() => {
-  chartInstance = new Chart(canvas.value, {
-    type: 'line',
-    data: props.chartData,
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-    },
-  });
+    canvas.value.height = 300;
+    chartInstance = new Chart(canvas.value, {
+        type: 'line',
+        data: props.chartData,
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        },
+    });
 });
 
 watch(
-  () => props.chartData,
-  (newData) => {
+() => props.chartData,
+(newData) => {
     if (chartInstance) {
-      chartInstance.data = newData;
-      chartInstance.update();
+    chartInstance.data = newData;
+    chartInstance.update();
     }
-  }
+}
 );
 </script>
 

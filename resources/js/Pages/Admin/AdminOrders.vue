@@ -2,8 +2,38 @@
     <Head title="Ordini" />
     <v-container>
         <v-row>
-            <v-col>
+            <v-col cols="6" class="pb-0 mt-5">
+                <div class="d-flex justify-between">
+                <v-text-field
+                    variant="solo-filled"
+                    prepend-inner-icon="mdi-magnify"
+                    v-model="searchName"
+                    label="Nome"
+                    clearable
+                    @input="fetchOrders"
+                ></v-text-field>
+                <v-text-field
+                    variant="solo-filled"
+                    prepend-inner-icon="mdi-magnify"
+                    v-model="searchOrderNumber"
+                    label="Ordine"
+                    clearable
+                    @input="fetchOrders"
+                    class="px-2"
+                ></v-text-field>
+                <v-text-field
+                    variant="solo-filled"
+                    prepend-inner-icon="mdi-magnify"
+                    v-model="searchShippingNumber"
+                    label="Spedizione"
+                    clearable
+                    @input="fetchOrders"
+                ></v-text-field>
+                </div>
+                </v-col>
+                <v-col cols="12">
                 <TableServer
+
                     :totalItems="totalItems"
                     :items="orders"
                     :itemsPerPage="itemsPerPage"
@@ -11,6 +41,9 @@
                     :loading="loading"
                     :type="'order'"
                     :page="page"
+                    :search-name="searchName"
+                    :search-order-number="searchOrderNumber"
+                    :search-shipping-number="searchShippingNumber"
                     @updateItems="fetchOrders"
                 />
             </v-col>
@@ -29,6 +62,11 @@ const totalItems = ref(0);
 const itemsPerPage = ref(10);
 const page = ref(1);
 const loading = ref(true);
+
+// Aggiungi variabili per i campi di ricerca
+const searchName = ref('');
+const searchOrderNumber = ref('');
+const searchShippingNumber = ref('');
 
 const headers = ref([
     {
@@ -67,6 +105,8 @@ const headers = ref([
         sortable: false
     },
 ]);
+
+// Funzione per recuperare i dati degli ordini
 function fetchOrders(options = {}) {
     loading.value = true;
 
@@ -74,8 +114,7 @@ function fetchOrders(options = {}) {
     const currentItemsPerPage = options.itemsPerPage || itemsPerPage.value;
     const sortBy = options.sortBy || 'id';
     const sortDirection = options.sortDirection || 'asc';
-    const searchQuery = options.search || { name: '', shippingNumber: '', orderNumber: '' };
-
+    const searchQuery = options.search || { name: searchName.value, shippingNumber: searchShippingNumber.value, orderNumber: searchOrderNumber.value };
 
     axios
         .get(`/api/orders`, {
@@ -100,9 +139,4 @@ function fetchOrders(options = {}) {
             loading.value = false;
         });
 }
-
 </script>
-
-<style>
-/* Il tuo stile qui */
-</style>

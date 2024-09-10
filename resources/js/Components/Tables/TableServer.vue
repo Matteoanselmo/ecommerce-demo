@@ -1,5 +1,6 @@
 <template>
     <v-data-table-server
+    :rounded="true"
     :expand-on-click="false"
     :items-per-page="itemsPerPage"
     :headers="headers"
@@ -19,32 +20,6 @@
         <v-btn variant="outlined" size="small" color="danger">
         <span class="mdi mdi-delete-alert-outline"></span>
         </v-btn>
-    </template>
-
-    <template v-slot:tfoot>
-        <tr>
-        <td>
-            <v-text-field v-model="name" class="ma-2" density="compact" placeholder="Utente" hide-details></v-text-field>
-        </td>
-        <td>
-            <v-text-field
-            v-model="shippingNumber"
-            class="ma-2"
-            density="compact"
-            placeholder="Spedizione"
-            hide-details
-            ></v-text-field>
-        </td>
-        <td>
-            <v-text-field
-            v-model="orderNumber"
-            class="ma-2"
-            density="compact"
-            placeholder="Numero Ordine"
-            hide-details
-            ></v-text-field>
-        </td>
-        </tr>
     </template>
     </v-data-table-server>
 
@@ -79,40 +54,42 @@ const props = defineProps({
     loading: Boolean,
     type: String,
     page: Number,
+    searchName: String,
+    searchOrderNumber: String,
+    searchShippingNumber: String,
 });
 
-const name = ref('');
-const shippingNumber = ref('');
-const orderNumber = ref('');
 const search = ref('');
 const showModal = ref(false);
 const selectedItem = ref({});
 
 function openModal(event, item) {
-    selectedItem.value = item.item; // Assegna l'elemento selezionato
-    showModal.value = true; // Mostra il modale
+    selectedItem.value = item.item;
+    showModal.value = true;
 }
 
 const emit = defineEmits(['updateItems']);
 
+// Funzione per emettere i dati di ricerca
 function handleOptionsUpdate(options) {
     emit('updateItems', {
-    ...options,
-    search: {
-        name: name.value,
-        shippingNumber: shippingNumber.value,
-        orderNumber: orderNumber.value,
-    },
+        ...options,
+        search: {
+            name: props.searchName,
+            shippingNumber: props.searchShippingNumber,
+            orderNumber: props.searchOrderNumber,
+        },
     });
 }
 
 // Utilizza lodash debounce per ritardare la chiamata
 const debouncedHandleOptionsUpdate = debounce(handleOptionsUpdate, 500);
 
-watch([name, shippingNumber, orderNumber], () => {
+// Osserva i cambiamenti nei valori di ricerca
+watch([() => props.searchName, () => props.searchShippingNumber, () => props.searchOrderNumber], () => {
     debouncedHandleOptionsUpdate({
-    page: props.page,
-    itemsPerPage: props.itemsPerPage,
+        page: props.page,
+        itemsPerPage: props.itemsPerPage,
     });
 });
 </script>
