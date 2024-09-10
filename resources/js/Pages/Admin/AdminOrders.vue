@@ -4,36 +4,35 @@
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">
                 <div class="d-flex justify-between">
-                <v-text-field
-                    variant="solo-filled"
-                    prepend-inner-icon="mdi-magnify"
-                    v-model="searchName"
-                    label="Nome"
-                    clearable
-                    @input="fetchOrders"
-                ></v-text-field>
-                <v-text-field
-                    variant="solo-filled"
-                    prepend-inner-icon="mdi-magnify"
-                    v-model="searchOrderNumber"
-                    label="Ordine"
-                    clearable
-                    @input="fetchOrders"
-                    class="px-2"
-                ></v-text-field>
-                <v-text-field
-                    variant="solo-filled"
-                    prepend-inner-icon="mdi-magnify"
-                    v-model="searchShippingNumber"
-                    label="Spedizione"
-                    clearable
-                    @input="fetchOrders"
-                ></v-text-field>
+                    <v-text-field
+                        variant="solo-filled"
+                        prepend-inner-icon="mdi-magnify"
+                        v-model="searchName"
+                        label="Nome"
+                        clearable
+                        @input="debouncedFetchOrders"
+                    ></v-text-field>
+                    <v-text-field
+                        variant="solo-filled"
+                        prepend-inner-icon="mdi-magnify"
+                        v-model="searchOrderNumber"
+                        label="Ordine"
+                        clearable
+                        @input="debouncedFetchOrders"
+                        class="px-2"
+                    ></v-text-field>
+                    <v-text-field
+                        variant="solo-filled"
+                        prepend-inner-icon="mdi-magnify"
+                        v-model="searchShippingNumber"
+                        label="Spedizione"
+                        clearable
+                        @input="debouncedFetchOrders"
+                    ></v-text-field>
                 </div>
-                </v-col>
-                <v-col cols="12">
+            </v-col>
+            <v-col cols="12">
                 <TableServer
-
                     :totalItems="totalItems"
                     :items="orders"
                     :itemsPerPage="itemsPerPage"
@@ -56,7 +55,9 @@ import TableServer from '@/Components/Tables/TableServer.vue';
 import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
+import { debounce } from 'lodash';
 
+// Stato per gli ordini e altri parametri
 const orders = ref([]);
 const totalItems = ref(0);
 const itemsPerPage = ref(10);
@@ -139,4 +140,7 @@ function fetchOrders(options = {}) {
             loading.value = false;
         });
 }
+
+// Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
+const debouncedFetchOrders = debounce(fetchOrders, 500);
 </script>
