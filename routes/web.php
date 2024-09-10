@@ -49,6 +49,10 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
         return Inertia::render('Admin/AdminOrders');
     })->name('admin.orders');
 
+    Route::get('/customization', function () {
+        return Inertia::render('Admin/Customization');
+    })->name('admin.customization');
+
 
 
     // Route::get('/overview', function () {

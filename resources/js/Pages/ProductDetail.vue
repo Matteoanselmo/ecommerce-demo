@@ -4,12 +4,13 @@
     <v-container class="product-detail-container" >
     <v-row>
         <v-col cols="12" md="6">
-            <v-carousel show-arrows="hover">
+            <v-carousel show-arrows="hover" >
                 <v-carousel-item
+                    rounded="lg"
                     v-for="(image, i) in product.images"
                     :key="i"
                     :src="image.image_url"
-                    cover
+                    contain
                     >
                     <v-overlay
                         v-model="overlays[i]"
@@ -27,12 +28,6 @@
 
         <v-col cols="12" md="6" class="d-flex flex-column justify-start align-start">
         <div>
-            <!-- <v-rating
-            v-model="calculatedRating"
-            length="5"
-            half-increments
-            readonly
-            ></v-rating> -->
             <RatingStars
                     :ratings="product.rating_star"
                 />
@@ -104,8 +99,6 @@ function enlargeImage(imageUrl) {
 function handlePreview() {
     // Handle preview logic here
 }
-
-console.log(product)
 </script>
 
 <style scoped>
