@@ -1,6 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
 
 defineProps({

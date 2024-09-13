@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PricePolicyController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserSearchController;
 use App\Models\Product;
@@ -39,6 +40,8 @@ Route::get('/search-products', function (Request $request) {
     return response()->json($products); // Restituisci i risultati in formato JSON
 });
 
+Route::get('/price-policies', [PricePolicyController::class, 'index']);
+
 Route::post('/user-searches', [UserSearchController::class, 'store']);
 Route::get('/user-searches', [UserSearchController::class, 'index']);
 // Admin
@@ -47,7 +50,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/dashboard/traffic', [OverviewController::class, 'getTrafficData']);
     Route::get('/dashboard/disk-space', [OverviewController::class, 'getDiskSpace']);
     Route::get('/dashboard/top-products', [OverviewController::class, 'getTopProductsData']);
-
+    Route::post('/price-policies', [PricePolicyController::class, 'store']);
+    Route::delete('/price-policies/{id}', [PricePolicyController::class, 'destroy']);
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
 });

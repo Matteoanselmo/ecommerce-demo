@@ -59,6 +59,16 @@ console.log(user)
                 </v-list-item>
                 <v-list-item>
                     <Link
+                        as="button"
+                        class="text-black"
+                        :href="route('profile.edit')"
+                        @click="user = null"
+                    >
+                    Modifica
+                    </Link>
+                </v-list-item>
+                <v-list-item>
+                    <Link
                         method="POST"
                         as="button"
                         class="text-black"

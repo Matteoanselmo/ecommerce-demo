@@ -1,10 +1,6 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
@@ -36,69 +32,56 @@ const updatePassword = () => {
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900">Update Password</h2>
-
+            <h2 class="text-lg font-medium text-gray-900">Aggiorna Password</h2>
             <p class="mt-1 text-sm text-gray-600">
-                Ensure your account is using a long, random password to stay secure.
+                Assicurati che il tuo account utilizzi una password lunga e casuale per rimanere sicuro.
             </p>
         </header>
 
         <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="current_password" value="Current Password" />
-
-                <TextInput
-                    id="current_password"
-                    ref="currentPasswordInput"
+                <v-text-field
                     v-model="form.current_password"
+                    ref="currentPasswordInput"
+                    label="Current Password"
                     type="password"
-                    class="mt-1 block w-full"
+                    :error-messages="form.errors.current_password"
                     autocomplete="current-password"
+                    class="mt-1"
                 />
-
-                <InputError :message="form.errors.current_password" class="mt-2" />
             </div>
 
             <div>
-                <InputLabel for="password" value="New Password" />
-
-                <TextInput
-                    id="password"
-                    ref="passwordInput"
+                <v-text-field
                     v-model="form.password"
+                    ref="passwordInput"
+                    label="New Password"
                     type="password"
-                    class="mt-1 block w-full"
+                    :error-messages="form.errors.password"
                     autocomplete="new-password"
+                    class="mt-1"
                 />
-
-                <InputError :message="form.errors.password" class="mt-2" />
             </div>
 
             <div>
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-
-                <TextInput
-                    id="password_confirmation"
+                <v-text-field
                     v-model="form.password_confirmation"
+                    label="Confirm Password"
                     type="password"
-                    class="mt-1 block w-full"
+                    :error-messages="form.errors.password_confirmation"
                     autocomplete="new-password"
+                    class="mt-1"
                 />
-
-                <InputError :message="form.errors.password_confirmation" class="mt-2" />
             </div>
 
             <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+                <v-btn :loading="form.processing" color="primary" type="submit">
+                    Save
+                </v-btn>
 
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
-                </Transition>
+                <v-fade-transition>
+                    <span v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</span>
+                </v-fade-transition>
             </div>
         </form>
     </section>

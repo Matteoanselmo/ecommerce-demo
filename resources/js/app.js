@@ -18,7 +18,7 @@ import AdminLayout from './Layouts/AdminLayout.vue'; // Importa AdminLayout
 import DarkMode from './Components/DarkMode.vue';
 import UserMenu from './Components/UserMenu.vue';
 import ProductSearcBar from './Components/Products/ProductSearcBar.vue';
-
+import Notification from './Components/Notification.vue';
 
 
 const pinia = createPinia();
@@ -58,6 +58,7 @@ createInertiaApp({
             .component('dark-mode', DarkMode)
             .component('user-menu', UserMenu)
             .component('search-bar', ProductSearcBar)
+            .component('notification', Notification)
             .use(vuetify);
 
         app.config.globalProperties.$formatPrice = formatPrice;
