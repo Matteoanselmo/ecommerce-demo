@@ -2,79 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PricePolicy;
+use App\Models\DiscountBanner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class PricePolicyController extends Controller {
+class DiscountBannerController extends Controller {
     public function index() {
-        $policies = PricePolicy::all();
-        return response()->json($policies);
+        $banners = DiscountBanner::all();
+        return response()->json($banners);
     }
 
     public function store(Request $request) {
         try {
             // Validazione dei dati in ingresso
             $request->validate([
-                'file' => 'required|file|mimes:pdf|max:2048',  // Limite di 2 MB per il file PDF
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',  // Limite di 2 MB per l'immagine
             ]);
 
-            // Ottieni il nome originale del file
-            $originalName = $request->file('file')->getClientOriginalName();
+            // Ottieni il nome originale dell'immagine
+            $originalName = $request->file('image')->getClientOriginalName();
 
-            // Salva il file con il suo nome originale
-            $filePath = $request->file('file')->storeAs('price_policies', $originalName, 'public');
+            // Salva l'immagine con il suo nome originale
+            $imagePath = $request->file('image')->storeAs('discount_banners', $originalName, 'public');
 
-            // Crea una nuova policy nel database
-            $policy = PricePolicy::create([
+            // Crea un nuovo banner nel database
+            $banner = DiscountBanner::create([
                 'title' => $originalName,
-                'file_path' => $filePath,
+                'image_path' => $imagePath,
             ]);
 
             // Se tutto va bene, restituisci un messaggio di successo
             return response()->json([
-                'message' => 'PDF caricato con successo!',
-                'color' => 'success'
+                'message' => 'Immagine del banner caricata con successo!',
+                'color' => 'success',
             ], 201); // Codice HTTP 201 Created
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Restituisce un messaggio di errore specifico per la validazione
             return response()->json([
                 'message' => 'Errore di validazione: ' . $e->getMessage(),
-                'color' => 'error'
+                'color' => 'error',
             ], 422); // Codice HTTP 422 Unprocessable Entity
 
         } catch (\Exception $e) {
             // Restituisce un messaggio generico di errore per altri errori
             return response()->json([
-                'message' => 'Errore durante il caricamento del PDF: ' . $e->getMessage(),
-                'color' => 'error'
+                'message' => 'Errore durante il caricamento dell\'immagine: ' . $e->getMessage(),
+                'color' => 'error',
             ], 500); // Codice HTTP 500 Internal Server Error
         }
     }
 
     public function show($id) {
-        $policy = PricePolicy::findOrFail($id);
-        return response()->json($policy);
+        $banner = DiscountBanner::findOrFail($id);
+        return response()->json($banner);
     }
 
     public function destroy($id) {
         try {
-            // Trova la policy o lancia un'eccezione se non esiste
-            $policy = PricePolicy::findOrFail($id);
+            // Trova il banner o lancia un'eccezione se non esiste
+            $banner = DiscountBanner::findOrFail($id);
 
             // Verifica se il file esiste prima di tentare di eliminarlo
-            if (Storage::disk('public')->exists($policy->file_path)) {
-                // Elimina il file PDF dal percorso storage
-                Storage::disk('public')->delete($policy->file_path);
+            if (Storage::disk('public')->exists($banner->image_path)) {
+                // Elimina l'immagine dal percorso storage
+                Storage::disk('public')->delete($banner->image_path);
             }
 
-            // Elimina la policy dal database
-            $policy->delete();
+            // Elimina il banner dal database
+            $banner->delete();
 
             // Restituisce una risposta JSON di successo
             return response()->json([
-                'message' => 'PDF eliminato con successo!',
+                'message' => 'Immagine del banner eliminata con successo!',
                 'color' => 'success',
             ], 200);
         } catch (ModelNotFoundException $e) {

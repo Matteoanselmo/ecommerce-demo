@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PricePolicy;
+use App\Models\ReturnPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class PricePolicyController extends Controller {
+class ReturnPolicyController extends Controller {
     public function index() {
-        $policies = PricePolicy::all();
+        $policies = ReturnPolicy::all();
         return response()->json($policies);
     }
 
@@ -23,10 +23,10 @@ class PricePolicyController extends Controller {
             $originalName = $request->file('file')->getClientOriginalName();
 
             // Salva il file con il suo nome originale
-            $filePath = $request->file('file')->storeAs('price_policies', $originalName, 'public');
+            $filePath = $request->file('file')->storeAs('return_policies', $originalName, 'public');
 
             // Crea una nuova policy nel database
-            $policy = PricePolicy::create([
+            $policy = ReturnPolicy::create([
                 'title' => $originalName,
                 'file_path' => $filePath,
             ]);
@@ -54,14 +54,14 @@ class PricePolicyController extends Controller {
     }
 
     public function show($id) {
-        $policy = PricePolicy::findOrFail($id);
+        $policy = ReturnPolicy::findOrFail($id);
         return response()->json($policy);
     }
 
     public function destroy($id) {
         try {
             // Trova la policy o lancia un'eccezione se non esiste
-            $policy = PricePolicy::findOrFail($id);
+            $policy = ReturnPolicy::findOrFail($id);
 
             // Verifica se il file esiste prima di tentare di eliminarlo
             if (Storage::disk('public')->exists($policy->file_path)) {

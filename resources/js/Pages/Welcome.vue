@@ -1,7 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
-
+import DiscountBanner from '@/Components/DiscountBanner.vue';
 defineProps({
     canLogin: {
         type: Boolean,
@@ -24,6 +24,7 @@ defineProps({
     <Head title="Home" />
     <Banner/>
     <search-bar></search-bar>
+    <DiscountBanner/>
 
 </template>
 

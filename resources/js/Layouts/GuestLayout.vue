@@ -23,11 +23,14 @@
             mobile-breakpoint="sm"
             v-model="drawer"
             app
-            color="white"
+            color="primary"
             location="left"
-
+            expand-on-hover
+            rail
         >
             <v-list
+                density="compact"
+                nav
                 lines="one"
                 class="d-flex flex-column justify-start align-start"
                 height="100%"
@@ -42,19 +45,18 @@
                     :prepend-icon="item.icon"
                 >
                     <Link
-                    v-if="(item.name !== 'Home' )"
+                        v-if="(item.name !== 'Home' )"
                         class="text-decoration-none  text-h6"
                         :href="route(item.link, item.params)"
                         :text="item.title"
                         @click="item.params && item.params.category ? productsStore.setCategory(item.params.category) : null"
                     />
                     <Link
-                    v-else
+                        v-else
                         class="text-decoration-none  text-h6"
                         :href="route(item.link)"
                         :text="item.title"
                     >
-                    {{ item.icon }}
                     </Link>
                 </v-list-item>
             </v-list>

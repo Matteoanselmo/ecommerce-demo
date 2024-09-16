@@ -3,8 +3,11 @@
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DiscountBannerController;
+use App\Http\Controllers\InfoPolicyController;
 use App\Http\Controllers\PricePolicyController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReturnPolicyController;
 use App\Http\Controllers\UserSearchController;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -41,17 +44,27 @@ Route::get('/search-products', function (Request $request) {
 });
 
 Route::get('/price-policies', [PricePolicyController::class, 'index']);
+Route::get('/discount-banner', [DiscountBannerController::class, 'index']);
+Route::get('/info-policy', [InfoPolicyController::class, 'index']);
+Route::get('/return-policy', [ReturnPolicyController::class, 'index']);
 
 Route::post('/user-searches', [UserSearchController::class, 'store']);
 Route::get('/user-searches', [UserSearchController::class, 'index']);
 // Admin
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    // Panoramica
     Route::get('/dashboard/sales', [OverviewController::class, 'getSalesData']);
     Route::get('/dashboard/traffic', [OverviewController::class, 'getTrafficData']);
     Route::get('/dashboard/disk-space', [OverviewController::class, 'getDiskSpace']);
     Route::get('/dashboard/top-products', [OverviewController::class, 'getTopProductsData']);
+    // Personalizzazioni
     Route::post('/price-policies', [PricePolicyController::class, 'store']);
     Route::delete('/price-policies/{id}', [PricePolicyController::class, 'destroy']);
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::post('/info-policy', [InfoPolicyController::class, 'store']);
+    Route::delete('/info-policy/{id}', [InfoPolicyController::class, 'destroy']);
+    Route::post('/return-policy', [ReturnPolicyController::class, 'store']);
+    Route::delete('/return-policy/{id}', [ReturnPolicyController::class, 'destroy']);
+    // Ordini
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 });
