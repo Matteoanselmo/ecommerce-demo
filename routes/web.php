@@ -53,6 +53,10 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
         return Inertia::render('Admin/Customization');
     })->name('admin.customization');
 
+    Route::get('/user', function () {
+        return Inertia::render('Admin/User');
+    })->name('admin.user');
+
 
 
     // Route::get('/overview', function () {

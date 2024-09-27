@@ -104,8 +104,8 @@ function uploadFile() {
         fileInput.value = null;
     })
     .catch(error => {
-    loading.value = false;
-    notificationStore.notify(error.response.data.message, 'error');
+        loading.value = false;
+        notificationStore.notify(error.response.data.message, 'error');
     });
 }
 

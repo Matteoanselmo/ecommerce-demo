@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscountBannerController;
 use App\Http\Controllers\InfoPolicyController;
@@ -42,7 +43,6 @@ Route::get('/search-products', function (Request $request) {
     }
     return response()->json($products); // Restituisci i risultati in formato JSON
 });
-
 Route::get('/price-policies', [PricePolicyController::class, 'index']);
 Route::get('/discount-banner', [DiscountBannerController::class, 'index']);
 Route::get('/info-policy', [InfoPolicyController::class, 'index']);
@@ -50,6 +50,8 @@ Route::get('/return-policy', [ReturnPolicyController::class, 'index']);
 
 Route::post('/user-searches', [UserSearchController::class, 'store']);
 Route::get('/user-searches', [UserSearchController::class, 'index']);
+
+
 // Admin
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Panoramica
@@ -67,4 +69,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Ordini
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    // User
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::patch('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
 });

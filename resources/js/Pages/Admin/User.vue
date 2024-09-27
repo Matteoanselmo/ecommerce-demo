@@ -1,5 +1,5 @@
 <template>
-    <Head title="Ordini" />
+    <Head title="Clienti" />
     <v-container>
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">
@@ -13,7 +13,7 @@
                         v-model="field.value"
                         :label="field.label"
                         clearable
-                        @input="debouncedFetchOrders"
+                        @input="debouncedFetchUsers"
                         class="px-2"
                     ></v-text-field>
                 </div>
@@ -21,14 +21,14 @@
             <v-col cols="12">
                 <TableServer
                     :totalItems="totalItems"
-                    :items="orders"
+                    :items="users"
                     :itemsPerPage="itemsPerPage"
                     :headers="headers"
                     :loading="loading"
-                    :type="'order'"
+                    :type="'user'"
                     :page="page"
                     :search-fields="searchFields"
-                    @updateItems="fetchOrders"
+                    @updateItems="fetchUsers"
                 />
             </v-col>
         </v-row>
@@ -42,50 +42,50 @@ import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { debounce } from 'lodash';
 
-// Stato per gli ordini e altri parametri
-const orders = ref([]);
+// Stato per i clienti e altri parametri
+const users = ref([]);
 const totalItems = ref(0);
 const itemsPerPage = ref(10);
 const page = ref(1);
 const loading = ref(true);
 
-// Array di campi di ricerca (nome, numero ordine, numero spedizione)
+// Array di campi di ricerca (nome ed email)
 const searchFields = ref([
     { key: 'name', value: '', label: 'Nome', icon: 'mdi-magnify' },
-    { key: 'orderNumber', value: '', label: 'Ordine', icon: 'mdi-magnify' },
-    { key: 'shippingNumber', value: '', label: 'Spedizione', icon: 'mdi-magnify' },
+    { key: 'email', value: '', label: 'Email', icon: 'mdi-magnify' },
 ]);
 
+// Definisci le intestazioni della tabella
 const headers = ref([
     {
-        title: 'Utente',
+        title: 'Nome',
         align: 'start',
         sortable: false,
-        key: 'user.name',
+        type: 'text',
+        key: 'name',
     },
     {
-        title: 'Numero Ordine',
+        title: 'Email',
         align: 'start',
         sortable: false,
-        key: 'order_number',
+        type: 'email',
+        key: 'email',
     },
     {
-        title: 'Data',
+        title: 'Ruolo',
         align: 'start',
         sortable: false,
-        key: 'order_date',
+        type: 'select',
+        items: ['admin', 'user'],
+        key: 'role',
     },
     {
-        title: 'Stato',
+        title: 'Password',
         align: 'start',
+        hidden: true,
         sortable: false,
-        key: 'status',
-    },
-    {
-        title: 'Numero spedizione',
-        align: 'start',
-        sortable: false,
-        key: 'shipping_number',
+        type: 'password',
+        key: 'password',
     },
     {
         title: "Azioni",
@@ -94,8 +94,8 @@ const headers = ref([
     },
 ]);
 
-// Funzione per recuperare i dati degli ordini
-function fetchOrders(options = {}) {
+// Funzione per recuperare i dati degli utenti
+function fetchUsers(options = {}) {
     loading.value = true;
 
     const currentPage = options.page || page.value;
@@ -110,22 +110,23 @@ function fetchOrders(options = {}) {
     }, {});
 
     axios
-        .get(`/api/orders`, {
+        .get(`/api/users`, {
             params: {
                 page: currentPage,
                 per_page: currentItemsPerPage,
                 sort_by: sortBy,
                 sort_direction: sortDirection,
                 search_name: searchQuery.name,
-                search_shipping_number: searchQuery.shippingNumber,
-                search_order_number: searchQuery.orderNumber,
+                search_email: searchQuery.email,
+                role_not: 'admin' // Filtra utenti con ruolo diverso da admin
             },
         })
         .then((res) => {
-            orders.value = res.data.data;
+            users.value = res.data.data;
             totalItems.value = res.data.total;
             page.value = res.data.current_page;
             loading.value = false;
+            console.log(users)
         })
         .catch((e) => {
             console.log(e);
@@ -134,5 +135,5 @@ function fetchOrders(options = {}) {
 }
 
 // Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
-const debouncedFetchOrders = debounce(fetchOrders, 500);
+const debouncedFetchUsers = debounce(fetchUsers, 500);
 </script>
