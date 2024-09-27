@@ -4,13 +4,13 @@ export const useNotificationStore = defineStore('notification', {
     state: () => ({
         show: false,
         message: '',
-        color: 'success',
+        color: '',
         timeout: 3000
     }),
     actions: {
-        notify(text, notificationColor = 'success') {
+        notify(text, color) {
             this.message = text;
-            this.color = notificationColor;
+            this.color = color;
             this.show = true;
             // Nasconde automaticamente la notifica dopo 3 secondi
         }

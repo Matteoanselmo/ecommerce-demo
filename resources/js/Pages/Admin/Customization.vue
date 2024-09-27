@@ -36,7 +36,6 @@
         </v-card-text>
     </v-col>
     </v-row>
-    <notification></notification>
 </v-container>
 </template>
 

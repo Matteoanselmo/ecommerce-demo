@@ -97,7 +97,10 @@ class UserController extends Controller {
         $user->save();
 
         // Restituisci una risposta con i dati aggiornati
-        return response()->json($user, 200);
+        return response()->json([
+            "message" => "Utente Modificato con successo",
+            "color" => 'success'
+        ]);
     }
 
 
@@ -108,6 +111,9 @@ class UserController extends Controller {
         $user = User::findOrFail($id);
         $user->delete();
 
-        return response()->json(null, 204);
+        return response()->json([
+            "message" => "Utente Eliminato con successo",
+            "color" => 'success'
+        ]);
     }
 }

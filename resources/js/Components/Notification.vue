@@ -1,14 +1,14 @@
 <template>
     <v-snackbar
-    v-model="notification.show"
-    :color="notification.color"
-    location="bottom"
-    :timeout="notification.timeout"
-    elevation="2"
+        v-model="notification.show"
+        :color="notification.color"
+        location="bottom"
+        :timeout="notification.timeout"
+        elevation="2"
     >
     {{ notification.message }}
     <template #actions>
-        <v-btn icon @click="show = false">
+        <v-btn icon @click="notification.show = false">
         <v-icon>mdi-close</v-icon>
         </v-btn>
     </template>

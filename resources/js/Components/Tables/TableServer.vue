@@ -11,13 +11,13 @@
         loading-text="Caricamento in corso..."
         item-value="name"
         @update:options="handleOptionsUpdate"
-        @click:row="openModal"
+
     >
         <template #item.actions="{ item }">
-            <v-btn variant="outlined" size="small" color="warning" class="me-3">
+            <v-btn variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
                 <span class="mdi mdi-file-edit-outline"></span>
             </v-btn>
-            <v-btn variant="outlined" size="small" color="danger">
+            <v-btn variant="outlined" size="small" color="danger" @click="deleteItem(item.id)">
                 <span class="mdi mdi-delete-alert-outline"></span>
             </v-btn>
         </template>
@@ -38,7 +38,7 @@
                             :disabled="!isEditable"
                         ></v-select>
                         <v-text-field
-                        v-if="header.key !== 'actions' "
+                        v-else-if="header.key !== 'actions' "
                         variant="solo-filled"
                             v-model="selectedItem[header.key]"
                             :type="header.type"
@@ -49,8 +49,9 @@
                     </div>
                 </v-form>
             <v-card-actions>
-                <v-btn color="success" type="submit" :text="isEditable ? 'Salva' : 'Modifica'" @click="isEditable = !isEditable"></v-btn>
-                <v-btn color="primary" @click="showModal = false">Chiudi</v-btn>
+                <v-btn v-if="!isEditable" color="warning" type="submit" text="Modifica" @click="isEditable = true"></v-btn>
+                <v-btn v-if="isEditable" color="success" type="submit" text="Salva" @click="saveChanges(), isEditable = false"></v-btn>
+                <v-btn color="primary" @click="showModal = false, isEditable = false">Chiudi</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -60,7 +61,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { debounce } from 'lodash';
-
+import { useNotificationStore } from '@/stores/notification.store';
 // Riceviamo un array di campi di ricerca attraverso le props
 const props = defineProps({
     items: Array,
@@ -70,9 +71,10 @@ const props = defineProps({
     loading: Boolean,
     type: String,
     page: Number,
-    searchFields: Array // Adesso riceviamo un array di oggetti per i campi di ricerca
+    searchFields: Array, // Adesso riceviamo un array di oggetti per i campi di ricerca
 });
 
+const notificationStore = useNotificationStore();
 const search = ref('');
 const showModal = ref(false);
 const selectedItem = ref({});
@@ -82,8 +84,8 @@ const filteredHeaders = computed(() => {
     return props.headers.filter(item => item.hidden !== true);
 });
 
-function openModal(event, item) {
-    selectedItem.value = item.item;
+function openModal(item) {
+    selectedItem.value = item;
     console.log(selectedItem.value)
     showModal.value = true;
 }
@@ -100,6 +102,35 @@ function handleOptionsUpdate(options) {
         ...options,
         search: searchParams,
     });
+}
+// Funzione per salvare le modifiche (PATCH)
+function saveChanges() {
+    axios.patch(`/api/${props.type}/${selectedItem.value.id}`, selectedItem.value)
+    .then(res => {
+        console.log(res)
+        notificationStore.notify(res.data.message, res.data.color);
+        emit('updateItems');
+    }).catch((e) => {
+        notificationStore.notify(e, 'danger')
+        console.error(e)
+    });
+}
+
+// Funzione per eliminare un elemento (DELETE)
+function deleteItem(id) {
+    if(window.confirm("Sei sicuro di voler eliminare questo elemento?")){
+        axios.delete(`/api/${props.type}/${id}`)
+        .then(res => {
+            notificationStore.notify(res.data.message, res.data.color);
+            console.log(res.data)
+            emit('updateItems');
+        }).catch((e) => {
+            console.error(e)
+            notificationStore.notify(e, 'danger')
+        });
+    } else {
+        notificationStore.notify('Operazione Annullata! ', 'info')
+    }
 }
 
 // Utilizza lodash debounce per ritardare la chiamata
