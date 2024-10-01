@@ -1,5 +1,5 @@
 <template>
-    <Head title="Ordini" />
+    <Head title="Tickets" />
     <v-container>
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">
@@ -13,7 +13,7 @@
                         v-model="field.value"
                         :label="field.label"
                         clearable
-                        @input="debouncedFetchOrders"
+                        @input="debouncedFetchTickets"
                         class="px-2"
                     ></v-text-field>
                 </div>
@@ -21,14 +21,14 @@
             <v-col cols="12">
                 <TableServer
                     :totalItems="totalItems"
-                    :items="orders"
+                    :items="tickets"
                     :itemsPerPage="itemsPerPage"
                     :headers="headers"
                     :loading="loading"
-                    :type="'order'"
+                    :type="'ticket'"
                     :page="page"
                     :search-fields="searchFields"
-                    @updateItems="fetchOrders"
+                    @updateItems="fetchTickets"
                 />
             </v-col>
         </v-row>
@@ -42,50 +42,57 @@ import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { debounce } from 'lodash';
 
-// Stato per gli ordini e altri parametri
-const orders = ref([]);
+// Stato per i clienti e altri parametri
+const tickets = ref([]);
 const totalItems = ref(0);
 const itemsPerPage = ref(10);
 const page = ref(1);
 const loading = ref(true);
 
-// Array di campi di ricerca (nome, numero ordine, numero spedizione)
+// Array di campi di ricerca (nome ed email)
 const searchFields = ref([
     { key: 'name', value: '', label: 'Nome', icon: 'mdi-magnify' },
-    { key: 'orderNumber', value: '', label: 'Ordine', icon: 'mdi-magnify' },
-    { key: 'shippingNumber', value: '', label: 'Spedizione', icon: 'mdi-magnify' },
+    { key: 'email', value: '', label: 'Email', icon: 'mdi-magnify' },
+    { key: 'status', value: '', label: 'Status', icon: 'mdi-magnify' },
 ]);
 
+// Definisci le intestazioni della tabella
 const headers = ref([
     {
-        title: 'Utente',
+        title: 'Nome',
         align: 'start',
         sortable: false,
+        type: 'text',
         key: 'user_name',
     },
     {
-        title: 'Numero Ordine',
+        title: 'Email',
         align: 'start',
         sortable: false,
-        key: 'order_number',
+        type: 'email',
+        key: 'user_email',
     },
     {
-        title: 'Data',
+        title: 'Soggetto',
         align: 'start',
         sortable: false,
-        key: 'order_date',
+        type: 'text',
+        key: 'subject',
     },
     {
-        title: 'Stato',
+        title: 'Descrizione',
         align: 'start',
         sortable: false,
+        type: 'text',
+        key: 'description',
+    },
+    {
+        title: 'Status',
+        align: 'start',
+        sortable: false,
+        type: 'select',
+        items: ['Aperto', 'In Attesa', 'Chiuso'],
         key: 'status',
-    },
-    {
-        title: 'Numero spedizione',
-        align: 'start',
-        sortable: false,
-        key: 'shipping_number',
     },
     {
         title: "Azioni",
@@ -94,8 +101,8 @@ const headers = ref([
     },
 ]);
 
-// Funzione per recuperare i dati degli ordini
-function fetchOrders(options = {}) {
+// Funzione per recuperare i dati degli utenti
+function fetchTickets(options = {}) {
     loading.value = true;
 
     const currentPage = options.page || page.value;
@@ -110,19 +117,19 @@ function fetchOrders(options = {}) {
     }, {});
 
     axios
-        .get(`/api/orders`, {
+        .get(`/api/tickets`, {
             params: {
                 page: currentPage,
                 per_page: currentItemsPerPage,
                 sort_by: sortBy,
                 sort_direction: sortDirection,
                 search_name: searchQuery.name,
-                search_shipping_number: searchQuery.shippingNumber,
-                search_order_number: searchQuery.orderNumber,
+                search_email: searchQuery.email,
+                role_not: 'admin' // Filtra utenti con ruolo diverso da admin
             },
         })
         .then((res) => {
-            orders.value = res.data.data;
+            tickets.value = res.data.data;
             totalItems.value = res.data.total;
             page.value = res.data.current_page;
             loading.value = false;
@@ -135,5 +142,5 @@ function fetchOrders(options = {}) {
 }
 
 // Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
-const debouncedFetchOrders = debounce(fetchOrders, 500);
+const debouncedFetchTickets = debounce(fetchTickets, 500);
 </script>

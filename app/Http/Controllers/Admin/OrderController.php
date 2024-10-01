@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
@@ -35,12 +36,14 @@ class OrderController extends Controller {
             ->orderBy($sortField, $sortDirection) // Ordinamento basato sui parametri
             ->paginate($itemsPerPage); // Paginazione dinamica basata sul parametro 'per_page'
 
-        return response()->json($orders);
+        return response()->json([
+            'data' => OrderResource::collection($orders)->response()->getData(true)['data'],
+            'total' => $orders->total(),
+            'current_page' => $orders->currentPage(),
+            'last_page' => $orders->lastPage(),
+            'per_page' => $orders->perPage(),
+        ]);
     }
-
-
-
-
 
     public function show($id) {
         $order = Order::with('products', 'user')->findOrFail($id);

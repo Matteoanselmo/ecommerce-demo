@@ -62,6 +62,7 @@ const items = ref([
     { title: "Ordini e resi", link: "admin.orders" },
     { title: "Personalizzazione", link: "admin.customization" },
     { title: "Clienti", link: "admin.user" },
+    { title: "Ticket", link: "admin.tickets" },
 ]);
 
 const changeLanguage = (lang) => {

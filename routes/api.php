@@ -9,6 +9,7 @@ use App\Http\Controllers\InfoPolicyController;
 use App\Http\Controllers\PricePolicyController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReturnPolicyController;
+use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\UserSearchController;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -75,4 +76,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/user', [UserController::class, 'store']);
     Route::patch('/user/{id}', [UserController::class, 'update']);
     Route::delete('/user/{id}', [UserController::class, 'destroy']);
+    // Ticket di Assitenza
+    Route::get('/tickets', [SupportTicketController::class, 'index']);
+    Route::get('/ticket/{id}', [SupportTicketController::class, 'show']);
+    Route::post('/ticket', [SupportTicketController::class, 'store']);
+    Route::patch('/ticket/{id}', [SupportTicketController::class, 'updateStatus']);
+    Route::delete('/ticket/{id}', [SupportTicketController::class, 'destroy']);
 });
