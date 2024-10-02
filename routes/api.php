@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscountBannerController;
@@ -82,4 +83,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/ticket', [SupportTicketController::class, 'store']);
     Route::patch('/ticket/{id}', [SupportTicketController::class, 'updateStatus']);
     Route::delete('/ticket/{id}', [SupportTicketController::class, 'destroy']);
+
+    // Prodotti
+    Route::get('/products', [AdminProductController::class, 'index']);
+    Route::get('/product/{id}', [AdminProductController::class, 'show']);
+    Route::post('/product', [AdminProductController::class, 'store']);
+    Route::patch('/product/{id}', [AdminProductController::class, 'update']);
+    Route::delete('/product/{id}', [AdminProductController::class, 'destroy']);
 });

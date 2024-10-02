@@ -59,10 +59,11 @@ const toggleDrawer = () => {
 const items = ref([
     { title: "Home", link: "home" },
     { title: "Panoramica", link: "admin.dashboard" },
-    { title: "Ordini e resi", link: "admin.orders" },
     { title: "Personalizzazione", link: "admin.customization" },
+    { title: "Ordini e resi", link: "admin.orders" },
     { title: "Clienti", link: "admin.user" },
     { title: "Ticket", link: "admin.tickets" },
+    { title: "Prodotti", link: "admin.products" },
 ]);
 
 const changeLanguage = (lang) => {

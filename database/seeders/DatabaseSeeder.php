@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder {
             ProductReviewSeeder::class,
             DiscountSeeder::class,
             DiscountableSeeder::class,
-            ProductImageSeeder::class
+            ProductImageSeeder::class,
+            SupportTicketSeeder::class
         ]);
     }
 }

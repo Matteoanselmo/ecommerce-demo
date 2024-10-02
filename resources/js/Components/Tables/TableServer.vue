@@ -13,13 +13,21 @@
         @update:options="handleOptionsUpdate"
 
     >
-        <template #item.actions="{ item }">
-            <v-btn variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
+        <template #item.actions="{ item }" >
+            <v-btn v-if="props.crud.includes('store')" variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
                 <span class="mdi mdi-file-edit-outline"></span>
             </v-btn>
-            <v-btn variant="outlined" size="small" color="danger" @click="deleteItem(item.id)">
+            <v-btn v-if="props.crud.includes('delete')" variant="outlined" size="small" color="danger" @click="deleteItem(item.id)">
                 <span class="mdi mdi-delete-alert-outline"></span>
             </v-btn>
+            <Link
+                as="button"
+                :href="route('admin.product.crud', { product: item.id })"
+                v-if="props.crud.includes('show')"
+                class="v-btn v-btn--outlined v-btn--small v-btn--text text-primary"
+            >
+                <span class="mdi mdi-eye-outline"></span>
+            </Link>
         </template>
     </v-data-table-server>
 
@@ -62,7 +70,7 @@
 import { ref, computed, watch } from 'vue';
 import { debounce } from 'lodash';
 import { useNotificationStore } from '@/stores/notification.store';
-// Riceviamo un array di campi di ricerca attraverso le props
+import { Link } from '@inertiajs/vue3';
 const props = defineProps({
     items: Array,
     headers: Array,
@@ -71,7 +79,11 @@ const props = defineProps({
     loading: Boolean,
     type: String,
     page: Number,
-    searchFields: Array, // Adesso riceviamo un array di oggetti per i campi di ricerca
+    searchFields: Array,
+    crud: {
+        type: Array,
+        default: ['store', 'update', 'delete']
+    }
 });
 
 const notificationStore = useNotificationStore();

@@ -1,5 +1,5 @@
 <template>
-    <Head title="Ordini" />
+    <Head title="Prodotti" />
     <v-container>
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">
@@ -13,7 +13,7 @@
                         v-model="field.value"
                         :label="field.label"
                         clearable
-                        @input="debouncedFetchOrders"
+                        @input="debouncedfetchProducts"
                         class="px-2"
                     ></v-text-field>
                 </div>
@@ -21,14 +21,15 @@
             <v-col cols="12">
                 <TableServer
                     :totalItems="totalItems"
-                    :items="orders"
+                    :items="products"
                     :itemsPerPage="itemsPerPage"
                     :headers="headers"
                     :loading="loading"
-                    :type="'order'"
+                    :type="'product'"
                     :page="page"
+                    :crud="['show']"
                     :search-fields="searchFields"
-                    @updateItems="fetchOrders"
+                    @updateItems="fetchProducts"
                 />
             </v-col>
         </v-row>
@@ -42,56 +43,51 @@ import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { debounce } from 'lodash';
 
-// Stato per gli ordini e altri parametri
-const orders = ref([]);
+// Stato per i clienti e altri parametri
+const products = ref([]);
 const totalItems = ref(0);
 const itemsPerPage = ref(10);
 const page = ref(1);
 const loading = ref(true);
 
-// Array di campi di ricerca (nome, numero ordine, numero spedizione)
+// Array di campi di ricerca (nome ed email)
 const searchFields = ref([
     { key: 'name', value: '', label: 'Nome', icon: 'mdi-magnify' },
-    { key: 'orderNumber', value: '', label: 'Ordine', icon: 'mdi-magnify' },
-    { key: 'shippingNumber', value: '', label: 'Spedizione', icon: 'mdi-magnify' },
+    { key: 'min_price', value: '', label: 'Prezzo minimo', icon: 'mdi-magnify' },
+    { key: 'max_price', value: '', label: 'Prezzo massimo', icon: 'mdi-magnify' },
+    { key: 'category_id', value: '', label: 'ID categoria', icon: 'mdi-magnify' },
 ]);
 
+// Definisci le intestazioni della tabella
 const headers = ref([
     {
-        title: 'Utente',
+        title: 'Nome',
         align: 'start',
         sortable: false,
-        key: 'user_name',
-        type: 'text'
+        type: 'text',
+        key: 'name',
     },
     {
-        title: 'Numero Ordine',
+        title: 'Descrizione',
+        hidden: true,
         align: 'start',
         sortable: false,
-        key: 'order_number',
-        type: 'text'
+        type: 'text',
+        key: 'description',
     },
     {
-        title: 'Data',
+        title: 'Prezzo',
         align: 'start',
         sortable: false,
-        key: 'order_date',
-        type: 'date'
+        type: 'number',
+        key: 'price',
     },
     {
-        title: 'Stato',
+        title: 'Stock',
         align: 'start',
         sortable: false,
-        key: 'status',
-        type: 'select',
-        items: ['confirmed', 'returned'],
-    },
-    {
-        title: 'Numero spedizione',
-        align: 'start',
-        sortable: false,
-        key: 'shipping_number',
-        type: 'text'
+        type: 'number',
+        key: 'stock_quantity',
     },
     {
         title: "Azioni",
@@ -100,8 +96,8 @@ const headers = ref([
     },
 ]);
 
-// Funzione per recuperare i dati degli ordini
-function fetchOrders(options = {}) {
+// Funzione per recuperare i dati degli utenti
+function fetchProducts(options = {}) {
     loading.value = true;
 
     const currentPage = options.page || page.value;
@@ -116,19 +112,20 @@ function fetchOrders(options = {}) {
     }, {});
 
     axios
-        .get(`/api/orders`, {
+        .get(`/api/products`, {
             params: {
                 page: currentPage,
                 per_page: currentItemsPerPage,
                 sort_by: sortBy,
                 sort_direction: sortDirection,
                 search_name: searchQuery.name,
-                search_shipping_number: searchQuery.shippingNumber,
-                search_order_number: searchQuery.orderNumber,
+                min_price: searchQuery.min_price,
+                max_price: searchQuery.max_price,
+                category_id: searchQuery.category_id,
             },
         })
         .then((res) => {
-            orders.value = res.data.data;
+            products.value = res.data.data;
             totalItems.value = res.data.total;
             page.value = res.data.current_page;
             loading.value = false;
@@ -141,5 +138,5 @@ function fetchOrders(options = {}) {
 }
 
 // Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
-const debouncedFetchOrders = debounce(fetchOrders, 500);
+const debouncedfetchProducts = debounce(fetchProducts, 500);
 </script>

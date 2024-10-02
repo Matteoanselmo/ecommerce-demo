@@ -61,6 +61,14 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
         return Inertia::render('Admin/SupportTickets');
     })->name('admin.tickets');
 
+    Route::get('/products', function () {
+        return Inertia::render('Admin/Products');
+    })->name('admin.products');
+
+    Route::get('/products/{product}', function ($product) {
+        return Inertia::render('Admin/ProductCrud', ['productId' => $product]);
+    })->name('admin.product.crud');
+
 
 
     // Route::get('/overview', function () {
