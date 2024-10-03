@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Product;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -65,8 +66,18 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
         return Inertia::render('Admin/Products');
     })->name('admin.products');
 
-    Route::get('/products/{product}', function ($product) {
-        return Inertia::render('Admin/ProductCrud', ['productId' => $product]);
+    Route::get('/products/{product}', function ($productId) {
+        $product = Product::with([
+            'subCategory',        // Carica la sub-categoria associata
+            'category',           // Carica la categoria associata
+            'categoryDetail',     // Carica i dettagli della categoria
+            'orders',             // Carica gli ordini associati
+            'reviews',            // Carica le recensioni del prodotto
+            'discounts',          // Carica eventuali sconti associati
+            'images',             // Carica le immagini del prodotto
+        ])->findOrFail($productId);
+        $product->rating_star = $product->reviewRatings();
+        return Inertia::render('Admin/ProductCrud', ['product' => $product]);
     })->name('admin.product.crud');
 
 

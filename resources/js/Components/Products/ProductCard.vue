@@ -6,10 +6,10 @@
     >
         <template v-if="productsStore.loading">
             <v-skeleton-loader
-            class="mx-auto my-4"
-            max-width="344"
-            type="card"
-            height="340px"
+                class="mx-auto my-4"
+                max-width="344"
+                type="card"
+                height="340px"
             />
         </template>
         <template v-else>

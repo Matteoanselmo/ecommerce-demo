@@ -25,8 +25,6 @@ const goToDashboard = () => {
         window.location.href = route('home');
     }
 };
-
-console.log(user)
 </script>
 
 <template>
