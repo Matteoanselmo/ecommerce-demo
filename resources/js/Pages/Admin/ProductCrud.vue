@@ -77,7 +77,7 @@
                                         elevation="18"
                                         cover
                                     >
-                                        <v-btn size="small" color="danger" class="my-5 mx-5">
+                                        <v-btn size="small" color="danger" class="my-5 mx-5" :disabled="!isChange">
                                             <span class="mdi mdi-delete-alert-outline"></span>
                                         </v-btn>
                                     </v-img>
@@ -90,7 +90,7 @@
                             prepend-icon="mdi-camera"
                             ></v-file-input>
                             <div class="d-flex justify-end">
-                                <v-btn color="success" class="me-2">
+                                <v-btn color="success" type="submit" class="me-2" :disabled="!isChange">
                                     Salva
                                 </v-btn>
                                 <v-btn color="info">

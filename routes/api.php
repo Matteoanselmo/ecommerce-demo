@@ -61,9 +61,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/dashboard/traffic', [OverviewController::class, 'getTrafficData']);
     Route::get('/dashboard/disk-space', [OverviewController::class, 'getDiskSpace']);
     Route::get('/dashboard/top-products', [OverviewController::class, 'getTopProductsData']);
+
     // Personalizzazioni
-    Route::post('/price-policies', [PricePolicyController::class, 'store']);
-    Route::delete('/price-policies/{id}', [PricePolicyController::class, 'destroy']);
+    Route::post('/discount-banner', [DiscountBannerController::class, 'store']);
+    Route::delete('/discount-banner/{id}', [DiscountBannerController::class, 'destroy']);
     Route::post('/info-policy', [InfoPolicyController::class, 'store']);
     Route::delete('/info-policy/{id}', [InfoPolicyController::class, 'destroy']);
     Route::post('/return-policy', [ReturnPolicyController::class, 'store']);
