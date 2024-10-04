@@ -2,6 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
 import DiscountBanner from '@/Components/DiscountBanner.vue';
+import CategoryCards from '@/Components/Products/CategoryCards.vue';
 defineProps({
     canLogin: {
         type: Boolean,
@@ -25,7 +26,10 @@ defineProps({
     <Banner data-aos="fade-down"/>
     <search-bar></search-bar>
     <DiscountBanner/>
-
+    <div class="text-h2 my-5 text-center">
+        Inizia da qui!
+    </div>
+    <CategoryCards/>
 </template>
 
 <style>

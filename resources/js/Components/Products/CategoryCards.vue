@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex category-scroll" :max-width="maxWidth">
+    <div class="d-flex category-scroll justify-center" :max-width="maxWidth">
 
         <v-card v-for="(item, index) in items"
         :key="index"
