@@ -19,7 +19,7 @@ import DarkMode from './Components/DarkMode.vue';
 import UserMenu from './Components/UserMenu.vue';
 import ProductSearcBar from './Components/Products/ProductSearcBar.vue';
 import Notification from './Components/Notification.vue';
-
+import NewsLetter from './Components/NewsLetter.vue';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
@@ -59,6 +59,7 @@ createInertiaApp({
             .component('user-menu', UserMenu)
             .component('search-bar', ProductSearcBar)
             .component('notification', Notification)
+            .component('newsletter', NewsLetter)
             .use(vuetify);
 
         app.config.globalProperties.$formatPrice = formatPrice;

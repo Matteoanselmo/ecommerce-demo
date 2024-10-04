@@ -22,7 +22,7 @@ defineProps({
 
 <template>
     <Head title="Home" />
-    <Banner/>
+    <Banner data-aos="fade-down"/>
     <search-bar></search-bar>
     <DiscountBanner/>
 

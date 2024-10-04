@@ -58,9 +58,9 @@
             :accept="fileType === 'image' ? 'image/*' : 'application/pdf'"
             :show-size="true"
         />
-        <v-btn color="primary" @click="uploadFile">
-            Carica {{ fileType === 'image' ? 'Immagini' : 'PDF' }}
-        </v-btn>
+            <v-btn color="primary" type="submit" @click="uploadFile">
+                Carica {{ fileType === 'image' ? 'Immagini' : 'PDF' }}
+            </v-btn>
         </v-form>
     </v-card-text>
     </v-card>
@@ -84,7 +84,7 @@ const notificationStore = useNotificationStore();
 const loading = ref(false);
 
 // State per i file e l'input
-const fileInput = ref(null);
+const fileInput = ref([]);
 const filesArray = ref([]);
 
 // Funzione per caricare file

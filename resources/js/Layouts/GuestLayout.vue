@@ -65,7 +65,7 @@
         <v-main position-relative class="position-relative">
             <slot></slot>
         </v-main>
-
+        <newsletter></newsletter>
         <v-footer color="primary">
             <v-col class="text-center white--text">
                 <p>

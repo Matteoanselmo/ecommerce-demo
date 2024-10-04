@@ -45,10 +45,10 @@ Route::get('/search-products', function (Request $request) {
     }
     return response()->json($products); // Restituisci i risultati in formato JSON
 });
-Route::get('/price-policies', [PricePolicyController::class, 'index']);
 Route::get('/discount-banner', [DiscountBannerController::class, 'index']);
-Route::get('/info-policy', [InfoPolicyController::class, 'index']);
-Route::get('/return-policy', [ReturnPolicyController::class, 'index']);
+Route::get('/info-policies', [InfoPolicyController::class, 'index']);
+Route::get('/return-policies', [ReturnPolicyController::class, 'index']);
+Route::get('/price-policies', [PricePolicyController::class, 'index']);
 
 Route::post('/user-searches', [UserSearchController::class, 'store']);
 Route::get('/user-searches', [UserSearchController::class, 'index']);
@@ -65,10 +65,15 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Personalizzazioni
     Route::post('/discount-banner', [DiscountBannerController::class, 'store']);
     Route::delete('/discount-banner/{id}', [DiscountBannerController::class, 'destroy']);
-    Route::post('/info-policy', [InfoPolicyController::class, 'store']);
-    Route::delete('/info-policy/{id}', [InfoPolicyController::class, 'destroy']);
-    Route::post('/return-policy', [ReturnPolicyController::class, 'store']);
-    Route::delete('/return-policy/{id}', [ReturnPolicyController::class, 'destroy']);
+
+    Route::post('/info-policies', [InfoPolicyController::class, 'store']);
+    Route::delete('/info-policies/{id}', [InfoPolicyController::class, 'destroy']);
+
+    Route::post('/return-policies', [ReturnPolicyController::class, 'store']);
+    Route::delete('/return-policies/{id}', [ReturnPolicyController::class, 'destroy']);
+
+    Route::post('/price-policies', [PricePolicyController::class, 'store']);
+    Route::delete('/price-policies/{id}', [PricePolicyController::class, 'destroy']);
     // Ordini
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

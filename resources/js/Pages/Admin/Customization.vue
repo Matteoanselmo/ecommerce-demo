@@ -20,12 +20,12 @@
 
             <!-- Tab Info -->
             <v-tabs-window-item value="info">
-            <FileUploader endpoint="/api/info-policy" fileType="pdf" />
+            <FileUploader endpoint="/api/info-policies" fileType="pdf" />
             </v-tabs-window-item>
 
             <!-- Tab Resi -->
             <v-tabs-window-item value="returns">
-            <FileUploader endpoint="/api/return-policy" fileType="pdf" />
+            <FileUploader endpoint="/api/return-policies" fileType="pdf" />
             </v-tabs-window-item>
 
             <!-- Tab Prezzi -->

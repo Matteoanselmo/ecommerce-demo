@@ -26,7 +26,7 @@ class ReturnPolicyController extends Controller {
             $filePath = $request->file('file')->storeAs('return_policies', $originalName, 'public');
 
             // Crea una nuova policy nel database
-            $policy = ReturnPolicy::create([
+            ReturnPolicy::create([
                 'title' => $originalName,
                 'file_path' => $filePath,
             ]);
