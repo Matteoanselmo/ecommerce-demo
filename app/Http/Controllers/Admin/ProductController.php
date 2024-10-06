@@ -13,9 +13,9 @@ class ProductController extends Controller {
         $searchName = $request->input('search_name');
         $minPrice = $request->input('min_price');
         $maxPrice = $request->input('max_price');
-        $categoryId = $request->input('category_id');
+        $searchCategory = $request->input('search_category');
 
-        $query = Product::query();
+        $query = Product::with('category'); // Carica la relazione category
 
         // Filtro per nome
         if ($searchName) {
@@ -31,10 +31,13 @@ class ProductController extends Controller {
             $query->where('price', '<=', $maxPrice);
         }
 
-        // Filtro per categoria
-        if ($categoryId) {
-            $query->where('category_id', $categoryId);
+        // Filtro per nome della categoria
+        if ($searchCategory) {
+            $query->whereHas('category', function ($query) use ($searchCategory) {
+                $query->where('name', 'like', '%' . $searchCategory . '%');
+            });
         }
+
 
         // Paginazione
         $products = $query->paginate($perPage, ['*'], 'page', $page);

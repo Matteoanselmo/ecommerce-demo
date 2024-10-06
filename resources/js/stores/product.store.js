@@ -18,7 +18,6 @@ export const useProductStore = defineStore({
         per_page: 10,
         page: 1,
         loading: false,
-        // Aggiunte per ProductSearchBar
         productsToSearch: [], // Prodotti per la barra di ricerca
         selectedProductId: null, // ID prodotto selezionato
     }),

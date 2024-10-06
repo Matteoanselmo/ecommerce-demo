@@ -2,7 +2,7 @@
     <Head title="Prodotti" />
     <v-container>
         <v-row>
-            <v-col cols="6" class="pb-0 mt-5">
+            <v-col cols="10" class="pb-0 mt-5">
                 <div class="d-flex justify-between">
                     <!-- Cicliamo su searchFields per generare i campi di input -->
                     <v-text-field
@@ -55,7 +55,7 @@ const searchFields = ref([
     { key: 'name', value: '', label: 'Nome', icon: 'mdi-magnify' },
     { key: 'min_price', value: '', label: 'Prezzo minimo', icon: 'mdi-magnify' },
     { key: 'max_price', value: '', label: 'Prezzo massimo', icon: 'mdi-magnify' },
-    { key: 'category_id', value: '', label: 'ID categoria', icon: 'mdi-magnify' },
+    { key: 'search_category', value: '', label: 'Categoria', icon: 'mdi-magnify' },
 ]);
 
 // Definisci le intestazioni della tabella
@@ -76,11 +76,11 @@ const headers = ref([
         key: 'description',
     },
     {
-        title: 'Prezzo',
+        title: 'Categoria',
         align: 'start',
         sortable: false,
-        type: 'number',
-        key: 'price',
+        type: 'text',
+        key: 'category.name',
     },
     {
         title: 'Stock',
@@ -88,6 +88,13 @@ const headers = ref([
         sortable: false,
         type: 'number',
         key: 'stock_quantity',
+    },
+    {
+        title: 'Prezzo',
+        align: 'start',
+        sortable: false,
+        type: 'number',
+        key: 'price',
     },
     {
         title: "Azioni",
@@ -121,7 +128,7 @@ function fetchProducts(options = {}) {
                 search_name: searchQuery.name,
                 min_price: searchQuery.min_price,
                 max_price: searchQuery.max_price,
-                category_id: searchQuery.category_id,
+                search_category: searchQuery.search_category,
             },
         })
         .then((res) => {

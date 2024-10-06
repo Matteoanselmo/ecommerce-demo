@@ -10,6 +10,7 @@ use App\Http\Controllers\InfoPolicyController;
 use App\Http\Controllers\PricePolicyController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReturnPolicyController;
+use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\UserSearchController;
 use App\Models\Product;
@@ -33,6 +34,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //Guest
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/sub-categories', [SubCategoryController::class, 'index']);
 Route::get('/get-products', [ProductController::class, 'getProductsByCategory']);
 
 Route::post('/search', [UserSearchController::class, 'search']);
