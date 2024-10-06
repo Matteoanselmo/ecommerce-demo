@@ -15,7 +15,7 @@
         </template>
         <template v-else>
             <v-container fluid>
-                <v-row>
+                <v-row class="mb-5">
                     <v-col cols="10" class="d-flex align-center justify-start">
                         <div class="text-h3">{{ props.product.name }}</div>
                         <RatingStars
@@ -23,22 +23,24 @@
                             :readOnly="true"
                         />
                     </v-col>
-                    <v-col cols="2" class="d-flex justify-end">
-                        <v-checkbox
-                            color="warning"
-                            v-model="isChange"
-                            :label="isChange ? 'Disabilita la modifica' : 'Abilita la modifica'"
-                            :messages="isChange ? 'Attenzione MODIFICA attiva!' : ''"
-                        >
-                        </v-checkbox>
+                    <v-col cols="2" class="d-flex justify-end position-fixed top-50 right-0" style="z-index: 5;">
+                        <v-card class="px-2 py-1">
+                            <v-checkbox
+                                color="warning"
+                                v-model="isChange"
+                                :label="isChange ? 'Disabilita la modifica' : 'Abilita la modifica'"
+                                :messages="isChange ? 'Attenzione MODIFICA attiva!' : ''"
+                            >
+                            </v-checkbox>
+                        </v-card>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col cols="8">
                         <v-row>
                             <v-col cols="12">
-                                <v-card class="px-2 py-2" :title="'Prodotto: '+ props.product.name" >
-                                    <v-form :disabled="!isChange" :loading="loading">
+                                <v-form :disabled="!isChange" :loading="loading">
+                                    <v-card class="px-2 py-2" :title="'Prodotto: '+ props.product.name" >
                                         <v-text-field label="titolo"  v-model="props.product.name" variant="solo-filled"></v-text-field>
                                         <v-textarea label="descrizione"  v-model="props.product.description" variant="solo-filled"></v-textarea>
                                         <v-select
@@ -53,6 +55,15 @@
                                             controlVariant="default"
                                             v-model="props.product.stock_quantity"
                                             label="stock"
+                                            :hideInput="false"
+                                            :inset="false"
+                                            variant="solo-filled"
+                                        />
+                                        <VNumberInput
+                                            :reverse="false"
+                                            controlVariant="default"
+                                            v-model="props.product.price"
+                                            label="prezzo"
                                             :hideInput="false"
                                             :inset="false"
                                             variant="solo-filled"
@@ -92,16 +103,16 @@
                                         variant="solo-filled"
                                         prepend-icon="mdi-camera"
                                         ></v-file-input>
-                                        <div class="d-flex justify-end">
+                                        <v-card-actions class="justify-end">
                                             <v-btn color="success" type="submit" class="me-2" :disabled="!isChange">
                                                 Salva
                                             </v-btn>
                                             <v-btn color="info">
                                                 Annulla
                                             </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-card>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-form>
                             </v-col>
                         </v-row>
                     </v-col>
@@ -200,7 +211,7 @@ function fetchSubCategories(){
 
 fetchCategories();
 fetchSubCategories();
-console.log(selectedCategory.value)
+console.log(props.product)
 
 watch(() => props.product.category.name, (newValue) => {
     selectedCategory.value = newValue;
