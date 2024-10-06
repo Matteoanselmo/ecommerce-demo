@@ -117,13 +117,13 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { Link } from "@inertiajs/vue3";
+import { useProductStore } from "@/stores/product.store";
+import CartDropdown from "@/Components/CartDropdown.vue";
+
 const drawer = ref(false);
 const currentYear = new Date().getFullYear();
 const showButtons = ref(false);
 const languages = ["IT", "EN", "FR"];
-import { useProductStore } from "@/stores/product.store";
-import CartDropdown from "@/Components/CartDropdown.vue";
-
 const mouseX = ref(0);
 const mouseY = ref(0);
 
@@ -187,6 +187,7 @@ onUnmounted(() => {
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("mousemove", onMouseMove);
 });
+
 </script>
 
 <style scoped>

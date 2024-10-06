@@ -156,6 +156,36 @@
                                     </v-card>
                                 </v-form>
                             </v-col>
+                            <v-col v-if="props.product.discounts.length">
+                                <v-form>
+                                    <v-card class="px-2"  title="Sconto Prodotto"  v-for="(discount, i) in props.product.discounts" :key="i">
+                                        <v-select
+                                            v-model="discount.discount_type"
+                                            label="Tipo di Sconto"
+                                            :items="['percentage', 'fixed']"
+                                            :disabled="!isChange"
+                                        ></v-select>
+                                        <VNumberInput
+                                            :reverse="false"
+                                            controlVariant="default"
+                                            :model-value="discount.discount_value"
+                                            label="Valore Sconto"
+                                            :hideInput="false"
+                                            :inset="false"
+                                            variant="solo-filled"
+                                            :disabled="!isChange"
+                                        />
+                                        <v-card-actions class="justify-end">
+                                            <v-btn color="success">
+                                                <span class="mdi mdi-check"></span>
+                                            </v-btn>
+                                            <v-btn color="info">
+                                                <span class="mdi mdi-close"></span>
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-form>
+                            </v-col>
                         </v-row>
                     </v-col>
                 </v-row>

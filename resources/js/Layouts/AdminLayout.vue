@@ -43,18 +43,21 @@
             <slot></slot>
         </v-main>
         <notification></notification>
+        <SessionTimeout/>
     </v-app>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { Link } from "@inertiajs/vue3";
+import SessionTimeout from "@/Components/SessionTimeout.vue";
 const drawer = ref(false);
 const showButtons = ref(false);
 
 const toggleDrawer = () => {
     drawer.value = !drawer.value;
 };
+
 
 const items = ref([
     { title: "Home", link: "home" },
@@ -88,6 +91,7 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener("scroll", onScroll);
 });
+
 </script>
 
 <style scoped>
