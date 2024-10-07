@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
+use App\Models\Discount;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -32,5 +33,32 @@ class ProductController extends Controller {
         return Inertia::render('ProductDetail', [
             'product' => new ProductResource($product),
         ]);
+    }
+
+    public function getDiscountedProducts() {
+        // Recupera tutti gli sconti attivi
+        $discounts = Discount::where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->get();
+
+        // Creiamo una struttura di dati per raggruppare i prodotti per sconto
+        $groupedProducts = [];
+
+        // Cicla su ciascuno sconto e raggruppa i prodotti associati
+        foreach ($discounts as $discount) {
+            // Recupera i prodotti associati allo sconto usando la relazione polimorfica
+            $products = $discount->morphedByMany(Product::class, 'discountable')->get();
+
+            // Se ci sono prodotti associati allo sconto, li aggiungiamo al gruppo
+            if ($products->isNotEmpty()) {
+                $groupedProducts[] = [
+                    'discount_name' => $discount->name,
+                    'products' => ProductResource::collection($products),
+                ];
+            }
+        }
+
+        // Ritorna i prodotti raggruppati per sconto
+        return response()->json($groupedProducts);
     }
 }

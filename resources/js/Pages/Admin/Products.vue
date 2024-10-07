@@ -1,6 +1,6 @@
 <template>
     <Head title="Prodotti" />
-    <v-container>
+    <v-container fluid>
         <v-row>
             <v-col cols="10" class="pb-0 mt-5">
                 <div class="d-flex justify-between">

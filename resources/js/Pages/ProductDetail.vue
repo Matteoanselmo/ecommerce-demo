@@ -4,7 +4,7 @@
     <v-container class="product-detail-container" >
     <v-row>
         <v-col cols="12" md="6">
-            <v-carousel show-arrows="hover" >
+            <v-carousel show-arrows="hover" hide-delimiters>
                 <v-carousel-item
                     rounded="lg"
                     v-for="(image, i) in product.data.images"

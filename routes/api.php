@@ -37,6 +37,8 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/sub-categories', [SubCategoryController::class, 'index']);
 Route::get('/get-products', [ProductController::class, 'getProductsByCategory']);
 
+Route::get('/promo-products', [ProductController::class, 'getDiscountedProducts']);
+
 Route::post('/search', [UserSearchController::class, 'search']);
 
 Route::get('/search-products', function (Request $request) {
@@ -47,6 +49,8 @@ Route::get('/search-products', function (Request $request) {
     }
     return response()->json($products); // Restituisci i risultati in formato JSON
 });
+
+
 Route::get('/discount-banner', [DiscountBannerController::class, 'index']);
 Route::get('/info-policies', [InfoPolicyController::class, 'index']);
 Route::get('/return-policies', [ReturnPolicyController::class, 'index']);

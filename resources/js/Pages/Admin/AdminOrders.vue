@@ -1,6 +1,6 @@
 <template>
     <Head title="Ordini" />
-    <v-container>
+    <v-container fluid>
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">
                 <div class="d-flex justify-between">

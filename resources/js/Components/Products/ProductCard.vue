@@ -25,9 +25,12 @@
                 :src="product.cover_image_url"
                 alt="Product Image"
                 height="400px"
-                class="rounded-lg p-2"
+                class="rounded-lg p-2 position-relative"
                 cover
             >
+                <div class="promo-label" v-if="product.original_price > product.price">
+                    promo
+                </div>
                 <div class="overlay d-flex align-center justify-center h-100">
                 <v-btn
                     class="ma-0 hover-button"
@@ -49,8 +52,15 @@
 
             <v-card-actions class="justify-between" color="primary">
                 <v-spacer></v-spacer>
-                <span class="text-h6 font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span>
-            </v-card-actions>
+                <!-- <span class="text-h6 font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span> -->
+                <p class="text-h6 " v-if="product.original_price > product.price">
+                    <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.price) }} - </span>
+                    <span class="text-decoration-line-through text-black">{{ $formatPrice(product.original_price) }}</span>
+                </p>
+                <p class="text-h6 " v-else>
+                    <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span>
+                </p>
+                </v-card-actions>
             <v-card-actions class="justify-center" color="primary" width="100%">
                 <RatingStars
                     :ratings="product.rating_star"
@@ -127,4 +137,6 @@ function goToProductDetail() {
 .v-card-actions {
     padding-bottom: 16px;
 }
+
+
 </style>

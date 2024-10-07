@@ -13,3 +13,19 @@
 .full-height {
     height: calc(100vh - 64px) !important;
 }
+
+.promo-label {
+    position: absolute;
+    top: 10px;
+    left: -25px;
+    background-color: #CF3825; /* Colore dello sfondo */
+    color: white; /* Colore del testo */
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    transform: rotate(-45deg); /* Rotazione per creare lo spicchio */
+    width: 100px; /* Larghezza dell'etichetta */
+    text-align: center;
+    z-index: 10; /* Assicura che l'etichetta sia in primo piano */
+}

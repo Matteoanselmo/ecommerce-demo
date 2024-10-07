@@ -9,7 +9,7 @@
             <v-col cols="12">
                 <FiltersPanel/>
             </v-col>
-            <v-col aria-colspan="12" sm="6" md="4" lg="3" v-for="(product, i) in productsStore.products" :key="i">
+            <v-col cols="12" sm="6" md="4" lg="3" v-for="(product, i) in productsStore.products" :key="i">
                 <ProductCard
                     :product="product"
                 />
