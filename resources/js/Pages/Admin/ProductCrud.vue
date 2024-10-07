@@ -43,13 +43,6 @@
                                     <v-card class="px-2 py-2" :title="'Prodotto: '+ props.product.name" >
                                         <v-text-field label="titolo"  v-model="props.product.name" variant="solo-filled"></v-text-field>
                                         <v-textarea label="descrizione"  v-model="props.product.description" variant="solo-filled"></v-textarea>
-                                        <v-select
-                                            label="categoria"
-                                            :items="categories"
-                                            variant="solo-filled"
-                                            v-model="props.product.category.name"
-                                        >
-                                        </v-select>
                                         <VNumberInput
                                             :reverse="false"
                                             controlVariant="default"
@@ -157,8 +150,13 @@
                                 </v-form>
                             </v-col>
                             <v-col v-if="props.product.discounts.length">
-                                <v-form>
+                                <v-form >
                                     <v-card class="px-2"  title="Sconto Prodotto"  v-for="(discount, i) in props.product.discounts" :key="i">
+                                        <v-card-title v-if="discount.pivot.discountable_type !== 'App\\Models\\Product'">
+                                            Attenzione questo sconto è applicato a più prodotti!
+                                        </v-card-title>
+                                        <v-date-input :disabled="!isChange" v-model="discount.start_date" label="Date Inizio" variant="solo-filled"></v-date-input>
+                                        <v-date-input :disabled="!isChange" v-model="discount.end_date" label="Date Fine" variant="solo-filled"></v-date-input>
                                         <v-select
                                             v-model="discount.discount_type"
                                             label="Tipo di Sconto"
@@ -175,6 +173,7 @@
                                             variant="solo-filled"
                                             :disabled="!isChange"
                                         />
+                                        <v-text-field :disabled="!isChange" label="Codice Sconto"  v-model="discount.name" variant="solo-filled"></v-text-field>
                                         <v-card-actions class="justify-end">
                                             <v-btn color="success">
                                                 <span class="mdi mdi-check"></span>

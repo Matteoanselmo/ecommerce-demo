@@ -77,7 +77,9 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
             'images',             // Carica le immagini del prodotto
         ])->findOrFail($productId);
         $product->rating_star = $product->reviewRatings();
-        return Inertia::render('Admin/ProductCrud', ['product' => $product]);
+        return Inertia::render('Admin/ProductCrud', [
+            'product' => $product
+        ]);
     })->name('admin.product.crud');
 
 

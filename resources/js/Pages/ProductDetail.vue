@@ -1,5 +1,5 @@
 <template>
-    <Head :title="product.name" />
+    <Head :title="product.data.name" />
     <search-bar></search-bar>
     <v-container class="product-detail-container" >
     <v-row>
@@ -7,33 +7,32 @@
             <v-carousel show-arrows="hover" >
                 <v-carousel-item
                     rounded="lg"
-                    v-for="(image, i) in product.images"
+                    v-for="(image, i) in product.data.images"
                     :key="i"
                     :src="image.image_url"
                     contain
                     >
-                    <v-overlay
-                        v-model="overlays[i]"
-                        absolute
-                        color="rgba(0, 0, 0, 0.7)"
-                        @click="enlargeImage(image.image_url)"
-                    >
-                        <v-btn icon>
-                        <v-icon>mdi-magnify</v-icon>
-                        </v-btn>
-                    </v-overlay>
                 </v-carousel-item>
             </v-carousel>
         </v-col>
 
         <v-col cols="12" md="6" class="d-flex flex-column justify-start align-start">
         <div>
-            <RatingStars
-                    :ratings="product.rating_star"
+                <RatingStars
+                    :ratings="product.data.rating_star"
                 />
-            <h1 class="text-h4 font-weight-bold mb-2">{{ product.name }}</h1>
-            <p class="text-body-1 mb-4" v-html="product.description"> </p>
-            <span class="text-h6 font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span>
+            <h1 class="text-h4 font-weight-bold mb-2">{{ product.data.name }}</h1>
+            <p class="text-body-1 mb-4" v-html="product.data.description"> </p>
+            <p class="text-h6 " v-if="product.data.original_price > product.data.price">
+                <span class="text-decoration-line-through">{{ $formatPrice(product.data.original_price) }}</span>
+                <v-spacer></v-spacer>
+                <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.data.price) }}</span>
+            </p>
+            <p class="text-h6 " v-else>
+                <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.data.price) }}</span>
+            </p>
+            <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product)">
+            </v-btn>
         </div>
         </v-col>
     </v-row>
@@ -86,19 +85,12 @@ const product = computed(() => props.product);
 
 const cartStore = useCartStore();
 const tab = ref(0);
-const calculatedRating = ref(product.value.rating_star); // Use product.value because it's a computed property
 
-const overlays = ref(new Array(props.product.images.length).fill(false));
-const dialog = ref(false);
-const enlargedImage = ref('');
-
-function enlargeImage(imageUrl) {
-    enlargedImage.value = imageUrl;
-    dialog.value = true;
-}
 function handlePreview() {
     // Handle preview logic here
 }
+
+console.log(product.value.data)
 </script>
 
 <style scoped>

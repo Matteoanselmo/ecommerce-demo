@@ -22,6 +22,45 @@ class Product extends Model {
         'stock_quantity',
     ];
 
+    public function getDiscountedPrice() {
+        $price = $this->price;
+
+        // Controlla gli sconti sul prodotto
+        $productDiscount = $this->discounts()
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->first();
+
+        // Controlla gli sconti sulla categoria
+        $categoryDiscount = $this->category->discounts()
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->first();
+
+        // Se esiste uno sconto sul prodotto, applicalo
+        if ($productDiscount) {
+            $price = $this->applyDiscount($price, $productDiscount);
+        }
+        // Altrimenti, se esiste uno sconto sulla categoria, applicalo
+        elseif ($categoryDiscount) {
+            $price = $this->applyDiscount($price, $categoryDiscount);
+        }
+
+        return $price;
+    }
+
+    private function applyDiscount($price, $discount) {
+        if ($discount->discount_type === 'percentage') {
+            // Sconto percentuale
+            return $price - ($price * ($discount->discount_value / 100));
+        } elseif ($discount->discount_type === 'fixed') {
+            // Sconto fisso
+            return $price - $discount->discount_value;
+        }
+
+        return $price; // Ritorna il prezzo senza sconto se nessuno dei due tipi è valido
+    }
+
     // Relazione con SubCategory (un prodotto appartiene a una sub-categoria)
     public function subCategory(): BelongsTo {
         return $this->belongsTo(SubCategory::class);

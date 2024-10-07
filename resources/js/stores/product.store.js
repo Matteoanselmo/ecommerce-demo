@@ -61,6 +61,7 @@ export const useProductStore = defineStore({
                     this.pagination.last_page = res.data.last_page;
                     this.pagination.current_page = res.data.current_page;
                     this.loading = false;
+                    console.log(res.data)
                 })
                 .catch((err) => {
                     console.error(err);

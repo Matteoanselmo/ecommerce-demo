@@ -12,7 +12,7 @@ return new class extends Migration {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // Nome dello sconto
-            $table->decimal('discount_value', 5, 2); // Percentuale o importo fisso dello sconto
+            $table->unsignedTinyInteger('discount_value'); // Percentuale o importo fisso dello sconto (intero, max 2 cifre)
             $table->enum('discount_type', ['percentage', 'fixed']); // Tipo di sconto (percentuale o fisso)
             $table->date('start_date'); // Data di inizio dello sconto
             $table->date('end_date'); // Data di fine dello sconto

@@ -14,11 +14,24 @@
             </template>
         </v-app-bar>
 
-        <v-navigation-drawer v-model="drawer" app color="secondary" location="left" mobile-breakpoint="sm">
-            <v-list lines="one">
+        <v-navigation-drawer
+            mobile-breakpoint="sm"
+            v-model="drawer"
+            app
+            color="secondary"
+            location="left"
+            expand-on-hover
+            rail
+        >
+            <v-list
+                density="compact"
+                nav
+                lines="one"
+            >
                 <v-list-item v-for="item in items" :key="item.title" variant="plain"
                     class="text-start hoverable-list-item"
                     width="100%"
+                    :prepend-icon="item.icon"
                     >
                     <Link
                         v-if="item.link !== 'logout'"
@@ -60,13 +73,13 @@ const toggleDrawer = () => {
 
 
 const items = ref([
-    { title: "Home", link: "home" },
-    { title: "Panoramica", link: "admin.dashboard" },
-    { title: "Personalizzazione", link: "admin.customization" },
-    { title: "Ordini e resi", link: "admin.orders" },
-    { title: "Clienti", link: "admin.user" },
-    { title: "Ticket", link: "admin.tickets" },
-    { title: "Prodotti", link: "admin.products" },
+    { title: "Home", link: "home", icon: "mdi mdi-home" },
+    { title: "Panoramica", link: "admin.dashboard", icon: "mdi mdi-poll" },
+    { title: "Personalizza", link: "admin.customization", icon: "mdi mdi-pencil" },
+    { title: "Ordini", link: "admin.orders", icon: "mdi mdi-order-alphabetical-ascending" },
+    { title: "Utenti", link: "admin.user", icon: "mdi mdi-account-group" },
+    { title: "Ticket", link: "admin.tickets", icon: "mdi mdi-ticket-confirmation-outline" },
+    { title: "Prodotti", link: "admin.products", icon: "mdi mdi-archive-edit-outline" },
 ]);
 
 const changeLanguage = (lang) => {
