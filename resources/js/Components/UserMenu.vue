@@ -45,26 +45,29 @@ const goToDashboard = () => {
             </v-btn>
         </template>
 
-        <v-list>
+        <v-list rounded="xl">
             <template v-if="!user">
                 <v-list-item @click="login">
                     <v-list-item-title>Login</v-list-item-title>
                 </v-list-item>
             </template>
             <template v-else>
-                <v-list-item @click="goToDashboard">
+                <v-list-item >
+                    <v-list-item-title><span class="font-weight-bold">Buongiorno, </span> {{ user.name }} </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="goToDashboard" prepend-icon="mdi mdi-view-dashboard-outline">
                     <v-list-item-title>Dashboard</v-list-item-title>
                 </v-list-item>
-                <v-list-item>
+                <v-list-item prepend-icon="mdi mdi-cog-outline">
                     <Link
                         as="button"
                         :href="route('profile.edit')"
                         @click="user = null"
                     >
-                    Modifica
+                    Impostazioni Account
                     </Link>
                 </v-list-item>
-                <v-list-item>
+                <v-list-item prepend-icon="mdi mdi-logout">
                     <Link
                         method="POST"
                         as="button"

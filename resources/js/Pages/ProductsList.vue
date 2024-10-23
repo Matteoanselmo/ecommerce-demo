@@ -4,9 +4,6 @@
     <v-container>
         <v-row>
             <v-col cols="12">
-                <CategoryCards/>
-            </v-col>
-            <v-col cols="12">
                 <FiltersPanel/>
             </v-col>
             <v-col cols="12" sm="6" md="4" lg="3" v-for="(product, i) in productsStore.products" :key="i">

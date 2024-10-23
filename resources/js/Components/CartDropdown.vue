@@ -12,7 +12,7 @@
         </v-btn>
     </template>
 
-    <v-list>
+    <v-list rounded="xl">
         <v-list-item
         v-for="(product, i) in cartProducts"
         :key="i"

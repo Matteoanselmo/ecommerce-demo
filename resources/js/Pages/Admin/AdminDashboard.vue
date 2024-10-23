@@ -99,41 +99,41 @@ onMounted(() => {
 <v-container fluid>
     <v-row>
     <v-col cols="12" md="8">
-        <v-card>
-        <v-card-title>Vendite Totali</v-card-title>
-        <v-card-subtitle>{{ totalSales }} €</v-card-subtitle>
-        <v-card-text>
-            <line-chart :chart-data="salesData" />
-        </v-card-text>
+        <v-card rounded="xl">
+            <v-card-title>Vendite Totali</v-card-title>
+            <v-card-subtitle>{{ totalSales }} €</v-card-subtitle>
+            <v-card-text>
+                <line-chart :chart-data="salesData" />
+            </v-card-text>
         </v-card>
     </v-col>
 
     <v-col cols="12" md="4">
-        <v-card>
-        <v-card-title>Traffico sul Sito</v-card-title>
-        <v-card-subtitle>{{ totalVisitors }} visitatori</v-card-subtitle>
-        <v-card-text>
-            <line-chart :chart-data="trafficData" />
-        </v-card-text>
+        <v-card rounded="xl">
+            <v-card-title>Traffico sul Sito</v-card-title>
+            <v-card-subtitle>{{ totalVisitors }} visitatori</v-card-subtitle>
+            <v-card-text>
+                <line-chart :chart-data="trafficData" />
+            </v-card-text>
         </v-card>
     </v-col>
 
     <v-col cols="12" md="8">
-        <v-card>
-        <v-card-title>Prodotti più Venduti</v-card-title>
-        <v-card-text>
-            <bar-chart :chart-data="topProductsData" />
-        </v-card-text>
+        <v-card rounded="xl">
+            <v-card-title>Prodotti più Venduti</v-card-title>
+            <v-card-text>
+                <bar-chart :chart-data="topProductsData" />
+            </v-card-text>
         </v-card>
     </v-col>
 
     <v-col cols="12" md="4">
-        <v-card>
-        <v-card-title>Spazio Disponibile</v-card-title>
-        <v-card-text>
-            <!-- Usa un grafico per visualizzare lo spazio su disco -->
-            <doughnut-chart :chart-data="diskSpaceData" />
-        </v-card-text>
+        <v-card rounded="xl">
+            <v-card-title>Spazio Disponibile</v-card-title>
+            <v-card-text>
+                <!-- Usa un grafico per visualizzare lo spazio su disco -->
+                <doughnut-chart :chart-data="diskSpaceData" />
+            </v-card-text>
         </v-card>
     </v-col>
     </v-row>
