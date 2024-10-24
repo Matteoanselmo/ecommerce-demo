@@ -7,7 +7,7 @@ export const useProductStore = defineStore({
     state: () => ({
         products: [],
         category: null,
-        subCategory: null,
+        subCategories: [],
         ratingtar: null,
         searchString: null, // Stringa di ricerca globale
         pagination: {
@@ -61,7 +61,6 @@ export const useProductStore = defineStore({
                     this.pagination.last_page = res.data.last_page;
                     this.pagination.current_page = res.data.current_page;
                     this.loading = false;
-                    console.log(res.data)
                 })
                 .catch((err) => {
                     console.error(err);
@@ -106,6 +105,17 @@ export const useProductStore = defineStore({
 
         resetPage() {
             this.page = 1;
+        },
+        fetchSubCategories() {
+            axios.post('/api/get-subcategories', {
+                category_name: this.category.toLowerCase() // Converti il nome in lowercase
+            }).then((res) => {
+                this.subCategories = res.data; // Assegna le sotto-categorie
+                console.log(res.data);
+
+            }).catch((err) => {
+                console.error(err);
+            });
         },
     },
     persist: true,

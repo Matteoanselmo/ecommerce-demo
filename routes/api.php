@@ -40,6 +40,8 @@ Route::get('/get-products', [ProductController::class, 'getProductsByCategory'])
 Route::get('/promo-products', [ProductController::class, 'getDiscountedProducts']);
 
 Route::post('/search', [UserSearchController::class, 'search']);
+Route::post('/get-subcategories', [SubCategoryController::class, 'getSubCategoryFromCategory']);
+
 
 Route::get('/search-products', function (Request $request) {
     $searchTerm = $request->input('query'); // Recupera il termine di ricerca dalla query string

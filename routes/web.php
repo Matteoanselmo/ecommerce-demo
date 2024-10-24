@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Product;
@@ -32,6 +33,9 @@ Route::get('/carello', function () {
     return Inertia::render('CartPage');
 })->name('cart');
 
+
+Route::get('auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
 
 Route::get('/prodotti', function (Request $request) {
     $category = $request->input('category', null); // Recupera la categoria dalla query string

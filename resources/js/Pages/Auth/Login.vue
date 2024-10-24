@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useForm, Head, Link } from "@inertiajs/vue3";
+import { useForm, Head, Link, router } from "@inertiajs/vue3";
 
 const props = defineProps({
     canResetPassword: Boolean,
@@ -27,7 +27,7 @@ const showPassword = ref(false);
         <v-main>
             <Head title="Log in" />
             <v-container class="mt-10">
-                <v-card class="mx-auto" max-width="400">
+                <v-card class="mx-auto px-5 py-5" max-width="400" rounded="xl" elevation="18">
                     <v-card-title> Log in </v-card-title>
 
                     <v-card-text>
@@ -38,7 +38,7 @@ const showPassword = ref(false);
                             {{ status }}
                         </div>
 
-                        <form @submit.prevent="submit">
+                        <form @submit.prevent="submit" class="mb-3">
                             <v-text-field
                                 v-model="form.email"
                                 label="Email"
@@ -92,8 +92,11 @@ const showPassword = ref(false);
                                 </v-btn>
                             </div>
                         </form>
+                        <div class="text-h6 mb-3">Oppure</div>
+                        <a href="/auth/google" class="v-btn v-btn--elevated v-theme--myCustomTheme v-btn--density-default v-btn--size-default v-btn--variant-elevated"><span class="mdi mdi-google"></span> continua con Goole</a>
                     </v-card-text>
                 </v-card>
+
             </v-container>
         </v-main>
     </v-app>

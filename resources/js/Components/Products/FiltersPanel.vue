@@ -3,7 +3,7 @@
             v-model="drawer"
             temporary
             location="right"
-            width="300"
+            width="400"
         >
             <v-list-item
                 class="mt-3 mb-5"
@@ -31,9 +31,20 @@
                 thumb-label="always"
             ></v-range-slider>
 
-            <CategoryCards
+            <v-select
+                :items="productStore.subCategories"
+                label="Sotto-Categorie"
+                prepend-icon="mdi mdi-shape-outline"
+                class="mb-5 px-2"
+                item-value="id"
+                item-title="name"
+                dense
+                outlined
+            ></v-select>
+
+            <!-- <CategoryCards
                 class="px-10"
-            />
+            /> -->
         </v-navigation-drawer>
         <v-main >
             <div class="d-flex justify-start align-center h-100">
@@ -50,13 +61,14 @@
 
 <script setup>
 import { ref } from 'vue';
-import CategoryCards from './CategoryCards.vue';
+import { useProductStore } from '@/stores/product.store';
 
-
+const productStore = useProductStore();
 const drawer = ref(false);
 const priceRange = ref([20, 40]);
 const ratingStars = ref(0);
 
+productStore.fetchSubCategories()
 </script>
 
 <style scoped>

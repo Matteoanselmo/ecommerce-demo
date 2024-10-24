@@ -1,29 +1,19 @@
 <template>
 <v-container fluid>
-    <v-row justify="center">
-    <v-col elevation="8" cols="12">
-        <v-img
-
-            v-if="banner"
-            :src="'/storage/' + banner.image_path"
-            height="400"
-            width="100%"
-            alt="Banner Image"
-            cover
-        >
-        </v-img>
-            <v-progress-circular
-            v-else
-            indeterminate
-            color="primary"
-            ></v-progress-circular>
-    </v-col>
+    <v-row >
+        <v-col elevation="8" cols="12">
+            <v-parallax v-if="banner && banner.image_path" :src="'/storage/' + banner.image_path"></v-parallax>
+                <div v-else>
+                    <!-- Messaggio di caricamento o fallback -->
+                    <v-skeleton-loader type="image" />
+                </div>
+        </v-col>
     </v-row>
 </v-container>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 
 const banner = ref(null);
@@ -32,19 +22,18 @@ const banner = ref(null);
 function fetchBanner() {
 axios.get('/api/discount-banner')
     .then(res => {
-    if (res.data.length > 0) {
-        banner.value = res.data[0]; // Supponiamo che l'array contenga solo un elemento
-    }
+        if (res.data.length > 0) {
+            banner.value = res.data[0]; // Supponiamo che l'array contenga solo un elemento
+            console.log(banner.value.image_path)
+        }
     })
     .catch(error => {
-    console.error("Errore nel recupero del banner:", error);
+        console.error("Errore nel recupero del banner:", error);
     });
 }
 
-// Richiama il banner all'inizializzazione del componente
-onMounted(() => {
+
 fetchBanner();
-});
 </script>
 
 <style scoped>
