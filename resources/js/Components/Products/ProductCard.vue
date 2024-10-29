@@ -38,7 +38,7 @@
                     dark
                     style="border-radius: 8px;"
                     text="Maggiori informazioni"
-                    @click="goToProductDetail"
+                    @click="productsStore.navigateToProduct(props.product.id)"
                 >
                 </v-btn>
                 </div>
@@ -92,9 +92,6 @@ const cartStore = useCartStore();
 
 const productsStore = useProductStore();
 
-function goToProductDetail() {
-    router.get(route('product.detail', { product: props.product }));
-}
 </script>
 
 <style scoped>

@@ -1,9 +1,10 @@
 <template>
-    <div class="text-center">
+    <div>
         <v-rating
             v-model="calculatedRating"
             active-color="secondary"
             color="primary"
+            :size="props.size"
             half-increments
             hover
             :readonly="props.readOnly"
@@ -22,6 +23,10 @@ const props = defineProps({
     readOnly: {
         type: Boolean,
         default: false
+    },
+    size: {
+        type: Number,
+        default: 75
     }
 });
 

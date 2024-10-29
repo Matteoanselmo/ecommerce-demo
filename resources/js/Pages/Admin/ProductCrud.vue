@@ -24,12 +24,13 @@
                         />
                     </v-col>
                     <v-col cols="2" class="d-flex justify-end position-fixed top-50 right-0" style="z-index: 5;">
-                        <v-card class="px-2 py-1">
+                        <v-card class="px-2 py-1" rounded="xl">
                             <v-checkbox
+                                class="d-flex flex-column align-center justify-center px-2"
                                 color="warning"
                                 v-model="isChange"
                                 :label="isChange ? 'Disabilita la modifica' : 'Abilita la modifica'"
-                                :messages="isChange ? 'Attenzione MODIFICA attiva!' : ''"
+                                :messages="isChange ? 'Attenzione MODIFICA attiva!' : 'Premi per abilitare la modifica'"
                             >
                             </v-checkbox>
                         </v-card>
@@ -40,7 +41,7 @@
                         <v-row>
                             <v-col cols="12">
                                 <v-form :disabled="!isChange" :loading="loading">
-                                    <v-card class="px-2 py-2" :title="'Prodotto: '+ props.product.name" >
+                                    <v-card class="px-2 py-2" :title="'Prodotto: '+ props.product.name" rounded="xl">
                                         <v-text-field label="titolo"  v-model="props.product.name" variant="solo-filled"></v-text-field>
                                         <v-textarea label="descrizione"  v-model="props.product.description" variant="solo-filled"></v-textarea>
                                         <VNumberInput
@@ -85,7 +86,7 @@
                                                     cover
                                                 >
                                                     <v-btn size="small" color="danger" class="my-5 mx-5" :disabled="!isChange">
-                                                        <span class="mdi mdi-delete-alert-outline"></span>
+                                                        <span class="mdi mdi-close"></span>
                                                     </v-btn>
                                                 </v-img>
                                                 </v-col>
@@ -113,7 +114,7 @@
                         <v-row class="flex-column">
                             <v-col>
                                 <v-form>
-                                    <v-card title="Categoria" class="px-2">
+                                    <v-card title="Categoria" class="px-2" rounded="xl">
                                         <v-chip-group v-model="selectedCategory" filter :disabled="!isChange">
                                             <v-chip v-for="category in categories" :key="category" :value="category">
                                                 {{ category }}
@@ -132,7 +133,7 @@
                             </v-col>
                             <v-col>
                                 <v-form>
-                                    <v-card title="Sotto-Categoria" class="px-2">
+                                    <v-card title="Sotto-Categoria" class="px-2" rounded="xl">
                                         <v-chip-group v-model="selectedSubCategory" filter :disabled="!isChange">
                                             <v-chip v-for="subcategory in subCategories" :key="subcategory" :value="subcategory">
                                                 {{ subcategory }}
@@ -151,7 +152,7 @@
                             </v-col>
                             <v-col v-if="props.product.discounts.length">
                                 <v-form >
-                                    <v-card class="px-2"  title="Sconto Prodotto"  v-for="(discount, i) in props.product.discounts" :key="i">
+                                    <v-card class="px-2"  title="Sconto Prodotto"  v-for="(discount, i) in props.product.discounts" :key="i" rounded="xl">
                                         <v-card-title v-if="discount.pivot.discountable_type !== 'App\\Models\\Product'">
                                             Attenzione questo sconto è applicato a più prodotti!
                                         </v-card-title>
@@ -174,6 +175,24 @@
                                             :disabled="!isChange"
                                         />
                                         <v-text-field :disabled="!isChange" label="Codice Sconto"  v-model="discount.name" variant="solo-filled"></v-text-field>
+                                        <v-card-actions class="justify-end">
+                                            <v-btn color="success">
+                                                <span class="mdi mdi-check"></span>
+                                            </v-btn>
+                                            <v-btn color="info">
+                                                <span class="mdi mdi-close"></span>
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-form>
+                            </v-col>
+                            <v-col >
+                                <v-form :disabled="!isChange" :loading="loading" >
+                                    <v-card title="FAQS" class="px-2" rounded="xl">
+                                        <div v-for="(faq, i) in props.product.faqs" :key="i" class=" mb-3 py-2">
+                                            <v-text-field label="Domanda"  v-model="faq.question" variant="solo-filled"></v-text-field>
+                                            <v-text-field label="Risposta"  v-model="faq.answer" variant="solo-filled"></v-text-field>
+                                        </div>
                                         <v-card-actions class="justify-end">
                                             <v-btn color="success">
                                                 <span class="mdi mdi-check"></span>

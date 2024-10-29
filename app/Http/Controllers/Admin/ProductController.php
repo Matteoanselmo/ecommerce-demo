@@ -49,20 +49,4 @@ class ProductController extends Controller {
             'last_page' => $products->lastPage(),
         ]);
     }
-
-    public function show($id) {
-        // Trova il prodotto con le sue relazioni
-        $product = Product::with([
-            'subCategory',        // Carica la sub-categoria associata
-            'category',           // Carica la categoria associata
-            'categoryDetail',     // Carica i dettagli della categoria
-            'orders',             // Carica gli ordini associati
-            'reviews',            // Carica le recensioni del prodotto
-            'discounts',          // Carica eventuali sconti associati
-            'images',             // Carica le immagini del prodotto
-        ])->findOrFail($id);
-
-        // Restituisci il prodotto con tutte le sue relazioni in formato JSON
-        return response()->json($product);
-    }
 }

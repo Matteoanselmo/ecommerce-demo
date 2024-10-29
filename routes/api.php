@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReturnPolicyController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\UserSearchController;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -61,6 +62,10 @@ Route::get('/price-policies', [PricePolicyController::class, 'index']);
 Route::post('/user-searches', [UserSearchController::class, 'store']);
 Route::get('/user-searches', [UserSearchController::class, 'index']);
 
+// User
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/user-orders', [UserOrderController::class, 'index']);
+});
 
 // Admin
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {

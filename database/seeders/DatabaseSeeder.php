@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder {
             DiscountSeeder::class,
             DiscountableSeeder::class,
             ProductImageSeeder::class,
-            SupportTicketSeeder::class
+            SupportTicketSeeder::class,
+            FaqSeeder::class
         ]);
     }
 }

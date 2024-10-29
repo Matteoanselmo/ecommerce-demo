@@ -18,10 +18,11 @@
 
         <v-col cols="12" md="6" class="d-flex flex-column justify-start align-start">
         <div>
-                <RatingStars
-                    :ratings="product.data.rating_star"
-                />
             <h1 class="text-h4 font-weight-bold mb-2">{{ product.data.name }}</h1>
+            <RatingStars
+                :ratings="product.data.rating_star"
+                :readOnly="true"
+            />
             <p class="text-body-1 mb-4" v-html="product.data.description"> </p>
             <p class="text-h6 " v-if="product.data.original_price > product.data.price">
                 <span class="text-decoration-line-through">{{ $formatPrice(product.data.original_price) }}</span>
@@ -38,10 +39,11 @@
     </v-row>
 
     <v-divider class="my-6"></v-divider>
-    <v-card>
+    <v-card rounded="xl">
         <v-tabs
         v-model="tab"
         bg-color="primary"
+
         >
         <v-tab value="one">Recensioni</v-tab>
         <v-tab value="two">FAQ</v-tab>
@@ -50,12 +52,51 @@
 
         <v-card-text>
         <v-tabs-window v-model="tab">
+            <!-- RECENSIONI -->
             <v-tabs-window-item value="one">
-            One
+                <v-container>
+                    <v-row>
+                        <v-col cols="12" v-if="props.auth.user">
+                            <RatingStars
+                                :ratings="['0']"
+                                :size="30"
+                            />
+                            <v-textarea label="Scrivi una recensione" variant="solo-filled"></v-textarea>
+                        </v-col>
+                        <v-col v-for="(review, i) in product.data.reviews" :key="i" cols="12" >
+                            <v-card class="d-flex flex-row align-center px-2" variant="tonal" >
+                                <!-- Icona dell'avatar dell'utente -->
+                                <v-avatar color="primary" size="48" class="mr-4">
+                                    <v-icon>mdi-account</v-icon>
+                                </v-avatar>
+
+                                <!-- Dettagli della recensione -->
+                                <v-card-text>
+                                    <div class="font-weight-medium">
+                                        {{ review.user_name }}
+                                        <RatingStars
+                                            :ratings="review.rating_star"
+                                            :size="30"
+                                            :readOnly="true"
+                                        />
+                                    </div>
+
+                                    <div class="text--secondary" v-if="review.description">{{ review.description }}</div>
+                                </v-card-text>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-container>
             </v-tabs-window-item>
 
             <v-tabs-window-item value="two">
-            Two
+                <v-expansion-panels v-for="(faq, i ) in product.data.faqs" :key="i">
+                    <v-expansion-panel
+                        :title="faq.question"
+                        :text="faq.answer"
+                    >
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-tabs-window-item>
 
             <v-tabs-window-item value="three">
@@ -71,14 +112,11 @@
 import { ref, computed } from "vue";
 import { useCartStore } from "@/stores/cartStore";
 import RatingStars from "@/Components/Reviews/RatingStars.vue";
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
+
+const page = usePage();
 // Define props
-const props = defineProps({
-    product: {
-    type: Object,
-    required: true,
-    },
-});
+const props = page.props;
 
 // Access the product prop
 const product = computed(() => props.product);
@@ -89,8 +127,7 @@ const tab = ref(0);
 function handlePreview() {
     // Handle preview logic here
 }
-
-console.log(product.value.data)
+console.log(page.props)
 </script>
 
 <style scoped>

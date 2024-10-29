@@ -61,6 +61,33 @@ class Product extends Model {
         return $price; // Ritorna il prezzo senza sconto se nessuno dei due tipi è valido
     }
 
+    // Funzione per ottenere l'immagine di copertina completa (con estensione)
+    public function coverImage() {
+        $image = $this->images()->first();
+        if ($image) {
+            return "{$image->image_url}.{$image->extension}";
+        }
+        return null; // Ritorna null se non ci sono immagini
+    }
+
+    public function userReviews() {
+        return $this->reviews()
+            ->with('user:id,name') // Eager Loading per ottenere solo l'ID e il nome dell'utente
+            ->get()
+            ->map(function ($review) {
+                return [
+                    'description' => $review->description,
+                    'rating_star' => [$review->rating_star],
+                    'user_name' => $review->user ? $review->user->name : null,
+                ];
+            });
+    }
+
+    // Relazione con Faqs
+    public function faqs() {
+        return $this->hasMany(Faq::class);
+    }
+
     // Relazione con SubCategory (un prodotto appartiene a una sub-categoria)
     public function subCategory(): BelongsTo {
         return $this->belongsTo(SubCategory::class);
@@ -98,14 +125,5 @@ class Product extends Model {
 
     public function reviewRatings() {
         return $this->reviews()->pluck('rating_star');
-    }
-
-    // Funzione per ottenere l'immagine di copertina completa (con estensione)
-    public function coverImage() {
-        $image = $this->images()->first();
-        if ($image) {
-            return "{$image->image_url}.{$image->extension}";
-        }
-        return null; // Ritorna null se non ci sono immagini
     }
 }

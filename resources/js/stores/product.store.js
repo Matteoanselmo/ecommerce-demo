@@ -85,7 +85,7 @@ export const useProductStore = defineStore({
         // Naviga verso il prodotto selezionato
         navigateToProduct(productId) {
             if (productId) {
-                router.get(route('product.detail', { product: productId }));
+                router.get(route('product.detail', productId));
             }
         },
 
@@ -111,8 +111,6 @@ export const useProductStore = defineStore({
                 category_name: this.category.toLowerCase() // Converti il nome in lowercase
             }).then((res) => {
                 this.subCategories = res.data; // Assegna le sotto-categorie
-                console.log(res.data);
-
             }).catch((err) => {
                 console.error(err);
             });

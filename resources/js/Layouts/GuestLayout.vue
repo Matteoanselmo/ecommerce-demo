@@ -1,7 +1,7 @@
 <template>
     <v-app>
 
-        <v-app-bar app class=" py-1">
+        <v-app-bar app  class=" py-1">
             <template v-slot:prepend>
                 <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
             </template>
@@ -12,7 +12,7 @@
             <template v-slot:append>
             <v-container class="d-flex align-center justify-end" fluid>
                 <dark-mode></dark-mode>
-                <user-menu class="ml-3"></user-menu> <!-- Aggiunto margine sinistro per separazione -->
+                <user-menu class="ml-3"></user-menu>
                 <CartDropdown/>
             </v-container>
         </template>

@@ -42,7 +42,7 @@ Route::get('/prodotti', function (Request $request) {
     return Inertia::render('ProductsList', ['category' => $category]);
 })->name('products.list');
 
-Route::get('/prodotti/{product}', [ProductController::class, 'show'])->name('product.detail');
+Route::get('/prodotti/{id}', [ProductController::class, 'show'])->name('product.detail');
 
 // ADMIN
 Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->group(function () {
@@ -79,6 +79,7 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
             'reviews',            // Carica le recensioni del prodotto
             'discounts',          // Carica eventuali sconti associati
             'images',             // Carica le immagini del prodotto
+            'faqs'                // Carica le faqs del prodotto
         ])->findOrFail($productId);
         $product->rating_star = $product->reviewRatings();
         return Inertia::render('Admin/ProductCrud', [

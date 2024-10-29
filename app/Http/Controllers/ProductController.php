@@ -25,15 +25,17 @@ class ProductController extends Controller {
         return ProductResource::collection($products);
     }
 
-    public function show(Product $product) {
-        // Carica il prodotto con le immagini correlate
-        $product->load('images');
+    public function show($id) {
+        // Trova il prodotto con le sue relazioni
+        $product = Product::findOrFail($id);
 
         // Rendi la vista con Inertia, passando i dati del prodotto attraverso ProductResource
         return Inertia::render('ProductDetail', [
             'product' => new ProductResource($product),
         ]);
     }
+
+
 
     public function getDiscountedProducts() {
         // Recupera tutti gli sconti attivi

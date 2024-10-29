@@ -14,12 +14,30 @@
             </template>
         </v-app-bar>
 
-        <v-navigation-drawer v-model="drawer" app color="secondary">
-            <v-list density="compact">
-                <v-list-item v-for="item in items" :key="item.title" color="white">
+        <v-navigation-drawer
+            mobile-breakpoint="sm"
+            v-model="drawer"
+            app
+            color="secondary"
+            location="left"
+            expand-on-hover
+            rail
+        >
+            <v-list
+                density="compact"
+                nav
+                lines="one"
+            >
+                <v-list-item
+                    v-for="item in items" :key="item.title"
+                    variant="plain"
+                    class="text-start hoverable-list-item"
+                    width="100%"
+                    :prepend-icon="item.icon"
+                >
                     <Link
                         v-if="item.link !== 'logout'"
-                        class="text-decoration-none text-black"
+                        class="text-decoration-none font-weight-black "
                         :href="route(item.link)"
                         :text="item.title"
                     />
@@ -53,8 +71,8 @@ const toggleDrawer = () => {
 };
 
 const items = ref([
-    { title: "User", link: "home" },
-    // { title: "Calendario", link: "dashboard" },
+    { title: "Home", link: "home", icon: "mdi mdi-home" },
+    { title: "Profilo", link: "profile.edit", icon: "mdi mdi-face-man-profile" },
     // { title: "Menu", link: "dashboard.menu" },
     // { title: "Newsletter", link: "dashboard.newsletter" },
     // // { title: "Contatti", link: "" },

@@ -31,6 +31,8 @@ class ProductResource extends JsonResource {
             'cover_image_url' => $this->coverImage(),
             'images' => $this->images,
             'discounts' => $this->discounts,
+            'faqs' => $this->faqs,
+            'reviews' => $this->userReviews()
         ];
     }
 }
