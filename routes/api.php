@@ -13,6 +13,7 @@ use App\Http\Controllers\ReturnPolicyController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
+use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\UserSearchController;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -65,6 +66,8 @@ Route::get('/user-searches', [UserSearchController::class, 'index']);
 // User
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user-orders', [UserOrderController::class, 'index']);
+    Route::get('/user-recent-wishlist', [WishlistController::class, 'recent']);
+    Route::get('/user-wishlist', [WishlistController::class, 'index']);
 });
 
 // Admin

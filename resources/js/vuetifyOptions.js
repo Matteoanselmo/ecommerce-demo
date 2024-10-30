@@ -22,7 +22,7 @@ const vuetify = createVuetify({
                 dark: false,
                 colors: {
                     primary: '#00238C',
-                    secondary: '#CF3825', // Sostituisci con il colore che desideri
+                    secondary: '#2f4eaa', // Sostituisci con il colore che desideri
                     tertiary: '#CF3825',
                     accent: '#CF3825', // Sostituisci con il colore che desideri
                     error: '#FF5252', // Sostituisci con il colore che desideri
@@ -37,7 +37,7 @@ const vuetify = createVuetify({
                 dark: true,
                 colors: {
                     primary: '#2f4eaa', // Colore principale scurito
-                    secondary: '#B71C1C', // Colore secondario scurito
+                    secondary: '#aab8e0', // Colore secondario scurito
                     tertiary: '#B71C1C',
                     accent: '#B71C1C',
                     error: '#D32F2F',

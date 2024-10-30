@@ -57,4 +57,9 @@ class User extends Authenticatable {
     public function searches() {
         return $this->hasMany(UserSearch::class);
     }
+
+    // Relazione con Wishlist (un utente può avere molti prodotti nella lista dei desideri)
+    public function wishlists(): HasMany {
+        return $this->hasMany(Wishlist::class);
+    }
 }

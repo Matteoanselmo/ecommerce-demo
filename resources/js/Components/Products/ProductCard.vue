@@ -19,57 +19,55 @@
             elevation="0"
             color="background"
             >
-            <template v-slot:prepend>
-            </template>
-            <v-img
-                :src="product.cover_image_url"
-                alt="Product Image"
-                height="400px"
-                class="rounded-lg p-2 position-relative"
-                cover
-            >
-                <div class="promo-label" v-if="product.original_price > product.price">
-                    promo
-                </div>
-                <div class="overlay d-flex align-center justify-center h-100">
-                <v-btn
-                    class="ma-0 hover-button"
-                    color="black"
-                    dark
-                    style="border-radius: 8px;"
-                    text="Maggiori informazioni"
-                    @click="productsStore.navigateToProduct(props.product.id)"
+                <v-img
+                    :src="product.cover_image_url"
+                    alt="Product Image"
+                    :height="props.expanded ? '400px' : '200px'"
+                    class="rounded-lg p-2 position-relative"
+                    cover
                 >
-                </v-btn>
-                </div>
-            </v-img>
+                    <div class="promo-label" v-if="props.expanded && product.original_price > product.price ">
+                        promo
+                    </div>
+                    <div class="overlay d-flex align-center justify-center h-100">
+                    <v-btn
+                        class="ma-0 hover-button"
+                        color="black"
+                        dark
+                        style="border-radius: 8px;"
+                        text="Maggiori informazioni"
+                        @click="productsStore.navigateToProduct(props.product.id)"
+                    >
+                    </v-btn>
+                    </div>
+                </v-img>
 
-            <v-card-subtitle color="black" class="text-h6 mt-3 mb-1">
-                {{ product.name }}
-            </v-card-subtitle>
-            <v-card-text class="grey--text text--darken-2 mb-2" :html="product.description">
-            </v-card-text>
+                <v-card-subtitle color="black" class="text-h6 mt-3 mb-1" >
+                    {{ product.name }}
+                </v-card-subtitle>
+                <v-card-text class="grey--text text--darken-2 mb-2" :html="product.description" v-if="props.expanded">
+                </v-card-text>
 
-            <v-card-actions class="justify-between" color="primary">
-                <v-spacer></v-spacer>
-                <!-- <span class="text-h6 font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span> -->
-                <p class="text-h6 " v-if="product.original_price > product.price">
-                    <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.price) }} - </span>
-                    <span class="text-decoration-line-through text-black">{{ $formatPrice(product.original_price) }}</span>
-                </p>
-                <p class="text-h6 " v-else>
-                    <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span>
-                </p>
+                <v-card-actions class="justify-between" color="primary" v-if="props.expanded">
+                    <v-spacer></v-spacer>
+                    <!-- <span class="text-h6 font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span> -->
+                    <p class="text-h6 " v-if="product.original_price > product.price">
+                        <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.price) }} - </span>
+                        <span class="text-decoration-line-through text-black">{{ $formatPrice(product.original_price) }}</span>
+                    </p>
+                    <p class="text-h6 " v-else>
+                        <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.price) }}</span>
+                    </p>
+                    </v-card-actions>
+                <v-card-actions class="justify-center" color="primary" width="100%" v-if="props.expanded">
+                    <RatingStars
+                        :ratings="product.rating_star"
+                    />
                 </v-card-actions>
-            <v-card-actions class="justify-center" color="primary" width="100%">
-                <RatingStars
-                    :ratings="product.rating_star"
-                />
-            </v-card-actions>
-            <v-card-actions class="justify-between">
-                <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product)">
-                </v-btn>
-            </v-card-actions>
+                <v-card-actions class="justify-between" v-if="props.expanded">
+                    <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product)">
+                    </v-btn>
+                </v-card-actions>
             </v-card>
         </template>
     </v-lazy>
@@ -86,11 +84,16 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    expanded: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const cartStore = useCartStore();
 
 const productsStore = useProductStore();
+
 
 </script>
 

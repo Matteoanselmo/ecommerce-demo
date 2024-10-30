@@ -126,4 +126,9 @@ class Product extends Model {
     public function reviewRatings() {
         return $this->reviews()->pluck('rating_star');
     }
+
+    // Relazione con Wishlist (un prodotto può essere in molte liste dei desideri)
+    public function wishlists(): HasMany {
+        return $this->hasMany(Wishlist::class);
+    }
 }

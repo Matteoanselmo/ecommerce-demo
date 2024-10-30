@@ -96,9 +96,15 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
 });
 
 // USER
-Route::get('/dashboard', function () {
-    return Inertia::render('User/Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::prefix('/dashboard')->middleware(['auth', 'verified'])->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('User/Dashboard');
+    })->name('user.dashboard');
+
+    Route::get('/wish-list', function () {
+        return Inertia::render('User/WishList');
+    })->name('user.wishlist');
+});
 
 
 Route::middleware('auth')->group(function () {

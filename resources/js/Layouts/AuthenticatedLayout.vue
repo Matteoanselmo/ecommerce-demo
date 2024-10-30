@@ -18,7 +18,7 @@
             mobile-breakpoint="sm"
             v-model="drawer"
             app
-            color="secondary"
+            color="primary"
             location="left"
             expand-on-hover
             rail
