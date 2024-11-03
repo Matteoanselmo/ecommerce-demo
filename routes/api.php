@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscountBannerController;
@@ -112,4 +114,12 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/product', [AdminProductController::class, 'store']);
     Route::patch('/product/{id}', [AdminProductController::class, 'update']);
     Route::delete('/product/{id}', [AdminProductController::class, 'destroy']);
+
+    //Taglie
+    Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);
+    Route::get('/product/{productId}/sizes', [SizeController::class, 'getSizesByProduct']);
+    Route::post('/product/{productId}/sizes', [SizeController::class, 'updateProductSizes']);
+
+    //Categorie
+    Route::post('/product/{productId}/category', [AdminCategoryController::class, 'updateProductCategory']);
 });

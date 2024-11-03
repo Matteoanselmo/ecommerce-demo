@@ -29,4 +29,8 @@ class Category extends Model {
     public function discounts(): MorphToMany {
         return $this->morphToMany(Discount::class, 'discountable');
     }
+
+    public function sizes() {
+        return $this->hasMany(Size::class);
+    }
 }

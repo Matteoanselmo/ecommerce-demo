@@ -115,16 +115,16 @@
                             <v-col>
                                 <v-form>
                                     <v-card title="Categoria" class="px-2" rounded="xl">
-                                        <v-chip-group v-model="selectedCategory" filter :disabled="!isChange">
-                                            <v-chip v-for="category in categories" :key="category" :value="category">
-                                                {{ category }}
+                                        <v-chip-group v-model="selectedCategory" filter :disabled="!isChange" @update:model-value="getSizesByCategory()">
+                                            <v-chip v-for="category in categories" :key="category" :value="category.id">
+                                                {{ category.name }}
                                             </v-chip>
                                         </v-chip-group>
                                         <v-card-actions class="justify-end">
-                                            <v-btn color="success">
+                                            <v-btn color="success" @click=" updateProductCategory()">
                                                 <span class="mdi mdi-check"></span>
                                             </v-btn>
-                                            <v-btn color="info">
+                                            <v-btn color="info" @click="cancelCategoryUpdate()">
                                                 <span class="mdi mdi-close"></span>
                                             </v-btn>
                                         </v-card-actions>
@@ -150,7 +150,29 @@
                                     </v-card>
                                 </v-form>
                             </v-col>
-                            <v-col v-if="props.product.discounts.length">
+                            <v-col>
+                                <v-form>
+                                    <v-card title="Taglie" class="px-2" rounded="xl">
+                                        <v-chip-group v-model="productSizes" multiple :disabled="!isChange">
+                                            <v-chip v-for="size in categorySizes" :key="size.id" :value="size.id" filter>
+                                                {{ size.name }}
+                                            </v-chip>
+                                        </v-chip-group>
+                                        <v-card-actions class="justify-end">
+                                            <v-btn color="success" @click="updateProductSizes()">
+                                                <span class="mdi mdi-check"></span>
+                                            </v-btn>
+                                            <v-btn color="info">
+                                                <span class="mdi mdi-close"></span>
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-form>
+                            </v-col>
+
+                        </v-row>
+                    </v-col>
+                    <v-col v-if="props.product.discounts.length">
                                 <v-form >
                                     <v-card class="px-2"  title="Sconto Prodotto"  v-for="(discount, i) in props.product.discounts" :key="i" rounded="xl">
                                         <v-card-title v-if="discount.pivot.discountable_type !== 'App\\Models\\Product'">
@@ -204,8 +226,6 @@
                                     </v-card>
                                 </v-form>
                             </v-col>
-                        </v-row>
-                    </v-col>
                 </v-row>
             </v-container>
         </template>
@@ -225,29 +245,17 @@ const categories = ref([]);
 const subCategories = ref([]);
 const isChange = ref(false);
 const loading = ref(false);
-const selectedCategory = ref(props.product.category.name ? props.product.category.name : "")
+const selectedCategory = ref(props.product.category.id ? props.product.category.id : "")
 const selectedSubCategory = ref(props.product.subcategory ? props.product.subcategory.name : "");
+const productSizes = ref([]);
+const categorySizes = ref([]);
 
 function fetchCategories(){
     loading.value = true;
     axios.get('/api/categories')
     .then((res) => {
         res.data.forEach(category => {
-            categories.value.push(category.name);
-        });
-        loading.value = false;
-    }).catch((e) => {
-        loading.value = false;
-        console.error(e)
-        notificationStore.notify(e, "danger")
-    })
-}
-function fetchSubCategories(){
-    loading.value = true;
-    axios.get('/api/sub-categories')
-    .then((res) => {
-        res.data.forEach(subcategory => {
-            subCategories.value.push(subcategory.name);
+            categories.value.push(category);
         });
         loading.value = false;
     }).catch((e) => {
@@ -257,9 +265,83 @@ function fetchSubCategories(){
     })
 }
 
+function updateProductCategory() {
+    axios.post(`/api/product/${props.product.id}/category`, {
+        category_id: selectedCategory.value
+    })
+    .then((res) => {
+        getSizesByCategory();
+        notificationStore.notify('Categoria aggiornata con successo!', "success");
+    })
+    .catch((e) => {
+        console.error(e);
+        notificationStore.notify('Errore durante l\'aggiornamento della categoria', "danger");
+    });
+}
+
+function cancelCategoryUpdate() {
+    selectedCategory.value = props.product.category.id; // Ripristina il valore originale in caso di annullamento
+    updateProductCategory();
+}
+
+function fetchSubCategories(){
+    loading.value = true;
+    axios.get('/api/sub-categories')
+    .then((res) => {
+        subCategories.value = [];
+        res.data.forEach(subcategory => {
+            subCategories.value.push(subcategory.name);
+        });
+        loading.value = false;
+        getSizesByCategory();
+    }).catch((e) => {
+        loading.value = false;
+        console.error(e)
+        notificationStore.notify(e, "danger")
+    })
+}
+
+function getSizesByCategory(){
+    axios.get('/api/size/' + selectedCategory.value)
+    .then((res) => {
+        categorySizes.value = res.data
+        getSizesByProduct();
+    }).catch((e)=>{
+        console.error(e)
+    })
+}
+
+function getSizesByProduct(){
+    axios.get('/api/product/' + props.product.id + '/sizes')
+    .then((res) => {
+        productSizes.value = [];
+        res.data.forEach(size => {
+            productSizes.value.push(size.id)
+        });
+    }).catch((e)=>{
+        console.error(e)
+    })
+}
+
+
+function updateProductSizes() {
+    axios.post(`/api/product/${props.product.id}/sizes`, {
+        size_ids: productSizes.value
+    })
+    .then((res) => {
+        notificationStore.notify(res.data.message, res.data.color);
+    })
+    .catch((e) => {
+        console.error(e);
+        notificationStore.notify(e, "danger");
+    });
+}
+
+
+
 fetchCategories();
 fetchSubCategories();
-console.log(props.product)
+
 
 watch(() => props.product.category.name, (newValue) => {
     selectedCategory.value = newValue;
