@@ -19,7 +19,6 @@ class Product extends Model {
         'category_id',
         'price',
         'categorydetails_id',
-        'stock_quantity',
     ];
 
     public function getDiscountedPrice() {

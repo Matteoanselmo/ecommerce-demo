@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
@@ -112,14 +113,19 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/products', [AdminProductController::class, 'index']);
     Route::get('/product/{id}', [AdminProductController::class, 'show']);
     Route::post('/product', [AdminProductController::class, 'store']);
-    Route::patch('/product/{id}', [AdminProductController::class, 'update']);
+    Route::put('/product/{id}', [AdminProductController::class, 'update']);
     Route::delete('/product/{id}', [AdminProductController::class, 'destroy']);
 
     //Taglie
     Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);
     Route::get('/product/{productId}/sizes', [SizeController::class, 'getSizesByProduct']);
     Route::post('/product/{productId}/sizes', [SizeController::class, 'updateProductSizes']);
+    Route::post('/product/{productId}/sizes-with-stock', [SizeController::class, 'updateProductSizesWithStock']);
 
     //Categorie
     Route::post('/product/{productId}/category', [AdminCategoryController::class, 'updateProductCategory']);
+
+    // Faqs
+    Route::post('/product/{productId}/faqs', [FaqController::class, 'saveFaqs']);
+    Route::delete('/faqs/{faqId}', [FaqController::class, 'deleteFaq']);
 });

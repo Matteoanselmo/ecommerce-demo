@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->integer('price'); // Cambiato da decimal a integer
             $table->foreignId('categorydetails_id')->nullable()->constrained('category_details')->onDelete('set null');
-            $table->integer('stock_quantity');
             $table->timestamps();
         });
     }

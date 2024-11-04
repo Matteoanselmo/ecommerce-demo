@@ -49,4 +49,46 @@ class ProductController extends Controller {
             'last_page' => $products->lastPage(),
         ]);
     }
+
+    public function update(Request $request, $id) {
+
+        // Stampa i dati per verificare cosa viene ricevuto
+        // logger()->info('Richiesta update prodotto', $request->all());
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'images.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        // // Aggiorna i dati del prodotto
+        $product = Product::findOrFail($id);
+        $product->update($validatedData);
+
+        // // Gestione delle immagini
+        // if ($request->hasFile('images')) {
+        //     foreach ($request->file('images') as $image) {
+        //         $path = $image->store('product_images', 'public');
+        //         $product->images()->create(['image_url' => $path]);
+        //     }
+        // }
+
+        $product->setAttribute('rating_star', $product->reviewRatings());
+
+        return response()->json([
+            'product' => $product->load([
+                'subCategory',        // Carica la sub-categoria associata
+                'category',           // Carica la categoria associata
+                'categoryDetail',     // Carica i dettagli della categoria
+                'orders',             // Carica gli ordini associati
+                'reviews',            // Carica le recensioni del prodotto
+                'discounts',          // Carica eventuali sconti associati
+                'images',             // Carica le immagini del prodotto
+                'faqs'                // Carica le faqs del prodotto
+            ]),
+            'message' => 'Prodotto aggiornato correttamente',
+            'color' => 'success'
+        ]);
+    }
 }

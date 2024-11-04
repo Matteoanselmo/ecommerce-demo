@@ -20,13 +20,23 @@ class CategoryController extends Controller {
             'category_id' => 'required|exists:categories,id'
         ]);
 
-        // Elimina tutte le taglie associate al prodotto
-        $product->sizes()->detach();
+        if ($product->category_id = $request->input('category_id')) {
+            return response()->json([
+                'message' => 'Operazione annullata',
+                'color' => 'warning'
+            ], 200);
+        } else {
+            // Elimina tutte le taglie associate al prodotto
+            $product->sizes()->detach();
 
-        // Aggiorna la categoria del prodotto
-        $product->category_id = $request->input('category_id');
-        $product->save();
+            // Aggiorna la categoria del prodotto
+            $product->category_id = $request->input('category_id');
+            $product->save();
 
-        return response()->json(['message' => 'Categoria aggiornata con successo'], 200);
+            return response()->json([
+                'message' => 'Categoria aggiornata con successo',
+                'color' => 'success'
+            ], 200);
+        }
     }
 }

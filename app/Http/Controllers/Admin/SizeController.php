@@ -73,6 +73,38 @@ class SizeController extends Controller {
         ], 200);
     }
 
+    public function updateProductSizesWithStock(Request $request, $productId) {
+        $product = Product::find($productId);
+
+        if (!$product) {
+            return response()->json([
+                'message' => 'Prodotto non trovato',
+                'color' => 'danger'
+            ], 404);
+        }
+
+        // Valida l'input per assicurarti che contenga il formato corretto
+        $validatedData = $request->validate([
+            'sizes' => 'required|array',
+            'sizes.*.size_id' => 'required|exists:sizes,id',
+            'sizes.*.stock' => 'required|integer|min:0',
+        ]);
+
+        // Prepara i dati per il metodo `sync` con i valori di stock
+        $sizesWithStock = collect($validatedData['sizes'])->mapWithKeys(function ($size) {
+            return [$size['size_id'] => ['stock' => $size['stock']]];
+        })->toArray();
+
+        // Esegui il sync delle taglie con il prodotto e aggiorna lo stock
+        $product->sizes()->sync($sizesWithStock);
+
+        return response()->json([
+            'message' => 'Taglie e stock aggiornati con successo',
+            'color' => 'success'
+        ], 200);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */
