@@ -65,19 +65,20 @@ class ProductController extends Controller {
         $product = Product::findOrFail($id);
         $product->update($validatedData);
 
-        // Gestione delle immagini caricate
+        // Gestione delle immagini caricate su S3
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                // Salva il file dell'immagine nella directory 'public/product_images'
-                $path = $image->store('product_images', 'public');
+                // Salva il file su S3 con permessi pubblici e ottieni il percorso
+                $path = Storage::disk('s3')->put('product_images', $image, 'public');
 
-                // Crea un nuovo record nella tabella 'product_images'
+                // Crea un nuovo record nella tabella 'product_images' con l'URL completo su S3
                 $product->images()->create([
-                    'image_url' => $path,
+                    'image_url' => Storage::disk('s3')->url($path),  // URL completo su S3
                     'extension' => $image->getClientOriginalExtension(),
                 ]);
             }
         }
+
 
         $product->setAttribute('rating_star', $product->reviewRatings());
 
@@ -97,16 +98,29 @@ class ProductController extends Controller {
         ]);
     }
 
+
     public function destroyImage($id) {
         // Trova l'immagine tramite l'ID
         $image = ProductImage::findOrFail($id);
+        $fullUrl = $image->image_url;
 
-        // Elimina il file dal filesystem se esiste
-        if (Storage::disk('public')->exists($image->image_url)) {
-            Storage::disk('public')->delete($image->image_url);
+        // Ottieni il percorso relativo dall'URL salvato
+        $relativePath = str_replace(env('S3_BASE_URL'), '', $fullUrl);
+
+        // Logga il percorso relativo per il debug
+        \Log::info("Percorso relativo per l'immagine con ID $id: $relativePath");
+
+        // Verifica e cancella l'immagine da S3
+        if (Storage::disk('s3')->exists($relativePath)) {
+            Storage::disk('s3')->delete($relativePath);
         }
-        // Elimina il record dal database
+
+        // // Elimina il record dal database
         $image->delete();
-        return;
+
+        return response()->json([
+            'message' => 'Immagine eliminata correttamente',
+            'color' => 'success'
+        ]);
     }
 }

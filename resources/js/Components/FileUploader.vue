@@ -20,7 +20,7 @@
                 <v-img
                 v-if="fileType === 'image'"
                 width="100%"
-                :src="'/storage/' + file.image_path"
+                :src="file.image_path"
                 height="200"
                 >
                 </v-img>

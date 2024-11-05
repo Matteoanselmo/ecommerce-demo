@@ -22,13 +22,13 @@ class InfoPolicyController extends Controller {
             // Ottieni il nome originale del file
             $originalName = $request->file('file')->getClientOriginalName();
 
-            // Salva il file con il suo nome originale
-            $filePath = $request->file('file')->storeAs('info_policies', $originalName, 'public');
+            // Salva il file su S3 con accesso pubblico e ottieni il percorso
+            $path = Storage::disk('s3')->putFileAs('info_policies', $request->file('file'), $originalName, 'public');
 
-            // Crea una nuova policy nel database
-            $policy = InfoPolicy::create([
+            // Crea una nuova policy nel database con il percorso completo
+            InfoPolicy::create([
                 'title' => $originalName,
-                'file_path' => $filePath,
+                'file_path' => Storage::disk('s3')->url($path),  // URL completo su S3
             ]);
 
             // Se tutto va bene, restituisci un messaggio di successo
@@ -63,10 +63,14 @@ class InfoPolicyController extends Controller {
             // Trova la policy o lancia un'eccezione se non esiste
             $policy = InfoPolicy::findOrFail($id);
 
-            // Verifica se il file esiste prima di tentare di eliminarlo
-            if (Storage::disk('public')->exists($policy->file_path)) {
-                // Elimina il file PDF dal percorso storage
-                Storage::disk('public')->delete($policy->file_path);
+            // Estrai il percorso relativo rimuovendo l'URL di base di S3
+            $baseUrl = env('S3_BASE_URL');
+            $relativePath = str_replace($baseUrl, '', $policy->file_path);
+
+            // Verifica se il file esiste su S3 prima di tentare di eliminarlo
+            if (Storage::disk('s3')->exists($relativePath)) {
+                // Elimina il file da S3
+                Storage::disk('s3')->delete($relativePath);
             }
 
             // Elimina la policy dal database
@@ -78,11 +82,15 @@ class InfoPolicyController extends Controller {
                 'color' => 'success',
             ], 200);
         } catch (ModelNotFoundException $e) {
-            // Lascia gestire questa eccezione all'Handler (opzionale)
-            throw $e;
+            return response()->json([
+                'message' => 'Policy non trovata.',
+                'color' => 'error',
+            ], 404); // Codice HTTP 404 Not Found
         } catch (\Exception $e) {
-            // Lascia gestire questa eccezione all'Handler (opzionale)
-            throw $e;
+            return response()->json([
+                'message' => 'Errore durante l\'eliminazione del PDF: ' . $e->getMessage(),
+                'color' => 'error',
+            ], 500); // Codice HTTP 500 Internal Server Error
         }
     }
 }

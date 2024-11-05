@@ -70,7 +70,7 @@
                                                 ></v-skeleton-loader>
                                                 <v-img
                                                     v-else
-                                                    :src="'/storage/' + image.image_url"
+                                                    :src="image.image_url"
                                                     aspect-ratio="1"
                                                     class="bg-grey-lighten-2 rounded"
                                                     elevation="18"
@@ -327,17 +327,13 @@ function updateProduct() {
         });
     }
 
-    // Debug: stampa il contenuto di formData
-    // for (let [key, value] of formData.entries()) {
-    //     console.log(`${key}:`, value);
-    // }
-
     axios.post(`/api/product/${props.product.id}`, formData)
     .then(res => {
         console.log(res.data)
         notificationStore.notify(res.data.message, res.data.color);
         // // Aggiorna i dati locali con la risposta dell'API
         props.product = res.data.product;
+        productImagesInput.value = [];
     })
     .catch(error => {
         console.error(error.response ? error.response.data : error);

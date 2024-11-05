@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\DiscountBanner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DiscountBannerController extends Controller {
+
     public function index() {
         $banners = DiscountBanner::all();
         return response()->json($banners);
@@ -22,13 +24,13 @@ class DiscountBannerController extends Controller {
             // Ottieni il nome originale dell'immagine
             $originalName = $request->file('image')->getClientOriginalName();
 
-            // Salva l'immagine con il suo nome originale
-            $imagePath = $request->file('image')->storeAs('discount_banners', $originalName, 'public');
+            // Salva l'immagine su S3 con permessi pubblici
+            $imagePath = Storage::disk('s3')->putFileAs('discount_banners', $request->file('image'), $originalName, 'public');
 
             // Crea un nuovo banner nel database
             $banner = DiscountBanner::create([
                 'title' => $originalName,
-                'image_path' => $imagePath,
+                'image_path' => Storage::disk('s3')->url($imagePath), // Salva l'URL completo
             ]);
 
             // Se tutto va bene, restituisci un messaggio di successo
@@ -60,29 +62,32 @@ class DiscountBannerController extends Controller {
 
     public function destroy($id) {
         try {
-            // Trova il banner o lancia un'eccezione se non esiste
             $banner = DiscountBanner::findOrFail($id);
 
-            // Verifica se il file esiste prima di tentare di eliminarlo
-            if (Storage::disk('public')->exists($banner->image_path)) {
-                // Elimina l'immagine dal percorso storage
-                Storage::disk('public')->delete($banner->image_path);
+            // Usa la variabile di ambiente per l'URL base del bucket
+            $baseUrl = env('S3_BASE_URL');
+            $relativePath = str_replace($baseUrl, '', $banner->image_path);
+
+            if (Storage::disk('s3')->exists($relativePath)) {
+                Storage::disk('s3')->delete($relativePath);
             }
 
-            // Elimina il banner dal database
             $banner->delete();
 
-            // Restituisce una risposta JSON di successo
             return response()->json([
                 'message' => 'Immagine del banner eliminata con successo!',
                 'color' => 'success',
             ], 200);
         } catch (ModelNotFoundException $e) {
-            // Lascia gestire questa eccezione all'Handler (opzionale)
-            throw $e;
+            return response()->json([
+                'message' => 'Banner non trovato.',
+                'color' => 'error',
+            ], 404);
         } catch (\Exception $e) {
-            // Lascia gestire questa eccezione all'Handler (opzionale)
-            throw $e;
+            return response()->json([
+                'message' => 'Errore durante l\'eliminazione dell\'immagine: ' . $e->getMessage(),
+                'color' => 'error',
+            ], 500);
         }
     }
 }
