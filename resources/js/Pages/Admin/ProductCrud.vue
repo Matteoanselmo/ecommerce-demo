@@ -192,6 +192,27 @@
                                 </v-card>
                             </v-col>
                         </v-row>
+                        <v-row>
+                            <v-col>
+                                <v-form>
+                                    <v-card title="Certificazioni" class="px-2" rounded="xl">
+                                        <v-chip-group v-model="productCertifications" multiple :disabled="!isChange">
+                                            <v-chip v-for="certification in certifications" :key="certification.id" :value="certification.id" filter>
+                                                {{ certification.name }}
+                                            </v-chip>
+                                        </v-chip-group>
+                                        <v-card-actions class="justify-end">
+                                            <v-btn color="success" @click="updateProductCertifications()">
+                                                <v-icon icon="mdi mdi-check" size="small"></v-icon>
+                                            </v-btn>
+                                            <v-btn color="info">
+                                                <v-icon icon="mdi mdi-close" size="small"></v-icon>
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-form>
+                            </v-col>
+                        </v-row>
                     </v-col>
                     <v-col cols="4" v-if="props.product.discounts.length" v-for="(discount, i) in props.product.discounts" :key="i" >
                         <v-form >
@@ -311,7 +332,8 @@ const productSizes = ref([]);
 const categorySizes = ref([]);
 const selectedSizes = ref([]);
 const productImagesInput = ref([]);
-
+const productCertifications = ref([]);
+const certifications = ref([]);
 // Porodotto
 function updateProduct() {
     const formData = new FormData();
@@ -359,6 +381,46 @@ function removeImage(index){
     props.product.images.splice(index, 1);
     notificationStore.notify("Immagine rimossa con successo", "success");
 }
+
+// Certificazioni
+function fetchCertification(){
+    axios.get('/api/certifications/')
+    .then((res) => {
+        console.log(res);
+        certifications.value = res.data;
+        getProductCertifications();
+    }).catch((e) => {
+        console.error(e)
+    })
+}
+
+function getProductCertifications(){
+    axios.get('/api/certifications/' + props.product.id)
+    .then((res) =>{
+        console.log(res);
+
+        res.data.forEach(certification => {
+            productCertifications.value.push(certification.id)
+        });
+    }).catch((e)=>{
+        console.error(e)
+    })
+}
+
+function updateProductCertifications() {
+    axios.post(`/api/product/${props.product.id}/certifications`, {
+        certification_ids: productCertifications.value
+    })
+    .then((res) => {
+        getProductCertifications();
+        notificationStore.notify(res.data.message, res.data.color);
+    })
+    .catch((e) => {
+        console.error(e);
+        notificationStore.notify(e, "danger");
+    });
+}
+
 
 // Categorie
 function fetchCategories(){
@@ -412,6 +474,7 @@ function fetchSubCategories(){
     })
 }
 
+// Taglie
 function getSizesByCategory(){
     axios.get('/api/size/' + selectedCategory.value)
     .then((res) => {
@@ -526,7 +589,8 @@ function resetFaqs() {
 
 fetchCategories();
 fetchSubCategories();
-console.log(props.product);
+fetchCertification();
+// console.log(props.product);
 
 watch(() => props.product.category.name, (newValue) => {
     selectedCategory.value = newValue;

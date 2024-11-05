@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\CertificationController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
@@ -129,4 +130,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Faqs
     Route::post('/product/{productId}/faqs', [FaqController::class, 'saveFaqs']);
     Route::delete('/faqs/{faqId}', [FaqController::class, 'deleteFaq']);
+
+    // Certificazioni
+    Route::get('/certifications', [CertificationController::class, 'index']);
+    Route::get('/certifications/{productId}', [CertificationController::class, 'getProductCertifications']);
+    Route::post('/product/{productId}/certifications', [CertificationController::class, 'updateProductCertifications']);
 });

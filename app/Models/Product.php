@@ -134,4 +134,8 @@ class Product extends Model {
     public function sizes() {
         return $this->belongsToMany(Size::class, 'product_sizes')->withPivot('stock');
     }
+
+    public function certifications() {
+        return $this->belongsToMany(Certification::class);
+    }
 }

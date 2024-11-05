@@ -2,7 +2,7 @@
 <v-container fluid>
     <v-row >
         <v-col elevation="8" cols="12">
-            <v-parallax v-if="banner && banner.image_path" :src="'/storage/' + banner.image_path"></v-parallax>
+            <v-parallax v-if="banner && banner.image_path" :src="banner.image_path"></v-parallax>
                 <div v-else>
                     <!-- Messaggio di caricamento o fallback -->
                     <v-skeleton-loader type="image" />
