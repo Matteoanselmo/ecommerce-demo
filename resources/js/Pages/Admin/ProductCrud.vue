@@ -56,8 +56,8 @@
                                         <v-container>
                                             <v-row>
                                                 <v-col
-                                                    v-for="image in props.product.images"
-                                                    :key="image.id"
+                                                    v-for="(image, index) in props.product.images"
+                                                    :key="index"
                                                     class="d-flex child-flex"
                                                     cols="4"
                                                 >
@@ -70,13 +70,13 @@
                                                 ></v-skeleton-loader>
                                                 <v-img
                                                     v-else
-                                                    :src="image.image_url"
+                                                    :src="'/storage/' + image.image_url"
                                                     aspect-ratio="1"
                                                     class="bg-grey-lighten-2 rounded"
                                                     elevation="18"
                                                     cover
                                                 >
-                                                    <v-btn size="small" color="danger" class="my-5 mx-5" :disabled="!isChange">
+                                                    <v-btn size="small" color="danger" class="my-5 mx-5" :disabled="!isChange" @click="removeImage(index)">
                                                         <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                                     </v-btn>
                                                 </v-img>
@@ -84,9 +84,16 @@
                                             </v-row>
                                         </v-container>
                                         <v-file-input
-                                        label="Carica Immagini"
-                                        variant="solo-filled"
-                                        prepend-icon="mdi-camera"
+                                            label="Carica Immagini"
+                                            variant="solo-filled"
+                                            prepend-icon="mdi-camera"
+                                            :show-size="1000"
+                                            counter
+                                            color="primary"
+                                            multiple
+                                            v-model="productImagesInput"
+                                            accept="image/*"
+                                            :loading="loading"
                                         ></v-file-input>
                                         <v-card-actions class="justify-end">
                                             <v-btn color="success" class="me-2" :disabled="!isChange" @click="updateProduct()">
@@ -303,6 +310,7 @@ const selectedSubCategory = ref(props.product.subcategory ? props.product.subcat
 const productSizes = ref([]);
 const categorySizes = ref([]);
 const selectedSizes = ref([]);
+const productImagesInput = ref([]);
 
 // Porodotto
 function updateProduct() {
@@ -312,11 +320,12 @@ function updateProduct() {
     formData.append('description', props.product.description);
     formData.append('price', props.product.price);
 
-    // if (props.product.newImages && props.product.newImages.length) {
-    //     props.product.newImages.forEach((image, index) => {
-    //         formData.append(`images[${index}]`, image);
-    //     });
-    // }
+     // Aggiungi le immagini selezionate a FormData
+    if (productImagesInput.value && productImagesInput.value.length) {
+        productImagesInput.value.forEach((file, index) => {
+            formData.append(`images[${index}]`, file);
+        });
+    }
 
     // Debug: stampa il contenuto di formData
     // for (let [key, value] of formData.entries()) {
@@ -336,6 +345,24 @@ function updateProduct() {
     });
 }
 
+
+function removeImage(index){
+    const image = props.product.images[index];
+    console.log(image)
+    if (image.id){
+        loading.value = true;
+        axios.delete(`/api/product-images/${image.id}`)
+        .then((res) => {
+            loading.value = false;
+        }).catch((e) => {
+            loading.value = false;
+            notificationStore.notify(e, "danger");
+            console.error(e)
+        })
+    }
+    props.product.images.splice(index, 1);
+    notificationStore.notify("Immagine rimossa con successo", "success");
+}
 
 // Categorie
 function fetchCategories(){

@@ -115,6 +115,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/product', [AdminProductController::class, 'store']);
     Route::put('/product/{id}', [AdminProductController::class, 'update']);
     Route::delete('/product/{id}', [AdminProductController::class, 'destroy']);
+    Route::delete('/product-images/{imageId}', [AdminProductController::class, 'destroyImage']);
 
     //Taglie
     Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);

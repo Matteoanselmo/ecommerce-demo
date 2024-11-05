@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller {
     public function index(Request $request) {
@@ -52,27 +54,30 @@ class ProductController extends Controller {
 
     public function update(Request $request, $id) {
 
-        // Stampa i dati per verificare cosa viene ricevuto
-        // logger()->info('Richiesta update prodotto', $request->all());
-
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'images.*' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         // // Aggiorna i dati del prodotto
         $product = Product::findOrFail($id);
         $product->update($validatedData);
 
-        // // Gestione delle immagini
-        // if ($request->hasFile('images')) {
-        //     foreach ($request->file('images') as $image) {
-        //         $path = $image->store('product_images', 'public');
-        //         $product->images()->create(['image_url' => $path]);
-        //     }
-        // }
+        // Gestione delle immagini caricate
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                // Salva il file dell'immagine nella directory 'public/product_images'
+                $path = $image->store('product_images', 'public');
+
+                // Crea un nuovo record nella tabella 'product_images'
+                $product->images()->create([
+                    'image_url' => $path,
+                    'extension' => $image->getClientOriginalExtension(),
+                ]);
+            }
+        }
 
         $product->setAttribute('rating_star', $product->reviewRatings());
 
@@ -90,5 +95,18 @@ class ProductController extends Controller {
             'message' => 'Prodotto aggiornato correttamente',
             'color' => 'success'
         ]);
+    }
+
+    public function destroyImage($id) {
+        // Trova l'immagine tramite l'ID
+        $image = ProductImage::findOrFail($id);
+
+        // Elimina il file dal filesystem se esiste
+        if (Storage::disk('public')->exists($image->image_url)) {
+            Storage::disk('public')->delete($image->image_url);
+        }
+        // Elimina il record dal database
+        $image->delete();
+        return;
     }
 }
