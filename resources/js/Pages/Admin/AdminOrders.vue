@@ -96,6 +96,7 @@ const headers = ref([
     {
         title: "Azioni",
         key: "actions",
+        align: 'end',
         sortable: false
     },
 ]);

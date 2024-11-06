@@ -1,6 +1,6 @@
 <template>
-    <Head title="Clienti" />
-    <v-container>
+    <Head title="Ordini" />
+    <v-container fluid>
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">
                 <div class="d-flex justify-between">
@@ -13,22 +13,32 @@
                         v-model="field.value"
                         :label="field.label"
                         clearable
-                        @input="debouncedFetchUsers"
+                        @input="debouncedFetchSizes"
                         class="px-2"
                     ></v-text-field>
+                    <v-select
+                        :items="categories"
+                        item-text="name"
+                        item-value="id"
+                        label="Categoria"
+                        clearable
+                        v-model="selectedCategory"
+                        @change="debouncedFetchSizes"
+                        class="px-2"
+                    ></v-select>
                 </div>
             </v-col>
             <v-col cols="12">
                 <TableServer
                     :totalItems="totalItems"
-                    :items="users"
+                    :items="sizes"
                     :itemsPerPage="itemsPerPage"
                     :headers="headers"
                     :loading="loading"
-                    :type="'user'"
+                    :type="'size'"
                     :page="page"
                     :search-fields="searchFields"
-                    @updateItems="fetchUsers"
+                    @updateItems="fetchSizes"
                 />
             </v-col>
         </v-row>
@@ -42,50 +52,34 @@ import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { debounce } from 'lodash';
 
-// Stato per i clienti e altri parametri
-const users = ref([]);
+// Stato per gli ordini e altri parametri
+const sizes = ref([]);
 const totalItems = ref(0);
 const itemsPerPage = ref(10);
 const page = ref(1);
 const loading = ref(true);
+const categories = ref([]); // Stato per memorizzare le categorie
+const selectedCategory = ref(null); // Stato per la categoria selezionata
 
-// Array di campi di ricerca (nome ed email)
+// Array di campi di ricerca (nome, numero ordine, numero spedizione)
 const searchFields = ref([
     { key: 'name', value: '', label: 'Nome', icon: 'mdi-magnify' },
-    { key: 'email', value: '', label: 'Email', icon: 'mdi-magnify' },
 ]);
 
-// Definisci le intestazioni della tabella
 const headers = ref([
     {
         title: 'Nome',
         align: 'start',
         sortable: false,
-        type: 'text',
         key: 'name',
+        type: 'text'
     },
     {
-        title: 'Email',
+        title: 'Categoria',
         align: 'start',
         sortable: false,
-        type: 'email',
-        key: 'email',
-    },
-    {
-        title: 'Ruolo',
-        align: 'start',
-        sortable: false,
-        type: 'select',
-        items: ['admin', 'user'],
-        key: 'role',
-    },
-    {
-        title: 'Password',
-        align: 'start',
-        hidden: true,
-        sortable: false,
-        type: 'password',
-        key: 'password',
+        key: 'category.name',
+        type: 'text'
     },
     {
         title: "Azioni",
@@ -95,8 +89,8 @@ const headers = ref([
     },
 ]);
 
-// Funzione per recuperare i dati degli utenti
-function fetchUsers(options = {}) {
+// Funzione per recuperare i dati degli ordini
+function fetchSizes(options = {}) {
     loading.value = true;
 
     const currentPage = options.page || page.value;
@@ -111,23 +105,22 @@ function fetchUsers(options = {}) {
     }, {});
 
     axios
-        .get(`/api/users`, {
+        .get(`/api/sizes`, {
             params: {
                 page: currentPage,
                 per_page: currentItemsPerPage,
                 sort_by: sortBy,
                 sort_direction: sortDirection,
                 search_name: searchQuery.name,
-                search_email: searchQuery.email,
-                role_not: 'admin' // Filtra utenti con ruolo diverso da admin
+                search_category: selectedCategory.value,
             },
         })
         .then((res) => {
-            users.value = res.data.data;
+            sizes.value = res.data.data;
             totalItems.value = res.data.total;
             page.value = res.data.current_page;
             loading.value = false;
-            console.log(users)
+            console.log(res.data)
         })
         .catch((e) => {
             console.log(e);
@@ -135,6 +128,17 @@ function fetchUsers(options = {}) {
         });
 }
 
+// Funzione per recuperare le categorie
+function fetchCategories() {
+    axios.get(`/api/all-categories`).then((res) => {
+        categories.value = res.data;
+        console.log(res.data)
+    }).catch((e) => {
+        console.log(e);
+    });
+}
+
 // Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
-const debouncedFetchUsers = debounce(fetchUsers, 500);
+const debouncedFetchSizes = debounce(fetchSizes, 500);
+fetchCategories();
 </script>

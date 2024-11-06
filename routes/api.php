@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Admin\SizeController;
+use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscountBannerController;
@@ -14,6 +14,7 @@ use App\Http\Controllers\InfoPolicyController;
 use App\Http\Controllers\PricePolicyController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReturnPolicyController;
+use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
@@ -39,7 +40,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 //Guest
-Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/all-categories', [CategoryController::class, 'index']);
 Route::get('/sub-categories', [SubCategoryController::class, 'index']);
 Route::get('/get-products', [ProductController::class, 'getProductsByCategory']);
 
@@ -47,6 +48,10 @@ Route::get('/promo-products', [ProductController::class, 'getDiscountedProducts'
 
 Route::post('/search', [UserSearchController::class, 'search']);
 Route::post('/get-subcategories', [SubCategoryController::class, 'getSubCategoryFromCategory']);
+
+//Taglie
+Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);
+Route::get('/product/{productId}/sizes', [SizeController::class, 'getSizesByProduct']);
 
 
 Route::get('/search-products', function (Request $request) {
@@ -119,13 +124,14 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::delete('/product-images/{imageId}', [AdminProductController::class, 'destroyImage']);
 
     //Taglie
-    Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);
-    Route::get('/product/{productId}/sizes', [SizeController::class, 'getSizesByProduct']);
-    Route::post('/product/{productId}/sizes', [SizeController::class, 'updateProductSizes']);
-    Route::post('/product/{productId}/sizes-with-stock', [SizeController::class, 'updateProductSizesWithStock']);
+    Route::get('/sizes', [AdminSizeController::class, 'index']);
+    Route::post('/product/{productId}/sizes', [AdminSizeController::class, 'updateProductSizes']);
+    Route::post('/product/{productId}/sizes-with-stock', [AdminSizeController::class, 'updateProductSizesWithStock']);
 
     //Categorie
     Route::post('/product/{productId}/category', [AdminCategoryController::class, 'updateProductCategory']);
+    Route::get('/categories', [AdminCategoryController::class, 'index']);
+    Route::patch('/category/{id}', [AdminCategoryController::class, 'update']);
 
     // Faqs
     Route::post('/product/{productId}/faqs', [FaqController::class, 'saveFaqs']);

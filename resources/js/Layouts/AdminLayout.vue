@@ -75,10 +75,12 @@ const toggleDrawer = () => {
 const items = ref([
     { title: "Home", link: "home", icon: "mdi mdi-home" },
     { title: "Panoramica", link: "admin.dashboard", icon: "mdi mdi-poll" },
-    { title: "Personalizza", link: "admin.customization", icon: "mdi mdi-pencil" },
+    { title: "Allegati", link: "admin.customization", icon: "mdi mdi-attachment" },
     { title: "Ordini", link: "admin.orders", icon: "mdi mdi-order-alphabetical-ascending" },
     { title: "Utenti", link: "admin.user", icon: "mdi mdi-account-group" },
     { title: "Ticket", link: "admin.tickets", icon: "mdi mdi-ticket-confirmation-outline" },
+    { title: "Categorie", link: "admin.categories", icon: "mdi mdi-shape-outline" },
+    { title: "Taglie", link: "admin.sizes", icon: "mdi mdi-size-xxxl" },
     { title: "Prodotti", link: "admin.products", icon: "mdi mdi-archive-edit-outline" },
 ]);
 

@@ -425,7 +425,7 @@ function updateProductCertifications() {
 // Categorie
 function fetchCategories(){
     loading.value = true;
-    axios.get('/api/categories')
+    axios.get('/api/all-categories')
     .then((res) => {
         res.data.forEach(category => {
             categories.value.push(category);

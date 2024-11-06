@@ -70,6 +70,14 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
         return Inertia::render('Admin/Products');
     })->name('admin.products');
 
+    Route::get('/categories', function () {
+        return Inertia::render('Admin/Categories');
+    })->name('admin.categories');
+
+    Route::get('/sizes', function () {
+        return Inertia::render('Admin/Sizes');
+    })->name('admin.sizes');
+
     Route::get('/products/{product}', function ($productId) {
         $product = Product::with([
             'subCategory',        // Carica la sub-categoria associata

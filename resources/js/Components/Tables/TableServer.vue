@@ -141,7 +141,7 @@ function deleteItem(id) {
             notificationStore.notify(e, 'danger')
         });
     } else {
-        notificationStore.notify('Operazione Annullata! ', 'info')
+        notificationStore.notify('Operazione Annullata! ', 'warning')
     }
 }
 
