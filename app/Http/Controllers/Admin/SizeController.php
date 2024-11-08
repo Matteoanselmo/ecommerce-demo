@@ -16,7 +16,7 @@ class SizeController extends Controller {
         $sortField = $request->input('sort_by', 'id'); // Campo di default per ordinamento
         $sortDirection = $request->input('sort_direction', 'asc'); // Direzione di default (ascendente)
         $searchName = $request->input('search_name', ''); // Parametro di ricerca per nome
-        $searchCategory = $request->input('search_category', null);  // Parametro di ricerca per categoria
+        $categoryId = $request->input('category_id', null);  // Parametro di ricerca per categoria
 
         $itemsPerPage = $request->input('per_page', 10); // Numero di elementi per pagina (default a 10)
 
@@ -25,6 +25,10 @@ class SizeController extends Controller {
             ->when($searchName, function ($query, $searchName) {
                 // Filtraggio per nome della taglia
                 return $query->where('name', 'like', "%$searchName%");
+            })
+            ->when(!is_null($categoryId), function ($query) use ($categoryId) {
+                // Filtraggio per ID della categoria solo se non è null
+                return $query->where('category_id', $categoryId);
             })
             ->orderBy($sortField, $sortDirection) // Ordinamento basato sui parametri
             ->paginate($itemsPerPage); // Paginazione dinamica basata sul parametro 'per_page'
@@ -37,6 +41,7 @@ class SizeController extends Controller {
             'per_page' => $sizes->perPage(),
         ]);
     }
+
 
 
     public function updateProductSizes(Request $request, $productId) {

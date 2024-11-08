@@ -17,13 +17,14 @@
                         class="px-2"
                     ></v-text-field>
                     <v-select
+                        variant="solo-filled"
                         :items="categories"
-                        item-text="name"
+                        item-title="name"
                         item-value="id"
                         label="Categoria"
                         clearable
                         v-model="selectedCategory"
-                        @change="debouncedFetchSizes"
+                        @update:modelValue="debouncedFetchSizes"
                         class="px-2"
                     ></v-select>
                 </div>
@@ -93,28 +94,34 @@ const headers = ref([
 function fetchSizes(options = {}) {
     loading.value = true;
 
-    const currentPage = options.page || page.value;
-    const currentItemsPerPage = options.itemsPerPage || itemsPerPage.value;
+    // Aggiungiamo dei fallback per assicurarci che tutte le variabili abbiano un valore di default
+    const currentPage = options.page || page.value || 1;
+    const currentItemsPerPage = options.itemsPerPage || itemsPerPage.value || 10;
     const sortBy = options.sortBy || 'id';
     const sortDirection = options.sortDirection || 'asc';
 
-    // Costruiamo l'oggetto di ricerca dall'array searchFields
+    // Costruzione dell'oggetto di ricerca dall'array searchFields
     const searchQuery = searchFields.value.reduce((acc, field) => {
         acc[field.key] = field.value;
         return acc;
     }, {});
 
+    // Costruisce i parametri per la richiesta, aggiungendo category_id solo se è definito
+    const params = {
+        page: currentPage,
+        per_page: currentItemsPerPage,
+        sort_by: sortBy,
+        sort_direction: sortDirection,
+        search_name: searchQuery.name,
+    };
+
+    // Aggiungi category_id solo se è selezionato
+    if (selectedCategory.value) {
+        params.category_id = selectedCategory.value;
+    }
+
     axios
-        .get(`/api/sizes`, {
-            params: {
-                page: currentPage,
-                per_page: currentItemsPerPage,
-                sort_by: sortBy,
-                sort_direction: sortDirection,
-                search_name: searchQuery.name,
-                search_category: selectedCategory.value,
-            },
-        })
+        .get(`/api/sizes`, { params })
         .then((res) => {
             sizes.value = res.data.data;
             totalItems.value = res.data.total;
@@ -128,11 +135,12 @@ function fetchSizes(options = {}) {
         });
 }
 
+
 // Funzione per recuperare le categorie
 function fetchCategories() {
     axios.get(`/api/all-categories`).then((res) => {
         categories.value = res.data;
-        console.log(res.data)
+        console.log(categories.value)
     }).catch((e) => {
         console.log(e);
     });

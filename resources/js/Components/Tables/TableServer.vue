@@ -1,11 +1,10 @@
 <template>
     <v-data-table-server
-        :rounded="true"
         :expand-on-click="false"
         :items-per-page="itemsPerPage"
         :headers="filteredHeaders"
         :items="items"
-        :items-length="items.length"
+        :items-length="totalItems"
         :loading="loading"
         :search="search"
         loading-text="Caricamento in corso..."

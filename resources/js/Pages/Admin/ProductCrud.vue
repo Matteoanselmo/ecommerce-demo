@@ -99,7 +99,7 @@
                                             <v-btn color="success" class="me-2" :disabled="!isChange" @click="updateProduct()">
                                                 Salva
                                             </v-btn>
-                                            <v-btn color="info">
+                                            <v-btn color="danger">
                                                 Annulla
                                             </v-btn>
                                         </v-card-actions>
@@ -122,7 +122,7 @@
                                             <v-btn color="success" @click=" updateProductCategory()" :disabled="props.product.category_id === selectedCategory">
                                                 <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                             </v-btn>
-                                            <v-btn color="info" @click="cancelCategoryUpdate()" :disabled="props.product.category_id === selectedCategory">
+                                            <v-btn color="danger" @click="cancelCategoryUpdate()" :disabled="props.product.category_id === selectedCategory">
                                                 <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                             </v-btn>
                                         </v-card-actions>
@@ -141,7 +141,7 @@
                                             <v-btn color="success">
                                                 <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                             </v-btn>
-                                            <v-btn color="info">
+                                            <v-btn color="danger">
                                                 <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                             </v-btn>
                                         </v-card-actions>
@@ -160,7 +160,7 @@
                                             <v-btn color="success" @click="updateProductSizes()">
                                                 <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                             </v-btn>
-                                            <v-btn color="info">
+                                            <v-btn color="danger">
                                                 <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                             </v-btn>
                                         </v-card-actions>
@@ -185,8 +185,8 @@
                                         <v-btn color="success" @click="updateProductSizesWithStock()">
                                             <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                         </v-btn>
-                                        <v-btn color="info" >
-                                            <v-icon icon="mdi mdi-close" size="small"></v-icon>
+                                        <v-btn color="danger" >
+                                            <v-icon icon="mdi mdi-close"  size="small"></v-icon>
                                         </v-btn>
                                     </v-card-actions>
                                 </v-card>
@@ -205,7 +205,7 @@
                                             <v-btn color="success" @click="updateProductCertifications()">
                                                 <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                             </v-btn>
-                                            <v-btn color="info">
+                                            <v-btn color="danger">
                                                 <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                             </v-btn>
                                         </v-card-actions>
@@ -243,7 +243,7 @@
                                     <v-btn color="success">
                                         <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                     </v-btn>
-                                    <v-btn color="info">
+                                    <v-btn color="danger">
                                         <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                     </v-btn>
                                 </v-card-actions>
@@ -257,9 +257,10 @@
                                     FAQS
                                     <v-btn
                                         icon
-                                        color="primary"
+                                        color="info"
                                         @click="addFaq"
                                         :disabled="!isChange"
+                                        variant="text"
                                     >
                                         <v-icon icon="mdi mdi-plus"></v-icon>
                                     </v-btn>
@@ -272,12 +273,13 @@
                                         </div>
                                         <v-btn
                                             icon
-                                            color="red"
                                             @click="deleteFaq(faq.id)"
                                             :disabled="!isChange"
                                             size="small"
+                                            color="red"
+                                            variant="text"
                                         >
-                                            <v-icon icon="mdi mdi-delete" size="x-small"></v-icon>
+                                            <v-icon icon="mdi mdi-delete"  size="small"></v-icon>
                                         </v-btn>
                                     </div>
                                 </v-card-text>
@@ -285,7 +287,7 @@
                                     <v-btn color="success" @click="saveFaqs()">
                                         <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                     </v-btn>
-                                    <v-btn color="info" @click="resetFaqs">
+                                    <v-btn color="danger" @click="resetFaqs">
                                         <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                     </v-btn>
                                 </v-card-actions>
