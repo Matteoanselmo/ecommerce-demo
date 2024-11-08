@@ -83,6 +83,7 @@ const headers = ref([
         align: 'start',
         sortable: false,
         key: 'status',
+        model: 'status',
         type: 'select',
         items: ['confirmed', 'returned'],
     },

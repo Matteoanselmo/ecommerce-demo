@@ -38,9 +38,11 @@
                     <div v-for="(header) in props.headers" :key="header.key" class="mb-3" >
                         <v-select
                             v-if="header.type ==='select'"
-                            v-model="selectedItem[header.key]"
+                            v-model="selectedItem[header.model]"
                             :label="header.title"
                             :items="header.items"
+                            item-title="name"
+                            item-value="id"
                             variant="solo-filled"
                             :disabled="!isEditable"
                         ></v-select>

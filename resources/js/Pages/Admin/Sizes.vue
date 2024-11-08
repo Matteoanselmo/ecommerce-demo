@@ -1,5 +1,5 @@
 <template>
-    <Head title="Ordini" />
+    <Head title="Taglie" />
     <v-container fluid>
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">
@@ -48,7 +48,7 @@
 
 <script setup>
 import TableServer from '@/Components/Tables/TableServer.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { debounce } from 'lodash';
@@ -61,7 +61,7 @@ const page = ref(1);
 const loading = ref(true);
 const categories = ref([]); // Stato per memorizzare le categorie
 const selectedCategory = ref(null); // Stato per la categoria selezionata
-
+const categoryNames = ref([]);
 // Array di campi di ricerca (nome, numero ordine, numero spedizione)
 const searchFields = ref([
     { key: 'name', value: '', label: 'Nome', icon: 'mdi-magnify' },
@@ -80,7 +80,9 @@ const headers = ref([
         align: 'start',
         sortable: false,
         key: 'category.name',
-        type: 'text'
+        model: 'category_id',
+        type: 'select',
+        items: categories,
     },
     {
         title: "Azioni",
@@ -127,6 +129,9 @@ function fetchSizes(options = {}) {
             totalItems.value = res.data.total;
             page.value = res.data.current_page;
             loading.value = false;
+            categories.value.forEach(category => {
+                categoryNames.value.push(category.name);
+            });
             console.log(res.data)
         })
         .catch((e) => {
@@ -148,5 +153,7 @@ function fetchCategories() {
 
 // Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
 const debouncedFetchSizes = debounce(fetchSizes, 500);
+
 fetchCategories();
+
 </script>

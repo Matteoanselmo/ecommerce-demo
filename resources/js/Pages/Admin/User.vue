@@ -1,5 +1,5 @@
 <template>
-    <Head title="Clienti" />
+    <Head title="Utenti" />
     <v-container>
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">

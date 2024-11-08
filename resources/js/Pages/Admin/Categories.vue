@@ -1,5 +1,5 @@
 <template>
-    <Head title="Ordini" />
+    <Head title="Categorie" />
     <v-container fluid>
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">
