@@ -81,26 +81,6 @@
             offset-y
             bottom
         >
-            <template v-slot:activator="{ props: activatorProps }">
-                <v-btn
-                    color="primary"
-                    dark
-                    v-bind="activatorProps"
-                    class="language-btn"
-                    rounded="0"
-                >
-                    IT
-                </v-btn>
-            </template>
-            <v-list>
-                <v-list-item
-                    v-for="(lang, i) in languages"
-                    :key="i"
-                    @click="changeLanguage(lang)"
-                >
-                    <v-list-item-title>{{ lang }}</v-list-item-title>
-                </v-list-item>
-            </v-list>
         </v-menu>
 
         <!-- Cerchio del mouse -->
@@ -142,7 +122,7 @@ const changeLanguage = (lang) => {
 };
 
 function fetchCategorie (){
-    axios.get('/api/categories')
+    axios.get('/api/all-categories')
     .then((res) => {
         res.data.forEach(category => {
             const route = {

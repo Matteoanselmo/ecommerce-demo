@@ -21,6 +21,7 @@ import ProductSearcBar from './Components/Products/ProductSearcBar.vue';
 import Notification from './Components/Notification.vue';
 import NewsLetter from './Components/NewsLetter.vue';
 import { VDateInput } from 'vuetify/lib/labs/components.mjs';
+import { VNumberInput } from 'vuetify/lib/labs/VNumberInput/index.mjs';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
@@ -62,6 +63,7 @@ createInertiaApp({
             .component('notification', Notification)
             .component('newsletter', NewsLetter)
             .component('v-date-input', VDateInput)
+            .component('v-number-input', VNumberInput)
             .use(vuetify);
 
         app.config.globalProperties.$formatPrice = formatPrice;

@@ -4,7 +4,8 @@
     <v-container class="product-detail-container" >
     <v-row>
         <v-col cols="12" md="6">
-            <v-carousel show-arrows="hover" hide-delimiters>
+            <v-carousel show-arrows="hover"
+            >
                 <v-carousel-item
                     rounded="lg"
                     v-for="(image, i) in product.data.images"
@@ -18,17 +19,65 @@
 
         <v-col cols="12" md="6" class="d-flex flex-column justify-start align-start">
         <div>
-            <h1 class="text-h4 font-weight-bold mb-2">{{ product.data.name }}</h1>
+
+            <div class="text-h4 font-weight-bold mb-2">
+                {{ product.data.name }}
+            </div>
             <RatingStars
                 :ratings="product.data.rating_star"
                 :readOnly="true"
             />
-            <p class="text-body-1 mb-4" v-html="product.data.description"> </p>
+            <v-card title="Descrizone Prodotto" rounded="xl" class="mb-4">
+                <v-card-text v-html="product.data.description">
+
+                </v-card-text>
+            </v-card>
+            <v-card title="Certificazioni:" rounded="xl" class="mb-4">
+                <v-card-text>
+                    <v-list class="py-0 my-2" lines="one" item-title="Certificazioni" variant="plain" rounded="xl" >
+                        <v-list-item
+                            v-for="certification in product.data.certifications"
+                            :key="certification.id"
+                            :subtitle="certification.name"
+                        ></v-list-item>
+                    </v-list>
+                </v-card-text>
+            </v-card>
+
+
+            <v-chip-group v-model="product.data.productSizes" column>
+            <v-chip
+                v-for="size in product.data.sizes"
+                :key="size.id"
+                :value="size.id"
+                filter
+                class="d-flex align-center mb-2"
+                size="x-large"
+            >
+                <div class="d-flex align-center">
+                    <p class="mb-0 mr-4">
+                        {{ size.name }} ({{ size.stock }} pezzi)
+                    </p>
+                    <v-number-input
+                        v-model="size.quantity"
+                        control-variant="split"
+                        :max="size.stock"
+                        :min="1"
+                        class="ml-4"
+                        variant="plain"
+                        :disabled="size.id !== product.data.productSizes"
+                    ></v-number-input>
+                </div>
+            </v-chip>
+        </v-chip-group>
+
+
             <p class="text-h6 " v-if="product.data.original_price > product.data.price">
                 <span class="text-decoration-line-through">{{ $formatPrice(product.data.original_price) }}</span>
                 <v-spacer></v-spacer>
                 <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.data.price) }}</span>
             </p>
+
             <p class="text-h6 " v-else>
                 <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.data.price) }}</span>
             </p>
@@ -117,16 +166,12 @@ import { Head, usePage } from '@inertiajs/vue3';
 const page = usePage();
 // Define props
 const props = page.props;
-
 // Access the product prop
 const product = computed(() => props.product);
 
 const cartStore = useCartStore();
 const tab = ref(0);
 
-function handlePreview() {
-    // Handle preview logic here
-}
 console.log(page.props)
 </script>
 
