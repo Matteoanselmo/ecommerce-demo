@@ -58,13 +58,13 @@
                 </div>
             </v-card>
         <v-card class="pa-4" rounded="xl">
-            <v-btn color="primary" block class="my-4">Checkout</v-btn>
+            <v-btn color="primary" rounded="xl" block class="my-4">Checkout</v-btn>
             <v-btn clas block class="my-4" variant="plain">
                 <Link
-                text="o Continua lo Shopping"
-                class="text-center w-100"
-                :href="route('home')"
-                width="100%"
+                    text="o Continua lo Shopping"
+                    class="text-center w-100"
+                    :href="route('home')"
+                    width="100%"
                 >
                 </Link>
             </v-btn>

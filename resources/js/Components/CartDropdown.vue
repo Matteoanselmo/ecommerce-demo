@@ -40,10 +40,10 @@
         </v-list-item>
 
         <v-list-item>
-        <v-btn color="primary" block>Checkout</v-btn>
+            <v-btn rounded="xl" color="primary" block>Checkout</v-btn>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item class="text-center">
             <!-- <v-btn  @click="viewCart">Visualizza il carrello</v-btn> -->
 
             <Link
