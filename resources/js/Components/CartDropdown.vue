@@ -16,7 +16,7 @@
         <v-list-item
         v-for="(product, i) in cartProducts"
         :key="i"
-        :subtitle="'€ ' + product.price"
+        :subtitle="'€ ' + $formatPrice(product.price)"
         :title="product.quantity + 'x ' + product.name"
         >
         <template v-slot:prepend>
@@ -29,14 +29,14 @@
             color="error"
             variant="text"
             block
-            @click="cartStore.removeItem(product.id)"
+            @click="cartStore.removeItem(product)"
             ></v-btn>
         </template>
         </v-list-item>
 
         <v-divider></v-divider>
 
-        <v-list-item title="Totale" :subtitle="'€ ' + totalAmount">
+        <v-list-item title="Totale" :subtitle="'€ ' + $formatPrice(totalAmount)">
         </v-list-item>
 
         <v-list-item>

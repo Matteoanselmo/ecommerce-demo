@@ -6,21 +6,46 @@ export const useCartStore = defineStore('cart', {
     }),
     actions: {
         addItem(newItem) {
-            const existingItem = this.items.find(item => item.id === newItem.id);
+            // Trova la taglia selezionata usando `productSizes` come ID
+            const selectedSize = newItem.sizes.find(size => size.id === newItem.productSizes);
+
+            // Verifica che la taglia selezionata sia valida
+            if (!selectedSize) {
+                console.error("Taglia selezionata non trovata.");
+                return;
+            }
+
+            // Controlla se il prodotto con la taglia selezionata esiste già nel carrello
+            const existingItem = this.items.find(
+                item => item.id === newItem.id && item.sizeId === selectedSize.id
+            );
+
+            // Verifica che la quantità richiesta (usando `selectedSize.quantity`) sia disponibile
+            if (selectedSize.quantity > selectedSize.stock) {
+                console.error("Quantità richiesta oltre lo stock disponibile.");
+                return;
+            }
+
             if (existingItem) {
-                existingItem.quantity += newItem.quantity || 1;
-                existingItem.price = newItem.price; // Aggiorna il prezzo se il prodotto esiste già
-                existingItem.totalPrice = existingItem.quantity * existingItem.price; // Ricalcola il prezzo totale
+                // Se l'articolo esiste già, aggiorna la quantità e il prezzo totale
+                existingItem.quantity += selectedSize.quantity;
+                existingItem.totalPrice = existingItem.quantity * existingItem.price;
             } else {
+                // Se l'articolo non esiste, aggiungilo al carrello con la taglia selezionata
                 this.items.push({
                     ...newItem,
-                    quantity: newItem.quantity || 1,
-                    totalPrice: (newItem.quantity || 1) * newItem.price, // Calcola il prezzo totale iniziale
+                    sizeId: selectedSize.id,
+                    sizeName: selectedSize.name,
+                    quantity: selectedSize.quantity,
+                    totalPrice: selectedSize.quantity * newItem.price,
                 });
             }
         },
-        removeItem(id) {
-            this.items = this.items.filter(item => item.id !== id);
+        removeItem(item) {
+            const index = this.items.indexOf(item);
+            if (index !== -1) {
+                this.items.splice(index, 1);
+            }
         },
         clearCart() {
             this.items = [];

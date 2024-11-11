@@ -81,7 +81,7 @@
             <p class="text-h6 " v-else>
                 <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.data.price) }}</span>
             </p>
-            <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product)">
+            <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product.data)" >
             </v-btn>
         </div>
         </v-col>
