@@ -1,30 +1,6 @@
-<script setup>
-import { ref } from "vue";
-import { useForm, Head, Link, router } from "@inertiajs/vue3";
-
-const props = defineProps({
-    canResetPassword: Boolean,
-    status: String,
-});
-
-const form = useForm({
-    email: "",
-    password: "",
-    remember: false,
-});
-
-const submit = () => {
-    form.post(route("login"), {
-        onFinish: () => form.reset("password"),
-    });
-};
-
-const showPassword = ref(false);
-</script>
-
 <template>
     <v-app>
-        <v-main>
+        <v-main class="login-background">
             <Head title="Log in" />
             <v-container class="mt-10">
                 <v-card class="mx-auto px-5 py-5" max-width="400" rounded="xl" elevation="18">
@@ -93,20 +69,48 @@ const showPassword = ref(false);
                             </div>
                         </form>
                         <div class="text-h6 mb-3">Oppure</div>
-                        <a href="/auth/google" class="v-btn v-btn--elevated v-theme--myCustomTheme v-btn--density-default v-btn--size-default v-btn--variant-elevated"><span class="mdi mdi-google"></span> continua con Goole</a>
+                        <a href="/auth/google" class="v-btn v-btn--elevated v-theme--myCustomTheme v-btn--density-default v-btn--size-default v-btn--variant-elevated"><span class="mdi mdi-google"></span> continua con Google</a>
                     </v-card-text>
                 </v-card>
-
             </v-container>
         </v-main>
     </v-app>
 </template>
 
+<script setup>
+import { ref } from "vue";
+import { useForm, Head, Link } from "@inertiajs/vue3";
+
+const props = defineProps({
+    canResetPassword: Boolean,
+    status: String,
+});
+
+const form = useForm({
+    email: "",
+    password: "",
+    remember: false,
+});
+
+const submit = () => {
+    form.post(route("login"), {
+        onFinish: () => form.reset("password"),
+    });
+};
+
+const showPassword = ref(false);
+</script>
+
 <style scoped>
-.v-main {
+.login-background {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    background: url('/images/background/bg-wave.svg') no-repeat center;
+    background-size: cover;
+    overflow: hidden;
+    position: relative;
 }
+
 </style>

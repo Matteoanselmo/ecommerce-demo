@@ -18,6 +18,7 @@
             max-width="344"
             elevation="0"
             color="background"
+            rounded="xl"
             >
                 <v-img
                     :src="product.cover_image_url"

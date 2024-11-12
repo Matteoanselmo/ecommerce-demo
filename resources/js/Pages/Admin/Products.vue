@@ -139,7 +139,7 @@ function fetchProducts(options = {}) {
             console.log(res.data)
         })
         .catch((e) => {
-            console.log(e);
+            console.error(e);
             loading.value = false;
         });
 }

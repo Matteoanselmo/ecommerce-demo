@@ -75,8 +75,13 @@ Route::get('/user-searches', [UserSearchController::class, 'index']);
 // User
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user-orders', [UserOrderController::class, 'index']);
+
+    // WishList
     Route::get('/user-recent-wishlist', [WishlistController::class, 'recent']);
+    Route::get('/exist/wishlist/{productId}', [WishlistController::class, 'exists']);
     Route::get('/user-wishlist', [WishlistController::class, 'index']);
+    Route::post('/wishlist', [WishlistController::class, 'store']);
+    Route::delete('/wishlist/{productId}', [WishlistController::class, 'destroy']);
 });
 
 // Admin

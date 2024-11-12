@@ -62,9 +62,10 @@
             </v-list>
         </v-navigation-drawer>
 
-        <v-main position-relative class="position-relative">
+        <v-main position-relative class="position-relative" :style="{ backgroundImage: 'url(/images/background/bg.svg)', backgroundRepeat: 'repeat', backgroundPosition: 'center' }">
             <slot></slot>
         </v-main>
+        <notification></notification>
         <newsletter></newsletter>
         <v-footer color="primary">
             <v-col class="text-center white--text">

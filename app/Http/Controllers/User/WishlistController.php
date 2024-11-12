@@ -20,17 +20,29 @@ class WishlistController extends Controller {
         return response()->json(ProductResource::collection($products));
     }
 
+    public function exists($productId) {
+        $exists = Wishlist::where('user_id', Auth::id())
+            ->where('product_id', $productId)
+            ->exists();
+
+        return response()->json($exists);
+    }
+
+
     public function store(Request $request) {
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
 
-        $wishlist = Wishlist::firstOrCreate([
+        Wishlist::firstOrCreate([
             'user_id' => Auth::id(),
             'product_id' => $request->product_id,
         ]);
 
-        return response()->json($wishlist);
+        return response()->json([
+            'message' => 'Prodotto aggiunto alla Lista di ' . Auth::user()->name . ' 😍',
+            'color' => 'success'
+        ]);
     }
 
     public function destroy($id) {
@@ -38,10 +50,16 @@ class WishlistController extends Controller {
 
         if ($wishlist) {
             $wishlist->delete();
-            return response()->json(['message' => 'Prodotto rimosso dalla lista dei desideri']);
+            return response()->json([
+                'message' => 'Prodotto rimosso dalla lista dei desideri 🥹',
+                'color' => 'blue-darken-4'
+            ]);
         }
 
-        return response()->json(['message' => 'Prodotto non trovato nella lista dei desideri'], 404);
+        return response()->json([
+            'message' => 'Prodotto non trovato nella lista dei desideri 🧐',
+            'color' => 'danger'
+        ]);
     }
 
     public function recent() {

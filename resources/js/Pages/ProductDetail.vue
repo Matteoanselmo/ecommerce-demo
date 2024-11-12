@@ -22,11 +22,13 @@
 
             <div class="text-h4 font-weight-bold mb-2">
                 {{ product.data.name }}
+                <wish-list-heart :productId="product.data.id"></wish-list-heart>
             </div>
             <RatingStars
                 :ratings="product.data.rating_star"
                 :readOnly="true"
             />
+
             <v-card title="Descrizone Prodotto" rounded="xl" class="mb-4">
                 <v-card-text v-html="product.data.description">
 
@@ -46,30 +48,31 @@
 
 
             <v-chip-group v-model="product.data.productSizes" column>
-            <v-chip
-                v-for="size in product.data.sizes"
-                :key="size.id"
-                :value="size.id"
-                filter
-                class="d-flex align-center mb-2"
-                size="x-large"
-            >
-                <div class="d-flex align-center">
-                    <p class="mb-0 mr-4">
-                        {{ size.name }} ({{ size.stock }} pezzi)
-                    </p>
-                    <v-number-input
-                        v-model="size.quantity"
-                        control-variant="split"
-                        :max="size.stock"
-                        :min="1"
-                        class="ml-4"
-                        variant="plain"
-                        :disabled="size.id !== product.data.productSizes"
-                    ></v-number-input>
-                </div>
-            </v-chip>
-        </v-chip-group>
+                <v-chip
+                    v-for="size in product.data.sizes"
+                    :key="size.id"
+                    :value="size.id"
+                    mandatory
+                    class="d-flex align-center mb-2"
+                    size="x-large"
+                    :prepend-icon="size.id === product.data.productSizes ? 'mdi-check' : ''"
+                >
+                    <div class="d-flex align-center">
+                        <p class="mb-0 mr-4">
+                            {{ size.name }} ({{ size.stock }} pezzi)
+                        </p>
+                        <v-number-input
+                            v-model="size.quantity"
+                            control-variant="split"
+                            :max="size.stock"
+                            :min="0"
+                            class="ml-4"
+                            variant="plain"
+                            :disabled="size.id !== product.data.productSizes"
+                        ></v-number-input>
+                    </div>
+                </v-chip>
+            </v-chip-group>
 
 
             <p class="text-h6 " v-if="product.data.original_price > product.data.price">
@@ -81,7 +84,7 @@
             <p class="text-h6 " v-else>
                 <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.data.price) }}</span>
             </p>
-            <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product.data)" >
+            <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product.data)" :disabled="!canAddToCart" >
             </v-btn>
         </div>
         </v-col>
@@ -169,6 +172,9 @@ const props = page.props;
 // Access the product prop
 const product = computed(() => props.product);
 
+const canAddToCart = computed(() => {
+    return product.value.data.sizes.some(size => size.quantity > 0);
+});
 const cartStore = useCartStore();
 const tab = ref(0);
 

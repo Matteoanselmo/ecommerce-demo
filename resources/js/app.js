@@ -20,6 +20,7 @@ import UserMenu from './Components/UserMenu.vue';
 import ProductSearcBar from './Components/Products/ProductSearcBar.vue';
 import Notification from './Components/Notification.vue';
 import NewsLetter from './Components/NewsLetter.vue';
+import WishlistHeart from './Components/Products/WishlistHeart.vue';
 import { VDateInput } from 'vuetify/lib/labs/components.mjs';
 import { VNumberInput } from 'vuetify/lib/labs/VNumberInput/index.mjs';
 
@@ -64,6 +65,7 @@ createInertiaApp({
             .component('newsletter', NewsLetter)
             .component('v-date-input', VDateInput)
             .component('v-number-input', VNumberInput)
+            .component('wish-list-heart', WishlistHeart)
             .use(vuetify);
 
         app.config.globalProperties.$formatPrice = formatPrice;
