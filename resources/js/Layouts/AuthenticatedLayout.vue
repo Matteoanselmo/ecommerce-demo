@@ -57,6 +57,7 @@
         <v-main position-relative class="position-relative">
             <slot></slot>
         </v-main>
+        <notification></notification>
     </v-app>
 </template>
 

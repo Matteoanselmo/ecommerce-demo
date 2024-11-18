@@ -17,6 +17,7 @@ use App\Http\Controllers\ReturnPolicyController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\User\AddressController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\UserSearchController;
@@ -82,6 +83,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user-wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist', [WishlistController::class, 'store']);
     Route::delete('/wishlist/{productId}', [WishlistController::class, 'destroy']);
+
+    // Addresses
+    Route::get('/user-addresses', [AddressController::class, 'index']);
+    Route::post('/user-addresses', [AddressController::class, 'store']);
+    Route::put('/user-addresses/{id}', [AddressController::class, 'update']);
+    Route::delete('/user-addresses/{id}', [AddressController::class, 'destroy']);
 });
 
 // Admin

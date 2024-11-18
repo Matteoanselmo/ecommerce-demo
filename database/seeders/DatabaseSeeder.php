@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder {
             WishlistSeeder::class,
             SizeSeeder::class,
             ProductSizeSeeder::class,
-            CertificationSeeder::class
+            CertificationSeeder::class,
+            UserAddressSeeder::class
         ]);
     }
 }

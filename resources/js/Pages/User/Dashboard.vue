@@ -1,9 +1,8 @@
 <script setup>
-import { Head, Link, usePage } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
-import axios from 'axios';
-
-
+import { Head, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import OrdersTable from '@/Components/User/OrdersTable.vue';
+import Address from '@/Components/User/Address.vue';
 const page = usePage()
 const user = ref(page.props.auth.user);
 const tab = ref("");
@@ -14,77 +13,21 @@ const sidebarLinks = ref([
         title: 'I miei ordini',
     },
     {
-        icon: "mdi mdi-account-outline",
-        tab: "details",
-        title: 'Dettagli',
-    },
-    {
-        icon: "mdi mdi-lock-outline",
-        tab: "change-password",
-        title: 'Cambia Password',
-    },
-    {
         icon: "mdi mdi-home-outline",
         tab: "addresses",
         title: 'I miei indirizzi',
-    },
-    {
-        icon: "mdi mdi-help-circle-outline",
-        tab: "help",
-        title: 'Serve aiuto?',
     },
     {
         icon: "mdi mdi-heart-outline",
         tab: "wishlist",
         title: 'WishList',
     },
+    {
+        icon: "mdi mdi-help-circle-outline",
+        tab: "help",
+        title: 'Serve aiuto?',
+    },
 ]);
-
-const headers = [
-    { title: "Ordine", value: "order_number", align: "start" },
-    { title: "Data", value: "order_date" },
-    { title: "Spedito in", value: "shipped_in" },
-    { title: "Pagamento", value: "payment" },
-    { title: "Stato Ordine", value: "status" },
-    { title: "Spedizione", value: "shipping_number", sortable: false },
-    { title: "Dettagli", value: "details", sortable: false },
-    { title: "Totale", value: "total_amount" },
-    { title: "Fattura", value: "fattura", sortable: false },
-];
-
-const items = ref([]);
-const loading = ref(false);
-const options = ref({
-    page: 1,
-    itemsPerPage: 10,
-    sortBy: [],
-    sortDesc: [],
-    groupBy: [],
-    groupDesc: [],
-    search: '',
-});
-
-const totalItems = ref(0);
-
-function fetchOrders() {
-    loading.value = true;
-
-    // API request for server-side data
-    axios
-        .get('/api/user-orders', options.value)
-        .then((response) => {
-            const { data, total } = response.data;
-            items.value = data;
-            console.log(items.value)
-            totalItems.value = total;
-        })
-        .finally(() => {
-            loading.value = false;
-        });
-}
-
-// Watch options to refetch data when changes occur
-watch(options, fetchOrders, { deep: true });
 
 function getInitials(name) {
     if (!name) return '';
@@ -120,62 +63,11 @@ function getInitials(name) {
 
                     <!-- Orders Table -->
                     <v-tabs-window-item value="dashboard">
-                        <div class="py-5 px-4">
-                            <h1 class="text-h4 mb-4">I miei ordini</h1>
-                            <v-data-table-server
-                                :expand-on-click="false"
-                                :items-per-page="options.itemsPerPage"
-                                :headers="headers"
-                                :items="items"
-                                :items-length="totalItems"
-                                :loading="loading"
-                                loading-text="Caricamento in corso..."
-                                @update:options="fetchOrders"
-                            >
-                                <template #item.payment="{ item }">
-                                    <v-chip color="success" text="white">{{ item.payment }}</v-chip>
-                                </template>
-                                <template #item.status="{ item }">
-                                    <v-chip v-if="item.status === 'confirmed'" color="success"  text="white">{{ item.status }}</v-chip>
-                                    <v-chip v-else-if="item.status === 'delivered'" color="warning" text="white">{{ item.status }}</v-chip>
-                                    <v-chip v-else-if="item.status === 'on_delivery'" color="warning" text="white">{{ item.status }}</v-chip>
-                                    <v-chip v-else-if="item.status === 'in_progress'" color="info" text="white">{{ item.status }}</v-chip>
-                                    <v-chip v-else-if="item.status === 'returned'" color="danger" text="white">{{ item.status }}</v-chip>
-                                </template>
-                                <template #item.tracking="{ item }">
-                                    <Link href="/" class="text-decoration-none">{{ item.tracking }}</Link>
-                                </template>
-                                <template #item.details="{ item }">
-                                    <Link  href="/" class="text-decoration-none">{{ item.details }}</Link>
-                                </template>
-                                <template #item.total_amount="{ item }">
-                                    {{ $formatPrice(item.total_amount) }}
-                                </template>
-                                <template #item.fattura="{ item }">
-                                    <v-btn icon v-if="item.fattura" size="small">
-                                        <v-icon icon="mdi mdi-download"></v-icon>
-                                    </v-btn>
-                                </template>
-                            </v-data-table-server>
-                        </div>
+                        <OrdersTable/>
                     </v-tabs-window-item>
                     <!-- Address Table -->
                     <v-tabs-window-item value="addresses">
-                        <div class="py-5 px-4">
-                            <div class="d-flex align-center justify-space-between">
-                                <h1 class="text-h4 mb-4">Indirizzi</h1>
-                                <v-btn icon="mdi mdi-plus" color="primary" class="mb-2"></v-btn>
-                            </div>
-                            <v-row>
-                                <v-col cols="4" >
-                                    <v-card rounded="xl" class="py-4 px-4" border="0" elevation="0">
-                                        <v-form>
-                                            qua andranno gli indirizzi e ne caso aggiungerli o modificarli
-                                        </v-form>
-                                    </v-card>
-                                </v-col>
-                            </v-row>
-                        </div>
+                        <Address/>
                     </v-tabs-window-item>
                 </v-tabs-window>
             </v-col>
