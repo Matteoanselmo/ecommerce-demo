@@ -62,7 +62,7 @@
             </v-list>
         </v-navigation-drawer>
 
-        <v-main position-relative class="position-relative" :style="{ backgroundImage: 'url(/images/background/bg.svg)', backgroundRepeat: 'repeat', backgroundPosition: 'center' }">
+        <v-main position-relative class="position-relative" >
             <slot></slot>
         </v-main>
         <notification></notification>

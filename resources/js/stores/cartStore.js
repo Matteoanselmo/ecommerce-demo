@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useNotificationStore } from './notification.store';
 
 export const useCartStore = defineStore('cart', {
     state: () => ({
@@ -6,12 +7,13 @@ export const useCartStore = defineStore('cart', {
     }),
     actions: {
         addItem(newItem) {
+            const notificationStore = useNotificationStore();
             // Trova la taglia selezionata usando `productSizes` come ID
             const selectedSize = newItem.sizes.find(size => size.id === newItem.productSizes);
 
             // Verifica che la taglia selezionata sia valida
             if (!selectedSize) {
-                console.error("Taglia selezionata non trovata.");
+                notificationStore.notify("Taglia selezionata non trovata.", "danger");
                 return;
             }
 
@@ -22,11 +24,16 @@ export const useCartStore = defineStore('cart', {
 
             // Verifica che la quantità richiesta (usando `selectedSize.quantity`) sia disponibile
             if (selectedSize.quantity > selectedSize.stock) {
-                console.error("Quantità richiesta oltre lo stock disponibile.");
+                notificationStore.notify("Quantità richiesta oltre lo stock disponibile.", "danger");
                 return;
             }
 
             if (existingItem) {
+                // Verifica che la quantità totale non superi lo stock disponibile
+                if (existingItem.quantity + selectedSize.quantity > selectedSize.stock) {
+                    notificationStore.notify("Quantità totale richiesta oltre lo stock disponibile.", "danger");
+                    return;
+                }
                 // Se l'articolo esiste già, aggiorna la quantità e il prezzo totale
                 existingItem.quantity += selectedSize.quantity;
                 existingItem.totalPrice = existingItem.quantity * existingItem.price;
@@ -51,10 +58,13 @@ export const useCartStore = defineStore('cart', {
             this.items = [];
         },
         incrementQuantity(id) {
+            const notificationStore = useNotificationStore();
             const item = this.items.find(item => item.id === id);
-            if (item) {
+            if (item && item.quantity < item.stock) { // Verifica che la quantità non superi lo stock
                 item.quantity++;
                 item.totalPrice = item.quantity * item.price; // Aggiorna il prezzo totale
+            } else {
+                notificationStore.notify("Quantità massima raggiunta per questo articolo.", "danger");
             }
         },
         decrementQuantity(id) {

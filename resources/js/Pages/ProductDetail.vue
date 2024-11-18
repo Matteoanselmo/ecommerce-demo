@@ -84,7 +84,21 @@
             <p class="text-h6 " v-else>
                 <span color="danger" class="font-weight-bold text-primary" >{{ $formatPrice(product.data.price) }}</span>
             </p>
-            <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product.data)" :disabled="!canAddToCart" >
+                <v-btn
+                    width="100%"
+                    variant="tonal"
+                    :color="cartAnimation ? 'success' : 'secondary '"
+                    @click="cartStore.addItem(product.data),addToCartAnimation()"
+                    :disabled="!canAddToCart"
+                    :class="{'btn-add-to-cart': cartAnimation}"
+                >
+                <template v-if="cartAnimation">
+                    <v-icon class="cart-icon text-white">mdi-cart</v-icon>
+                    <span class="added-text  text-white">Aggiunto!</span>
+                </template>
+                <template v-else>
+                    <span class="button-text">Aggiungi al Carrello</span>
+                </template>
             </v-btn>
         </div>
         </v-col>
@@ -172,9 +186,18 @@ const props = page.props;
 // Access the product prop
 const product = computed(() => props.product);
 
+const cartAnimation = ref(false);
+
 const canAddToCart = computed(() => {
     return product.value.data.sizes.some(size => size.quantity > 0);
 });
+
+function addToCartAnimation(){
+    cartAnimation.value = !cartAnimation.value;
+    setTimeout(() => {
+        cartAnimation.value = false; // Disattiva l'animazione dopo 1 secondo
+    }, 1000);
+}
 const cartStore = useCartStore();
 const tab = ref(0);
 
@@ -186,4 +209,6 @@ console.log(page.props)
 ul {
     list-style: disc inside;
 }
+
+
 </style>
