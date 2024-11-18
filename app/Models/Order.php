@@ -17,7 +17,13 @@ class Order extends Model {
         'order_number',
         'total_amount',
         'user_id',
+        'data',
+        'shipped_in',
+        'payment',
+        'details',
+        'fattura',
     ];
+
 
     /*
     lo status potra essere in diversi stati ovvero:
