@@ -1,9 +1,7 @@
 <template>
     <v-app>
         <v-app-bar app class=" py-1">
-            <template v-slot:prepend>
-                <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
-            </template>
+
             <v-app-bar-title>
                 <v-img contain src="/images/logo/logo.jpg" max-width="229" />
             </v-app-bar-title>
@@ -14,45 +12,6 @@
             </template>
         </v-app-bar>
 
-        <v-navigation-drawer
-            mobile-breakpoint="sm"
-            v-model="drawer"
-            app
-            color="primary"
-            location="left"
-            expand-on-hover
-            rail
-        >
-            <v-list
-                density="compact"
-                nav
-                lines="one"
-            >
-                <v-list-item
-                    v-for="item in items" :key="item.title"
-                    variant="plain"
-                    class="text-start hoverable-list-item"
-                    width="100%"
-                    :prepend-icon="item.icon"
-                >
-                    <Link
-                        v-if="item.link !== 'logout'"
-                        class="text-decoration-none font-weight-black "
-                        :href="route(item.link)"
-                        :text="item.title"
-                    />
-                    <Link
-                        v-else
-                        method="POST"
-                        as="button"
-                        class="text-black"
-                        :href="route(item.link)"
-                    >
-                        {{ item.title }}
-                    </Link>
-                </v-list-item>
-            </v-list>
-        </v-navigation-drawer>
 
         <v-main position-relative class="position-relative">
             <slot></slot>
