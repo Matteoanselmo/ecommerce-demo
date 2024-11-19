@@ -1,12 +1,53 @@
-<script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+<template>
+    <v-app>
+        <v-main class="login-background">
+            <Head title="Forgot Password" />
+            <v-container class="mt-10">
+                <v-card class="mx-auto px-5 py-5" max-width="400" rounded="xl" elevation="18">
+                    <v-card-title> Password Dimenticata </v-card-title>
 
-defineProps({
+                    <v-card-text>
+                        <div
+                            v-if="status"
+                            class="mb-4 font-medium text-sm text-green-600"
+                        >
+                            {{ status }}
+                        </div>
+
+                        <form @submit.prevent="submit" class="mb-3">
+                            <v-text-field
+                                v-model="form.email"
+                                label="Email"
+                                type="email"
+                                required
+                                :error-messages="
+                                    form.errors.email ? [form.errors.email] : []
+                                "
+                                autofocus
+                            ></v-text-field>
+
+                            <div class="d-flex justify-end mt-4">
+                                <v-btn
+                                    class="ms-4"
+                                    :disabled="form.processing"
+                                    :loading="form.processing"
+                                    type="submit"
+                                >
+                                    Invia Email di reset
+                                </v-btn>
+                            </div>
+                        </form>
+                    </v-card-text>
+                </v-card>
+            </v-container>
+        </v-main>
+    </v-app>
+</template>
+
+<script setup>
+import { useForm, Head } from "@inertiajs/vue3";
+
+const props = defineProps({
     status: {
         type: String,
     },
@@ -21,41 +62,15 @@ const submit = () => {
 };
 </script>
 
-<template>
-    <GuestLayout>
-        <Head title="Forgot Password" />
-
-        <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset
-            link that will allow you to choose a new one.
-        </div>
-
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Email Password Reset Link
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
-</template>
+<style scoped>
+.login-background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('/images/background/bg-wave.svg') no-repeat center;
+    background-size: cover;
+    overflow: hidden;
+    position: relative;
+}
+</style>

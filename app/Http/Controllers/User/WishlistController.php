@@ -14,10 +14,18 @@ class WishlistController extends Controller {
 
         // Trasforma i prodotti della wishlist usando ProductResource
         $products = $wishlists->map(function ($wishlist) {
-            return $wishlist->product;
+            $product = $wishlist->product;
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+                'discounted_price' => $product->getDiscountedPrice(),
+                'cover_image' => $product->coverImage(), // Aggiungi l'immagine di copertina
+            ];
         });
 
-        return response()->json(ProductResource::collection($products));
+        return response()->json($products);
     }
 
     public function exists($productId) {

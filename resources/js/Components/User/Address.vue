@@ -6,12 +6,12 @@
             </v-btn>
         </div>
         <v-row>
-            <v-col cols="4" v-for="(address, index) in addresses" :key="address.id">
+            <v-col cols="12" sm="6" lg="4" v-for="(address, index) in addresses" :key="address.id">
                 <v-card
                     rounded="xl"
                     class="py-4 px-4"
                     border="0"
-                    elevation="1"
+                    elevation="0"
                     :title="address.address + ' - ' + address.house_number"
                 >
                     <v-card-text>
