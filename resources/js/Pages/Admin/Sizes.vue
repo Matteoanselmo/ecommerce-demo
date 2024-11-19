@@ -73,7 +73,8 @@ const headers = ref([
         align: 'start',
         sortable: false,
         key: 'name',
-        type: 'text'
+        type: 'text',
+        isEditable: true
     },
     {
         title: 'Categoria',
@@ -83,6 +84,7 @@ const headers = ref([
         model: 'category_id',
         type: 'select',
         items: categories,
+        isEditable: true
     },
     {
         title: "Azioni",

@@ -34,6 +34,24 @@ class CategoryController extends Controller {
         ]);
     }
 
+    public function store(Request $request) {
+        // Valida i dati in arrivo
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:255',
+        ]);
+
+        // Crea una nuova categoria con i dati validati
+        $category = Category::create($validatedData);
+
+        return response()->json([
+            'message' => 'Categoria creata con successo',
+            'color' => 'success',
+            'data' => $category,
+        ], 201);
+    }
+
+
     public function update(Request $request, $id) {
         // Trova la categoria da aggiornare
         $category = Category::findOrFail($id);
@@ -50,6 +68,7 @@ class CategoryController extends Controller {
         // Risposta con la categoria aggiornata e un messaggio di successo
         return response()->json([
             'message' => 'Categoria aggiornata con successo.',
+            'color' => 'success',
             'data' => $category,
         ]);
     }
@@ -85,5 +104,33 @@ class CategoryController extends Controller {
                 'color' => 'success'
             ], 200);
         }
+    }
+
+    public function destroy($id) {
+        // Trova la categoria tramite l'ID
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json([
+                'message' => 'Categoria non trovata',
+                'color' => 'danger'
+            ], 404);
+        }
+
+        // Controlla se la categoria ha relazioni associate (prodotti, sconti, ecc.)
+        if ($category->products()->exists() || $category->subCategories()->exists() || $category->sizes()->exists()) {
+            return response()->json([
+                'message' => 'Impossibile eliminare la categoria perché ha elementi associati.',
+                'color' => 'warning'
+            ], 400);
+        }
+
+        // Elimina la categoria
+        $category->delete();
+
+        return response()->json([
+            'message' => 'Categoria eliminata con successo',
+            'color' => 'success'
+        ], 200);
     }
 }

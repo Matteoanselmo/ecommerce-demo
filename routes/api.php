@@ -139,11 +139,16 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/sizes', [AdminSizeController::class, 'index']);
     Route::post('/product/{productId}/sizes', [AdminSizeController::class, 'updateProductSizes']);
     Route::post('/product/{productId}/sizes-with-stock', [AdminSizeController::class, 'updateProductSizesWithStock']);
+    Route::post('/size', [AdminSizeController::class, 'store']);
+    Route::patch('/size/{sizeId}', [AdminSizeController::class, 'update']);
+    Route::delete('/size/{sizeId}', [AdminSizeController::class, 'destroy']);
 
     //Categorie
     Route::post('/product/{productId}/category', [AdminCategoryController::class, 'updateProductCategory']);
     Route::get('/categories', [AdminCategoryController::class, 'index']);
+    Route::post('/category', [AdminCategoryController::class, 'store']);
     Route::patch('/category/{id}', [AdminCategoryController::class, 'update']);
+    Route::delete('/category/{id}', [AdminCategoryController::class, 'destroy']);
 
     // Faqs
     Route::post('/product/{productId}/faqs', [FaqController::class, 'saveFaqs']);

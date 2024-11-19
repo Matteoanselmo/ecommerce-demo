@@ -94,46 +94,71 @@ class SizeController extends Controller {
         ], 200);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create() {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request) {
-        //
+        // Valida i dati in arrivo
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
+        // Crea una nuova taglia con i dati validati
+        $size = Size::create($validatedData);
+
+        return response()->json([
+            'message' => 'Taglia creata con successo',
+            'color' => 'success',
+            'data' => $size,
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id) {
-        //
-    }
+    public function update(Request $request, $id) {
+        // Trova la taglia con l'ID specificato
+        $size = Size::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id) {
-        //
-    }
+        if (!$size) {
+            return response()->json([
+                'message' => 'Taglia non trovata',
+                'color' => 'danger'
+            ], 404);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id) {
-        //
+        // Valida il nome in arrivo
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        // Aggiorna il nome della taglia
+        $size->update([
+            'name' => $validatedData['name'],
+        ]);
+
+        return response()->json([
+            'message' => 'Nome della taglia aggiornato con successo',
+            'color' => 'success',
+            'data' => $size
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id) {
-        //
+    public function destroy($id) {
+        // Trova la taglia con l'ID specificato
+        $size = Size::findOrFail($id);
+
+        if (!$size) {
+            return response()->json([
+                'message' => 'Taglia non trovata',
+                'color' => 'danger'
+            ], 404);
+        }
+
+        // Elimina la taglia
+        $size->delete();
+
+        return response()->json([
+            'message' => 'Taglia eliminata con successo',
+            'color' => 'success'
+        ], 200);
     }
 }

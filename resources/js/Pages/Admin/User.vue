@@ -63,6 +63,7 @@ const headers = ref([
         sortable: false,
         type: 'text',
         key: 'name',
+        isEditable: true
     },
     {
         title: 'Email',
@@ -70,6 +71,7 @@ const headers = ref([
         sortable: false,
         type: 'email',
         key: 'email',
+        isEditable: true
     },
     {
         title: 'Ruolo',
@@ -78,6 +80,7 @@ const headers = ref([
         type: 'select',
         items: ['admin', 'user'],
         key: 'role',
+        isEditable: true
     },
     {
         title: 'Password',
@@ -86,6 +89,7 @@ const headers = ref([
         sortable: false,
         type: 'password',
         key: 'password',
+        isEditable: true
     },
     {
         title: "Azioni",

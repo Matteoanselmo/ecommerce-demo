@@ -60,14 +60,16 @@ const headers = ref([
         align: 'start',
         sortable: false,
         key: 'name',
-        type: 'text'
+        type: 'text',
+        isEditable: true
     },
     {
         title: 'Icona',
         align: 'start',
         sortable: false,
         key: 'icon',
-        type: 'text'
+        type: 'text',
+        isEditable: true
     },
     {
         title: "Azioni",

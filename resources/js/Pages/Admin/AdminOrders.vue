@@ -72,11 +72,20 @@ const headers = ref([
         type: 'text'
     },
     {
-        title: 'Data',
+        title: 'Data Ordine',
         align: 'start',
         sortable: false,
         key: 'order_date',
-        type: 'date'
+        type: 'date',
+        isEditable: false
+    },
+    {
+        title: 'Data Spedizione',
+        align: 'start',
+        sortable: false,
+        key: 'data',
+        type: 'date',
+        isEditable: true
     },
     {
         title: 'Stato',
@@ -86,13 +95,30 @@ const headers = ref([
         model: 'status',
         type: 'select',
         items: ['confirmed', 'returned'],
+        isEditable: true
     },
     {
         title: 'Numero spedizione',
         align: 'start',
         sortable: false,
         key: 'shipping_number',
+        type: 'text',
+        isEditable: true
+    },
+    {
+        title: 'Tipo di Pagamento',
+        align: 'start',
+        sortable: false,
+        key: 'payment',
         type: 'text'
+    },
+    {
+        title: 'Totale Ordine',
+        align: 'start',
+        sortable: false,
+        key: 'total_amount',
+        type: 'number',
+        isEditable: false
     },
     {
         title: "Azioni",

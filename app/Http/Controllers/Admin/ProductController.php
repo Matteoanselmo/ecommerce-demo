@@ -52,6 +52,55 @@ class ProductController extends Controller {
         ]);
     }
 
+    public function store(Request $request) {
+        // Valida i dati in arrivo
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'subcategory_id' => 'required|exists:sub_categories,id',
+            'category_id' => 'required|exists:categories,id',
+            'categorydetails_id' => 'nullable|exists:category_details,id',
+            'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        // Crea il prodotto
+        $product = Product::create([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'] ?? null,
+            'price' => $validatedData['price'],
+            'subcategory_id' => $validatedData['subcategory_id'],
+            'category_id' => $validatedData['category_id'],
+            'categorydetails_id' => $validatedData['categorydetails_id'] ?? null,
+        ]);
+
+        // Gestione delle immagini caricate su S3
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                // Salva il file su S3 con permessi pubblici e ottieni il percorso
+                $path = Storage::disk('s3')->put('product_images', $image, 'public');
+
+                // Crea un nuovo record nella tabella 'product_images' con l'URL completo su S3
+                $product->images()->create([
+                    'image_url' => Storage::disk('s3')->url($path),  // URL completo su S3
+                    'extension' => $image->getClientOriginalExtension(),
+                ]);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Prodotto creato con successo',
+            'color' => 'success',
+            'data' => $product->load([
+                'category',           // Carica la categoria associata
+                'subCategory',        // Carica la sub-categoria associata
+                'categoryDetail',     // Carica i dettagli della categoria
+                'images',             // Carica le immagini del prodotto
+            ]),
+        ], 201);
+    }
+
+
     public function update(Request $request, $id) {
 
         $validatedData = $request->validate([
@@ -97,7 +146,6 @@ class ProductController extends Controller {
             'color' => 'success'
         ]);
     }
-
 
     public function destroyImage($id) {
         // Trova l'immagine tramite l'ID

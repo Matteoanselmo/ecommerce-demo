@@ -27,7 +27,7 @@
                     :loading="loading"
                     :type="'product'"
                     :page="page"
-                    :crud="['show']"
+                    :crud="['show', 'delete']"
                     :search-fields="searchFields"
                     @updateItems="fetchProducts"
                 />
@@ -66,6 +66,7 @@ const headers = ref([
         sortable: false,
         type: 'text',
         key: 'name',
+        isEditable: true
     },
     {
         title: 'Descrizione',
@@ -74,6 +75,7 @@ const headers = ref([
         sortable: false,
         type: 'text',
         key: 'description',
+        isEditable: true
     },
     {
         title: 'Categoria',
@@ -83,18 +85,12 @@ const headers = ref([
         key: 'category.name',
     },
     {
-        title: 'Stock',
-        align: 'start',
-        sortable: false,
-        type: 'number',
-        key: 'stock_quantity',
-    },
-    {
         title: 'Prezzo',
         align: 'start',
         sortable: false,
         type: 'number',
         key: 'price',
+        isEditable: true
     },
     {
         title: "Azioni",

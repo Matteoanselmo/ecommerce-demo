@@ -10,60 +10,94 @@
         loading-text="Caricamento in corso..."
         item-value="name"
         @update:options="handleOptionsUpdate"
-
     >
+    <!-- Slot per contenuti aggiuntivi in alto -->
+        <template #top>
+                <div class="d-flex justify-end align-center py-3 pr-3">
+                    <v-btn
+                        color="info"
+                        size="small"
+                        @click="openCreateModal()"
+                        icon="mdi mdi-plus"
+                        rounded="xl"
+                    >
+                    </v-btn>
+                </div>
+            </template>
+
         <template #item.actions="{ item }" >
+            <Link
+                as="button"
+                :href="route('admin.product.crud', { product: item.id })"
+                v-if="props.crud.includes('show')"
+                class="v-btn v-theme--myCustomTheme text-warning v-btn--density-default v-btn--size-small v-btn--variant-outlined me-3"
+            >
+                <span class="mdi mdi-delete-alert-outline"></span>
+            </Link>
             <v-btn v-if="props.crud.includes('store')" variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
                 <span class="mdi mdi-file-edit-outline"></span>
             </v-btn>
             <v-btn v-if="props.crud.includes('delete')" variant="outlined" size="small" color="danger" @click="deleteItem(item.id)">
                 <span class="mdi mdi-delete-alert-outline"></span>
             </v-btn>
-            <Link
-                as="button"
-                :href="route('admin.product.crud', { product: item.id })"
-                v-if="props.crud.includes('show')"
-                class="v-btn v-btn--outlined v-btn--small v-btn--text text-primary"
-            >
-                <span class="mdi mdi-eye-outline"></span>
-            </Link>
         </template>
     </v-data-table-server>
 
     <v-dialog v-model="showModal" max-width="600">
-        <v-card>
-            <v-card-title>Dettagli Ordine</v-card-title>
-            <v-card-title v-if="isEditable" class="text-warning">Attenzione Modifica Attiva!</v-card-title>
-            <v-form class="px-3">
-                    <div v-for="(header) in props.headers" :key="header.key" class="mb-3" >
-                        <v-select
-                            v-if="header.type ==='select'"
-                            v-model="selectedItem[header.model]"
-                            :label="header.title"
-                            :items="header.items"
-                            item-title="name"
-                            item-value="id"
-                            variant="solo-filled"
-                            :disabled="!isEditable"
-                        ></v-select>
-                        <v-text-field
-                        v-else-if="header.key !== 'actions' "
-                        variant="solo-filled"
-                            v-model="selectedItem[header.key]"
-                            :type="header.type"
-                            :label="header.title"
-                            :key="header.key"
-                            :disabled="!isEditable"
-                        ></v-text-field>
-                    </div>
-                </v-form>
-            <v-card-actions>
-                <v-btn v-if="!isEditable" color="warning" type="submit" text="Modifica" @click="isEditable = true"></v-btn>
-                <v-btn v-if="isEditable" color="success" type="submit" text="Salva" @click="saveChanges(), isEditable = false"></v-btn>
-                <v-btn color="primary" @click="showModal = false, isEditable = false">Chiudi</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
+    <v-card>
+        <v-card-title>{{ isCreateMode ? 'Crea Nuovo Elemento' : 'Dettagli Ordine' }}</v-card-title>
+        <v-form class="px-3">
+            <div v-for="(header) in props.headers" :key="header.key" class="mb-3">
+                <v-select
+                    v-if="header.type === 'select'"
+                    v-model="selectedItem[header.model]"
+                    :label="header.title"
+                    :items="header.items"
+                    item-title="name"
+                    item-value="id"
+                    variant="solo-filled"
+                    :disabled="!isEditable && !isCreateMode"
+                ></v-select>
+                <v-text-field
+                    v-else-if="header.key !== 'actions' && header.isEditable"
+                    variant="solo-filled"
+                    v-model="selectedItem[header.key]"
+                    :type="header.type"
+                    :label="header.title"
+                    :key="header.key"
+                    :disabled="!isEditable && !isCreateMode"
+                ></v-text-field>
+            </div>
+        </v-form>
+        <v-card-actions>
+            <v-btn
+                v-if="isCreateMode"
+                color="success"
+                text="Crea"
+                @click="createNewItem(), closeModal()"
+            ></v-btn>
+            <v-btn
+                v-if="!isEditable && !isCreateMode"
+                color="warning"
+                text="Modifica"
+                @click="isEditable = true"
+            ></v-btn>
+            <v-btn
+                v-if="!isCreateMode && isEditable"
+                color="success"
+                text="Salva"
+                @click="saveChanges(), isEditable = false, closeModal()"
+            ></v-btn>
+            <v-btn
+                color="primary"
+                @click="closeModal()"
+            >
+                Chiudi
+            </v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>
+
 </template>
 
 
@@ -92,6 +126,7 @@ const search = ref('');
 const showModal = ref(false);
 const selectedItem = ref({});
 const isEditable = ref(false);
+const isCreateMode = ref(false);
 // Computed property per filtrare gli items
 const filteredHeaders = computed(() => {
     return props.headers.filter(item => item.hidden !== true);
@@ -99,8 +134,20 @@ const filteredHeaders = computed(() => {
 
 function openModal(item) {
     selectedItem.value = item;
-    console.log(selectedItem.value)
     showModal.value = true;
+}
+
+function openCreateModal(item) {
+    isCreateMode.value = true;
+    selectedItem.value = item;
+    selectedItem.value = {}; // Oggetto effimero per la creazione
+    showModal.value = true;
+}
+
+function closeModal() {
+    isCreateMode.value = false;
+    isEditable.value = false;
+    showModal.value = false;
 }
 
 const emit = defineEmits(['updateItems']);
@@ -139,12 +186,25 @@ function deleteItem(id) {
             emit('updateItems');
         }).catch((e) => {
             console.error(e)
-            notificationStore.notify(e, 'danger')
+            notificationStore.notify(e.response.data.message, 'danger')
         });
     } else {
         notificationStore.notify('Operazione Annullata! ', 'warning')
     }
 }
+// Funzione per creare un elemento
+function createNewItem() {
+    axios.post(`/api/${props.type}`, selectedItem.value)
+        .then(res => {
+            notificationStore.notify(res.data.message, res.data.color);
+            emit('updateItems'); // Aggiorna la lista
+            closeModal(); // Chiudi il modale
+        })
+        .catch(e => {
+            notificationStore.notify(e.response?.data?.message || 'Errore nella creazione', 'danger');
+        });
+}
+
 
 // Utilizza lodash debounce per ritardare la chiamata
 const debouncedHandleOptionsUpdate = debounce(handleOptionsUpdate, 500);
