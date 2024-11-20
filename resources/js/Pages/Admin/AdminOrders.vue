@@ -28,6 +28,7 @@
                     :type="'order'"
                     :page="page"
                     :search-fields="searchFields"
+                    :crud="['update', 'delete']"
                     @updateItems="fetchOrders"
                 />
             </v-col>

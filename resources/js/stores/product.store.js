@@ -115,6 +115,23 @@ export const useProductStore = defineStore({
                 console.error(err);
             });
         },
+        fetchFilteredProducts(filters) {
+            this.loading = true;
+            axios
+                .post('/api/filter-products', filters)
+                .then((res) => {
+                    console.log(res.data)
+                    this.products = res.data.data;
+                    this.pagination.total = res.data.meta.total;
+                    this.pagination.last_page = res.data.meta.last_page;
+                    this.pagination.current_page = res.data.meta.current_page;
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    console.error(err);
+                    this.loading = false;
+                });
+        }
     },
     persist: true,
 });

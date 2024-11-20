@@ -27,9 +27,10 @@
                     :loading="loading"
                     :type="'product'"
                     :page="page"
-                    :crud="['show', 'delete']"
+                    :crud="['show', 'delete', 'store']"
                     :search-fields="searchFields"
                     @updateItems="fetchProducts"
+                    @select-change="onSelectChange"
                 />
             </v-col>
         </v-row>
@@ -49,6 +50,8 @@ const totalItems = ref(0);
 const itemsPerPage = ref(10);
 const page = ref(1);
 const loading = ref(true);
+const categories = ref([]); // Stato per memorizzare le categorie
+const subcategories = ref([]); // Stato per memorizzare le sotto-categorie
 
 // Array di campi di ricerca (nome ed email)
 const searchFields = ref([
@@ -85,6 +88,28 @@ const headers = ref([
         key: 'category.name',
     },
     {
+        title: 'Categoria',
+        align: 'start',
+        sortable: false,
+        key: 'category.name',
+        model: 'category_id',
+        type: 'select',
+        items: categories,
+        hidden: true,
+        isEditable: true
+    },
+    {
+        title: 'Sotto-Categoria',
+        align: 'start',
+        sortable: false,
+        key: 'subcategory.name',
+        model: 'subcategory_id',
+        type: 'select',
+        items: subcategories,
+        hidden: true,
+        isEditable: true
+    },
+    {
         title: 'Prezzo',
         align: 'start',
         sortable: false,
@@ -95,6 +120,7 @@ const headers = ref([
     {
         title: "Azioni",
         key: "actions",
+        aling: 'end',
         sortable: false
     },
 ]);
@@ -139,6 +165,32 @@ function fetchProducts(options = {}) {
             loading.value = false;
         });
 }
+
+function onSelectChange({ key, value }) {
+    console.log(`Chiave selezionata: ${key}, Valore: ${value}`);
+
+    axios.post('/api/get-subcategories-by-id', {
+        category_id: value
+    })
+    .then(res => {
+        // Restituisce i dati ricevuti dal server
+        subcategories.value = res.data;
+    })
+    .catch(e => {
+        console.error(e);
+    });
+}
+
+// Funzione per recuperare le categorie
+function fetchCategories() {
+    axios.get(`/api/all-categories`).then((res) => {
+        categories.value = res.data;
+    }).catch((e) => {
+        console.log(e);
+    });
+}
+
+fetchCategories();
 
 // Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
 const debouncedfetchProducts = debounce(fetchProducts, 500);

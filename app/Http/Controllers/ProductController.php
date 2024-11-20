@@ -12,7 +12,6 @@ use Inertia\Inertia;
 class ProductController extends Controller {
     public function getProductsByCategory(Request $request) {
         $category = Category::whereRaw('LOWER(name) = ?', [strtolower($request->category)])->first();
-
         // Verifica se la categoria esiste
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
@@ -34,8 +33,6 @@ class ProductController extends Controller {
             'product' => new ProductResource($product),
         ]);
     }
-
-
 
     public function getDiscountedProducts() {
         // Recupera tutti gli sconti attivi
@@ -59,8 +56,40 @@ class ProductController extends Controller {
                 ];
             }
         }
-
         // Ritorna i prodotti raggruppati per sconto
         return response()->json($groupedProducts);
+    }
+
+    public function filterProducts(Request $request) {
+        $query = Product::query();
+
+        // Filtra per sotto-categoria
+        if ($request->filled('subCategory')) {
+            $query->where('subcategory_id', $request->subCategory);
+        }
+
+        // Filtra per intervallo di prezzo
+        if ($request->filled('priceRange')) {
+            $query->whereBetween('price', $request->priceRange);
+        }
+
+        // Filtra per rating
+        if ($request->filled('rating')) {
+            $query->whereHas('reviews', function ($q) use ($request) {
+                $q->where('rating_star', '>=', $request->rating);
+            });
+        }
+
+        // Include relazioni per ottimizzazione
+        $query->with(['images', 'category', 'reviews', 'discounts']);
+
+        // Recupera i prodotti filtrati con paginazione
+        $products = $query->paginate(10);
+
+        // Modifica gli item per arricchirli con dati aggiuntivi
+
+
+        // Ritorna la risposta in formato desiderato
+        return ProductResource::collection($products);
     }
 }

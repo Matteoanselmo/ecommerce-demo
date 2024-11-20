@@ -30,4 +30,20 @@ class SubCategoryController extends Controller {
 
         return response()->json($category->subCategories);
     }
+
+    public function getSubCategoriesByCategoryId(Request $request) {
+        // Valida l'input
+        $validated = $request->validate([
+            'category_id' => 'required|exists:categories,id', // Deve essere un ID valido nella tabella categories
+        ]);
+
+        // Recupera la categoria con le sottocategorie
+        $category = Category::with('subCategories')->find($validated['category_id']);
+
+        if (!$category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+
+        return response()->json([$category->subCategories]);
+    }
 }

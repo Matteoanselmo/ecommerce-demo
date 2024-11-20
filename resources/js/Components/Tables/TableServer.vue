@@ -15,6 +15,7 @@
         <template #top>
                 <div class="d-flex justify-end align-center py-3 pr-3">
                     <v-btn
+                        v-if="props.crud.includes('store')"
                         color="info"
                         size="small"
                         @click="openCreateModal()"
@@ -34,7 +35,7 @@
             >
                 <span class="mdi mdi-delete-alert-outline"></span>
             </Link>
-            <v-btn v-if="props.crud.includes('store')" variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
+            <v-btn v-if="props.crud.includes('update')" variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
                 <span class="mdi mdi-file-edit-outline"></span>
             </v-btn>
             <v-btn v-if="props.crud.includes('delete')" variant="outlined" size="small" color="danger" @click="deleteItem(item.id)">
@@ -57,6 +58,7 @@
                     item-value="id"
                     variant="solo-filled"
                     :disabled="!isEditable && !isCreateMode"
+                    @update:modelValue="handleSelectChange(header.key, selectedItem[header.model])"
                 ></v-select>
                 <v-text-field
                     v-else-if="header.key !== 'actions' && header.isEditable"
@@ -150,7 +152,10 @@ function closeModal() {
     showModal.value = false;
 }
 
-const emit = defineEmits(['updateItems']);
+const emit = defineEmits([
+    'updateItems',
+    'select-change'
+]);
 
 // Funzione per emettere i dati di ricerca
 function handleOptionsUpdate(options) {
@@ -203,6 +208,11 @@ function createNewItem() {
         .catch(e => {
             notificationStore.notify(e.response?.data?.message || 'Errore nella creazione', 'danger');
         });
+}
+
+function handleSelectChange(key, value) {
+    // Emetti un evento al genitore con la chiave e il valore selezionato
+    emit('select-change', { key, value });
 }
 
 

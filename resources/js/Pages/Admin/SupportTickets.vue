@@ -29,6 +29,7 @@
                     :page="page"
                     :search-fields="searchFields"
                     @updateItems="fetchTickets"
+                    :crud="['update', 'delete']"
                 />
             </v-col>
         </v-row>

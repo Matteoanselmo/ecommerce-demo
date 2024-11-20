@@ -40,21 +40,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Guest
+// Guest
+// Categorie
 Route::get('/all-categories', [CategoryController::class, 'index']);
 Route::get('/sub-categories', [SubCategoryController::class, 'index']);
+// Prodotti
 Route::get('/get-products', [ProductController::class, 'getProductsByCategory']);
-
+Route::post('/filter-products', [ProductController::class, 'filterProducts']);
 Route::get('/promo-products', [ProductController::class, 'getDiscountedProducts']);
-
-Route::post('/search', [UserSearchController::class, 'search']);
-Route::post('/get-subcategories', [SubCategoryController::class, 'getSubCategoryFromCategory']);
-
-//Taglie
-Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);
-Route::get('/product/{productId}/sizes', [SizeController::class, 'getSizesByProduct']);
-
-
 Route::get('/search-products', function (Request $request) {
     $searchTerm = $request->input('query'); // Recupera il termine di ricerca dalla query string
     $products = Product::where('name', 'like', '%' . $searchTerm . '%')->get(); // Cerca nei nomi dei prodotti
@@ -64,7 +57,16 @@ Route::get('/search-products', function (Request $request) {
     return response()->json($products); // Restituisci i risultati in formato JSON
 });
 
+Route::post('/search', [UserSearchController::class, 'search']);
+// Sotto Categorie
+Route::post('/get-subcategories', [SubCategoryController::class, 'getSubCategoryFromCategory']);
+Route::post('/get-subcategories-by-id', [SubCategoryController::class, 'getSubCategoriesByCategoryId']);
 
+// Taglie
+Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);
+Route::get('/product/{productId}/sizes', [SizeController::class, 'getSizesByProduct']);
+
+// Allegati
 Route::get('/discount-banner', [DiscountBannerController::class, 'index']);
 Route::get('/info-policies', [InfoPolicyController::class, 'index']);
 Route::get('/return-policies', [ReturnPolicyController::class, 'index']);
