@@ -33,12 +33,18 @@
                     @select-change="onSelectChange"
                 />
             </v-col>
+            <v-col cols="6">
+                <BrandCard
+                    :brands="brands"
+                />
+            </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script setup>
 import TableServer from '@/Components/Tables/TableServer.vue';
+import BrandCard from '@/Components/Products/BrandCard.vue';
 import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
@@ -50,14 +56,15 @@ const totalItems = ref(0);
 const itemsPerPage = ref(10);
 const page = ref(1);
 const loading = ref(true);
+const brands = ref([]);
 const categories = ref([]); // Stato per memorizzare le categorie
 const subcategories = ref([]); // Stato per memorizzare le sotto-categorie
 
 // Array di campi di ricerca (nome ed email)
 const searchFields = ref([
     { key: 'name', value: '', label: 'Nome', icon: 'mdi-magnify' },
-    { key: 'min_price', value: '', label: 'Prezzo minimo', icon: 'mdi-magnify' },
-    { key: 'max_price', value: '', label: 'Prezzo massimo', icon: 'mdi-magnify' },
+    // { key: 'min_price', value: '', label: 'Prezzo minimo', icon: 'mdi-magnify' },
+    // { key: 'max_price', value: '', label: 'Prezzo massimo', icon: 'mdi-magnify' },
     { key: 'search_category', value: '', label: 'Categoria', icon: 'mdi-magnify' },
 ]);
 
@@ -86,6 +93,24 @@ const headers = ref([
         sortable: false,
         type: 'text',
         key: 'category.name',
+    },
+    {
+        title: 'Brand',
+        align: 'start',
+        sortable: false,
+        type: 'text',
+        key: 'brand.name',
+    },
+    {
+        title: 'Brand',
+        align: 'start',
+        sortable: false,
+        key: 'brand.name',
+        model: 'brand_id',
+        type: 'select',
+        items: brands,
+        hidden: true,
+        isEditable: true
     },
     {
         title: 'Categoria',
@@ -158,7 +183,6 @@ function fetchProducts(options = {}) {
             totalItems.value = res.data.total;
             page.value = res.data.current_page;
             loading.value = false;
-            console.log(res.data)
         })
         .catch((e) => {
             console.error(e);
@@ -189,9 +213,18 @@ function fetchCategories() {
         console.log(e);
     });
 }
+// Funzione per recuperare i Brand
+function fetchBrands() {
+    axios.get(`/api/all-brands`).then((res) => {
+        brands.value = res.data;
+        console.log(res.data)
+    }).catch((e) => {
+        console.log(e);
+    });
+}
 
 fetchCategories();
-
+fetchBrands();
 // Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
 const debouncedfetchProducts = debounce(fetchProducts, 500);
 </script>

@@ -19,6 +19,7 @@ class Product extends Model {
         'category_id',
         'price',
         'categorydetails_id',
+        'brand_id'
     ];
 
     public function getDiscountedPrice() {
@@ -137,5 +138,9 @@ class Product extends Model {
 
     public function certifications() {
         return $this->belongsToMany(Certification::class);
+    }
+
+    public function brand() {
+        return $this->belongsTo(Brand::class);
     }
 }

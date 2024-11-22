@@ -33,7 +33,7 @@
                 v-if="props.crud.includes('show')"
                 class="v-btn v-theme--myCustomTheme text-warning v-btn--density-default v-btn--size-small v-btn--variant-outlined me-3"
             >
-                <span class="mdi mdi-delete-alert-outline"></span>
+                <span class="mdi mdi-edit-outline"></span>
             </Link>
             <v-btn v-if="props.crud.includes('update')" variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
                 <span class="mdi mdi-file-edit-outline"></span>
@@ -45,7 +45,7 @@
     </v-data-table-server>
 
     <v-dialog v-model="showModal" max-width="600">
-    <v-card>
+    <v-card rounded="xl">
         <v-card-title>{{ isCreateMode ? 'Crea Nuovo Elemento' : 'Dettagli Ordine' }}</v-card-title>
         <v-form class="px-3">
             <div v-for="(header) in props.headers" :key="header.key" class="mb-3">

@@ -17,6 +17,7 @@ use App\Http\Controllers\ReturnPolicyController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\Admin\SupportTicketController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\User\AddressController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\User\SupportTicketController as UserSupportTicketController;
@@ -73,9 +74,12 @@ Route::get('/discount-banner', [DiscountBannerController::class, 'index']);
 Route::get('/info-policies', [InfoPolicyController::class, 'index']);
 Route::get('/return-policies', [ReturnPolicyController::class, 'index']);
 Route::get('/price-policies', [PricePolicyController::class, 'index']);
-
+// Ricerche
 Route::post('/user-searches', [UserSearchController::class, 'store']);
 Route::get('/user-searches', [UserSearchController::class, 'index']);
+
+// Brands
+Route::get('/all-brands', [BrandController::class, 'index']);
 
 // User
 Route::middleware(['auth:sanctum'])->group(function () {
