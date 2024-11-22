@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import OrdersTable from '@/Components/User/OrdersTable.vue';
 import Address from '@/Components/User/Address.vue';
 import WishList from '@/Components/User/WishList.vue';
+import TicketManager from '@/Components/User/TicketManager.vue';
 
 const page = usePage()
 const user = ref(page.props.auth.user);
@@ -26,7 +27,7 @@ const sidebarLinks = ref([
     },
     {
         icon: "mdi mdi-help-circle-outline",
-        tab: "help",
+        tab: "ticket",
         title: 'Serve aiuto?',
     },
 ]);
@@ -73,6 +74,9 @@ function getInitials(name) {
                     </v-tabs-window-item>
                     <v-tabs-window-item value="wishlist">
                         <WishList/>
+                    </v-tabs-window-item>
+                    <v-tabs-window-item value="ticket">
+                        <TicketManager/>
                     </v-tabs-window-item>
                 </v-tabs-window>
             </v-col>

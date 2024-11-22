@@ -16,9 +16,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReturnPolicyController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubCategoryController;
-use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\Admin\SupportTicketController;
 use App\Http\Controllers\User\AddressController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
+use App\Http\Controllers\User\SupportTicketController as UserSupportTicketController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\UserSearchController;
 use App\Models\Product;
@@ -41,6 +42,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // Guest
+
 // Categorie
 Route::get('/all-categories', [CategoryController::class, 'index']);
 Route::get('/sub-categories', [SubCategoryController::class, 'index']);
@@ -91,6 +93,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/user-addresses', [AddressController::class, 'store']);
     Route::put('/user-addresses/{id}', [AddressController::class, 'update']);
     Route::delete('/user-addresses/{id}', [AddressController::class, 'destroy']);
+
+    // Ticket
+    Route::get('/support-tickets', [UserSupportTicketController::class, 'index']);
+    Route::post('/support-tickets', [UserSupportTicketController::class, 'store']);
 });
 
 // Admin

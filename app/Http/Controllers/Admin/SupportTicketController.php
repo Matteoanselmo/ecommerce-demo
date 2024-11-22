@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\SupportTicketResource;
 use App\Models\SupportTicket;
 use Illuminate\Http\Request;
@@ -52,29 +53,6 @@ class SupportTicketController extends Controller {
             'per_page' => $tickets->perPage(),
         ]);
     }
-
-
-    // Crea un nuovo ticket
-    public function store(Request $request) {
-        $validated = $request->validate([
-            'product' => 'nullable|string',
-            'subject' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
-
-        $ticket = SupportTicket::create([
-            'user_id' => Auth::id(),
-            'product' => $validated['product'],
-            'subject' => $validated['subject'],
-            'description' => $validated['description'],
-        ]);
-
-        // Notifica push all'admin
-        // Puoi usare Laravel Notifications o Broadcast per la notifica
-
-        return response()->json($ticket, 201);
-    }
-
     // Aggiorna lo stato del ticket (solo admin)
     public function updateStatus(Request $request, $id) {
         $ticket = SupportTicket::findOrFail($id);
