@@ -36,6 +36,7 @@
             <v-col cols="6">
                 <BrandCard
                     :brands="brands"
+                    @brandsUpdated="fetchBrands"
                 />
             </v-col>
         </v-row>

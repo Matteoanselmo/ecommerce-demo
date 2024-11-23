@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CertificationController;
 use App\Http\Controllers\Admin\FaqController;
@@ -170,4 +171,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/certifications', [CertificationController::class, 'index']);
     Route::get('/certifications/{productId}', [CertificationController::class, 'getProductCertifications']);
     Route::post('/product/{productId}/certifications', [CertificationController::class, 'updateProductCertifications']);
+
+    // Brand
+    Route::prefix('/brands')->group(function () {
+        Route::post('/', [AdminBrandController::class, 'store']); // Creazione di un nuovo brand
+        Route::patch('/{id}', [AdminBrandController::class, 'update']); // Aggiornamento di un brand esistente
+        Route::delete('/{id}', [AdminBrandController::class, 'destroy']); // Eliminazione di un brand
+    });
 });
