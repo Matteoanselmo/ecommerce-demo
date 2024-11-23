@@ -19,7 +19,8 @@ class Product extends Model {
         'category_id',
         'price',
         'categorydetails_id',
-        'brand_id'
+        'brand_id',
+        'color_id'
     ];
 
     public function getDiscountedPrice() {
@@ -142,5 +143,9 @@ class Product extends Model {
 
     public function brand() {
         return $this->belongsTo(Brand::class);
+    }
+
+    public function color() {
+        return $this->belongsTo(Color::class);
     }
 }

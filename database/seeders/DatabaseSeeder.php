@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder {
             SubCategorySeeder::class,
             CategoryDetailsSeeder::class,
             BrandSeeder::class,
+            ColorSeeder::class,
             ProductSeeder::class,
             OrderProductSeeder::class,
             ProductReviewSeeder::class,

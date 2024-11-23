@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CertificationController;
+use App\Http\Controllers\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\Admin\SupportTicketController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\ColorController;
 use App\Http\Controllers\User\AddressController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\User\SupportTicketController as UserSupportTicketController;
@@ -81,7 +83,8 @@ Route::get('/user-searches', [UserSearchController::class, 'index']);
 
 // Brands
 Route::get('/all-brands', [BrandController::class, 'index']);
-
+// Color
+Route::get('/all-colors', [ColorController::class, 'index']);
 // User
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user-orders', [UserOrderController::class, 'index']);
@@ -177,5 +180,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::post('/', [AdminBrandController::class, 'store']); // Creazione di un nuovo brand
         Route::patch('/{id}', [AdminBrandController::class, 'update']); // Aggiornamento di un brand esistente
         Route::delete('/{id}', [AdminBrandController::class, 'destroy']); // Eliminazione di un brand
+    });
+    // Color
+    Route::prefix('/colors')->group(function () {
+        Route::post('/', [AdminColorController::class, 'store']); // Creazione di un nuovo brand
+        Route::patch('/{id}', [AdminColorController::class, 'update']); // Aggiornamento di un brand esistente
+        Route::delete('/{id}', [AdminColorController::class, 'destroy']); // Eliminazione di un brand
     });
 });

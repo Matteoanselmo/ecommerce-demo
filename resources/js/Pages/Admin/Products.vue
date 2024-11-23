@@ -34,9 +34,19 @@
                 />
             </v-col>
             <v-col cols="6">
-                <BrandCard
-                    :brands="brands"
-                    @brandsUpdated="fetchBrands"
+                <ChipGroup
+                    :input="'text'"
+                    :items="brands"
+                    :type="'brands'"
+                    @itemsUpdated="fetchBrands"
+                />
+            </v-col>
+            <v-col cols="6">
+                <ChipGroup
+                    :input="'color'"
+                    :items="colors"
+                    :type="'colors'"
+                    @itemsUpdated="fetchColors"
                 />
             </v-col>
         </v-row>
@@ -45,7 +55,7 @@
 
 <script setup>
 import TableServer from '@/Components/Tables/TableServer.vue';
-import BrandCard from '@/Components/Products/BrandCard.vue';
+import ChipGroup from '@/Components/Products/ChipGroup.vue';
 import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
@@ -58,6 +68,7 @@ const itemsPerPage = ref(10);
 const page = ref(1);
 const loading = ref(true);
 const brands = ref([]);
+const colors = ref([]);
 const categories = ref([]); // Stato per memorizzare le categorie
 const subcategories = ref([]); // Stato per memorizzare le sotto-categorie
 
@@ -218,7 +229,14 @@ function fetchCategories() {
 function fetchBrands() {
     axios.get(`/api/all-brands`).then((res) => {
         brands.value = res.data;
-        console.log(res.data)
+    }).catch((e) => {
+        console.log(e);
+    });
+}
+// Funzione per recuperare i Colors
+function fetchColors() {
+    axios.get(`/api/all-colors`).then((res) => {
+        colors.value = res.data;
     }).catch((e) => {
         console.log(e);
     });
@@ -226,6 +244,7 @@ function fetchBrands() {
 
 fetchCategories();
 fetchBrands();
+fetchColors();
 // Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
 const debouncedfetchProducts = debounce(fetchProducts, 500);
 </script>

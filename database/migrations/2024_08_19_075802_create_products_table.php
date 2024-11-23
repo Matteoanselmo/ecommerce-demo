@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->integer('price'); // Cambiato da decimal a integer
             $table->foreignId('categorydetails_id')->nullable()->constrained('category_details')->onDelete('set null');
             $table->foreignId('brand_id')->nullable()->constrained('brands')->onDelete('set null'); // Aggiunta relazione con i brand
+            $table->foreignId('color_id')->nullable()->constrained('colors')->onDelete('set null'); // Relazione con colors
             $table->timestamps();
         });
     }
