@@ -17,7 +17,7 @@ class ProductController extends Controller {
         $maxPrice = $request->input('max_price');
         $searchCategory = $request->input('search_category');
 
-        $query = Product::with('category', 'brand'); // Carica la relazione category
+        $query = Product::with('category', 'brand', 'color'); // Carica la relazione category
 
         // Filtro per nome
         if ($searchName) {

@@ -13,18 +13,22 @@
     >
     <!-- Slot per contenuti aggiuntivi in alto -->
         <template #top>
-                <div class="d-flex justify-end align-center py-3 pr-3">
-                    <v-btn
-                        v-if="props.crud.includes('store')"
-                        color="info"
-                        size="small"
-                        @click="openCreateModal()"
-                        icon="mdi mdi-plus"
-                        rounded="xl"
-                    >
-                    </v-btn>
-                </div>
-            </template>
+            <div class="d-flex justify-end align-center py-3 pr-3">
+                <v-btn
+                    v-if="props.crud.includes('store')"
+                    color="info"
+                    size="small"
+                    @click="openCreateModal()"
+                    icon="mdi mdi-plus"
+                    rounded="xl"
+                >
+                </v-btn>
+            </div>
+        </template>
+        <template #item.color.name="{ item }" >
+            <v-card :text="item.color.name" elevation="0" :color="item.color.name" class="my-2">
+            </v-card>
+        </template>
 
         <template #item.actions="{ item }" >
             <Link

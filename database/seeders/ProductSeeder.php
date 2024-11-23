@@ -85,6 +85,7 @@ class ProductSeeder extends Seeder {
                 'price' => rand(500, 10000), // Prezzo casuale tra 5.00 e 100.00 rappresentato come intero
                 'categorydetails_id' => rand(1, 6), // CategoryDetails massimo 6
                 'brand_id' => rand(1, 10), // CategoryDetails massimo 6
+                'color_id' => rand(1, 6), // CategoryDetails massimo 6
                 'created_at' => now(),
                 'updated_at' => now()
             ]);

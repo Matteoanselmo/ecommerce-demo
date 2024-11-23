@@ -125,6 +125,24 @@ const headers = ref([
         isEditable: true
     },
     {
+        title: 'Color',
+        align: 'start',
+        sortable: false,
+        type: 'text',
+        key: 'color.name',
+    },
+    {
+        title: 'Colors',
+        align: 'start',
+        sortable: false,
+        key: 'color.name',
+        model: 'color_id',
+        type: 'select',
+        items: colors,
+        hidden: true,
+        isEditable: true
+    },
+    {
         title: 'Categoria',
         align: 'start',
         sortable: false,
