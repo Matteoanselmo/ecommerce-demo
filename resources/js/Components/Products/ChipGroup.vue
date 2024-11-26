@@ -6,6 +6,7 @@
                 size="small"
                 color="info"
                 icon="mdi-plus"
+                variant="text"
                 @click="openDialog()"
             ></v-btn>
         </v-card-title>

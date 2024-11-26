@@ -21,6 +21,7 @@
                     @click="openCreateModal()"
                     icon="mdi mdi-plus"
                     rounded="xl"
+                    variant="text"
                 >
                 </v-btn>
             </div>
@@ -35,9 +36,11 @@
                 as="button"
                 :href="route('admin.product.crud', { product: item.id })"
                 v-if="props.crud.includes('show')"
-                class="v-btn v-theme--myCustomTheme text-warning v-btn--density-default v-btn--size-small v-btn--variant-outlined me-3"
+                class="v-btn v-theme--myCustomTheme v-btn--density-default v-btn--size-small v-btn--variant-outlined me-3 text-warning"
             >
-                <span class="mdi mdi-edit-outline"></span>
+                <v-icon icon="mdi mdi-edit-outline">
+
+                </v-icon>
             </Link>
             <v-btn v-if="props.crud.includes('update')" variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
                 <span class="mdi mdi-file-edit-outline"></span>

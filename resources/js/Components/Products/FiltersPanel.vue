@@ -21,14 +21,16 @@
         color="primary"
         half-increments
         hover
-        @change="debouncedFilterProducts"
+        @update:modelValue="debouncedFilterProducts"
     ></v-rating>
     <v-divider></v-divider>
 
     <v-range-slider
         prepend-icon="mdi mdi-currency-eur"
         v-model="priceRange"
-        step="1"
+        min="1"
+        max="200"
+        step="0.1"
         thumb-label="always"
         @update:modelValue="debouncedFilterProducts"
     ></v-range-slider>
@@ -66,13 +68,14 @@ import debounce from 'lodash/debounce';
 
 const productStore = useProductStore();
 const drawer = ref(false);
-const priceRange = ref([6000, 200000]);
+const priceRange = ref([0, 100]);
 const ratingStars = ref(0);
 const selectedSubCategory = ref(null);
 
 // Funzione per filtrare i prodotti
 const filterProducts = () => {
     productStore.fetchFilteredProducts({
+    category: productStore.category,
     priceRange: priceRange.value,
     rating: ratingStars.value,
     subCategory: selectedSubCategory.value,

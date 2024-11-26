@@ -70,13 +70,36 @@ class ProductController extends Controller {
 
         // Filtra per intervallo di prezzo
         if ($request->filled('priceRange')) {
-            $query->whereBetween('price', $request->priceRange);
+            // Converti il range di prezzo in interi (es: moltiplicando per 100)
+            $priceRange = [
+                intval($request->priceRange[0] * 100),
+                intval($request->priceRange[1] * 100),
+            ];
+            $query->whereBetween('price', $priceRange);
         }
 
-        // Filtra per rating
-        if ($request->filled('rating')) {
-            $query->whereHas('reviews', function ($q) use ($request) {
-                $q->where('rating_star', '>=', $request->rating);
+        // Filtra per rating medio utilizzando reviewRatings
+        if ($request->filled('ratingStars')) {
+            $products = $query->get()->filter(function ($product) use ($request) {
+                // Ottieni i valori dei rating
+                $ratings = $product->reviewRatings();
+
+                // Calcola la media
+                $averageRating = count($ratings) > 0
+                    ? array_sum($ratings) / count($ratings) // Somma i valori e dividi per il numero totale
+                    : 0; // Nessuna recensione, media 0
+
+                // Confronta la media con ratingStars
+                return $averageRating >= floatval($request->ratingStars);
+            })->values(); // Resetta le chiavi della Collection
+        }
+
+
+
+        // Filtra per nome della categoria
+        if ($request->filled('category')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('name', $request->category);
             });
         }
 
@@ -85,9 +108,6 @@ class ProductController extends Controller {
 
         // Recupera i prodotti filtrati con paginazione
         $products = $query->paginate(10);
-
-        // Modifica gli item per arricchirli con dati aggiuntivi
-
 
         // Ritorna la risposta in formato desiderato
         return ProductResource::collection($products);
