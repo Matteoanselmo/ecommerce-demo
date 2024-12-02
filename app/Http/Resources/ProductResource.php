@@ -21,6 +21,7 @@ class ProductResource extends JsonResource {
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'colors' => $this->color,
             'description' => $this->description,
             'original_price' => intval($originalPrice), // Prezzo originale come intero
             'price' => intval($discountedPrice), // Prezzo scontato come intero

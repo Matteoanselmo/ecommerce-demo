@@ -94,8 +94,12 @@ class ProductController extends Controller {
             })->values(); // Resetta le chiavi della Collection
         }
 
-
-
+        // Filtra per colore
+        if ($request->has('color') && $request->color) {
+            $query->whereHas('color', function ($q) use ($request) {
+                $q->where('name', $request->color); // Usa la relazione con i colori
+            });
+        }
         // Filtra per nome della categoria
         if ($request->filled('category')) {
             $query->whereHas('category', function ($q) use ($request) {

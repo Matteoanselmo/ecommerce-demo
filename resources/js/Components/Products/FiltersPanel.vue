@@ -23,6 +23,7 @@
         hover
         @update:modelValue="debouncedFilterProducts"
     ></v-rating>
+
     <v-divider></v-divider>
 
     <v-range-slider
@@ -32,14 +33,14 @@
         max="200"
         step="0.1"
         thumb-label="always"
-        @update:modelValue="debouncedFilterProducts"
+        @update:modelValue="debouncedFilterProducts "
     ></v-range-slider>
 
     <v-select
         :items="productStore.subCategories"
         label="Sotto-Categorie"
         prepend-icon="mdi mdi-shape-outline"
-        class="mb-5 px-2"
+        class=" px-2"
         item-value="id"
         item-title="name"
         dense
@@ -47,7 +48,33 @@
         v-model="selectedSubCategory"
         @change="filterProducts"
     ></v-select>
+    <v-card
+        prepend-icon="mdi mdi-eyedropper-variant"
+        title="Seleziona il colore"
+        elevation="0"
+    >
+        <v-card-item>
+            <v-radio-group v-model="selectedColor"  density="comfortable" inline @update:modelValue="filterProducts">
+                <v-radio
+                v-for="(color, i) in productStore.colors"
+                :key="i"
+                class="mr-5"
+                density="comfortable"
+                true-icon="mdi-check"
+                :color="color.name"
+                :base-color="color.name"
+                :value="color.name"
+                ></v-radio>
+            </v-radio-group>
+        </v-card-item>
+    </v-card>
+    <div class="d-flex justify-center">
+        <v-btn @click="resetFilters()">
+            reset
+        </v-btn>
+    </div>
     </v-navigation-drawer>
+
     <v-main>
     <div class="d-flex justify-start align-center h-100">
         <v-btn
@@ -62,29 +89,44 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import { useProductStore } from '@/stores/product.store';
-import debounce from 'lodash/debounce';
+import { ref, computed } from "vue";
+import { useProductStore } from "@/stores/product.store";
+import debounce from "lodash/debounce";
 
 const productStore = useProductStore();
 const drawer = ref(false);
 const priceRange = ref([0, 100]);
 const ratingStars = ref(0);
+const selectedColor = ref("");
 const selectedSubCategory = ref(null);
 
 // Funzione per filtrare i prodotti
 const filterProducts = () => {
     productStore.fetchFilteredProducts({
-    category: productStore.category,
-    priceRange: priceRange.value,
-    rating: ratingStars.value,
-    subCategory: selectedSubCategory.value,
+        category: productStore.category,
+        priceRange: priceRange.value,
+        rating: ratingStars,
+        subCategory: selectedSubCategory.value,
+        color: selectedColor.value, // Aggiunto filtro per colore
     });
 };
 
+function resetFilters(){
+    priceRange.value = [0, 100];
+    ratingStars.value = 0;
+    selectedSubCategory.value = null;
+    selectedColor.value  = "";
+
+    productStore.getProducts();
+}
+
+// Debounce per evitare chiamate API troppo frequenti
 const debouncedFilterProducts = debounce(filterProducts, 500);
 
+
+// Fetch delle sotto-categorie al caricamento del componente
 productStore.fetchSubCategories();
+productStore.getColors();
 </script>
 
 <style scoped>

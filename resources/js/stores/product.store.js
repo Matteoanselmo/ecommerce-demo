@@ -6,6 +6,7 @@ export const useProductStore = defineStore({
     id: "product",
     state: () => ({
         products: [],
+        colors: [],
         category: null,
         subCategories: [],
         ratingtar: null,
@@ -21,6 +22,20 @@ export const useProductStore = defineStore({
         productsToSearch: [], // Prodotti per la barra di ricerca
         selectedProductId: null, // ID prodotto selezionato
     }),
+    // getters: {
+    //     uniqueColors: (state) => {
+    //         const colorSet = new Set();
+    //         // Itera sui prodotti e aggiungi i colori al Set
+    //         state.products.forEach(product => {
+    //             if (product.colors) { // Verifica che il prodotto abbia un colore definito
+    //                 colorSet.add(JSON.stringify(product.colors)); // Stringifichiamo per garantire unicità
+    //             }
+    //         });
+    //         // Convertiamo nuovamente in oggetti
+    //         const uniqueColorsArray = Array.from(colorSet).map(color => JSON.parse(color));
+    //         return uniqueColorsArray;
+    //     }
+    // },
     actions: {
         // Metodo esistente per la ricerca
         performSearch() {
@@ -42,7 +57,6 @@ export const useProductStore = defineStore({
                 this.loading = false; // Unset loading state on error
             });
         },
-
         getProducts(page = null) {
             if (page) {
                 this.page = page;  // Update current page in the store
@@ -67,7 +81,14 @@ export const useProductStore = defineStore({
                     this.loading = false;
                 });
         },
-
+        getColors() {
+            axios.get('/api/all-colors')
+                .then((res) => {
+                    this.colors = res.data;
+                }).catch((e) => {
+                    console.error(e)
+                })
+        },
         // Metodo per gestire i risultati della ricerca in tempo reale
         fetchSearchResults(query) {
             this.loading = true; // Set loading state
@@ -120,7 +141,6 @@ export const useProductStore = defineStore({
             axios
                 .post('/api/filter-products', filters)
                 .then((res) => {
-                    console.log(res.data)
                     this.products = res.data.data;
                     this.pagination.total = res.data.meta.total;
                     this.pagination.last_page = res.data.meta.last_page;
