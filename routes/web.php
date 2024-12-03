@@ -33,6 +33,10 @@ Route::get('/carello', function () {
     return Inertia::render('CartPage');
 })->name('cart');
 
+Route::get('/checkout', function () {
+    return Inertia::render('CheckOut');
+})->name('checkout');
+
 
 Route::get('auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
