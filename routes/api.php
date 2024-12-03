@@ -21,6 +21,7 @@ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\Admin\SupportTicketController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\User\AddressController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\User\SupportTicketController as UserSupportTicketController;
@@ -85,6 +86,8 @@ Route::get('/user-searches', [UserSearchController::class, 'index']);
 Route::get('/all-brands', [BrandController::class, 'index']);
 // Color
 Route::get('/all-colors', [ColorController::class, 'index']);
+// Pagamento
+Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
 // User
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user-orders', [UserOrderController::class, 'index']);
