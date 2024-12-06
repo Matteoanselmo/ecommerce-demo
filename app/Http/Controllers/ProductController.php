@@ -107,6 +107,10 @@ class ProductController extends Controller {
             });
         }
 
+        if ($request->filled('order')) {
+            $query->orderBy('price', $request->order); // Ordina per prezzo
+        }
+
         // Include relazioni per ottimizzazione
         $query->with(['images', 'category', 'reviews', 'discounts']);
 

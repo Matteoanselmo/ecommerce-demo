@@ -1,6 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
+import Jumbotron from '@/Components/Home/Jumbotron.vue';
 import DiscountBanner from '@/Components/DiscountBanner.vue';
 import CategoryCards from '@/Components/Products/CategoryCards.vue';
 import ProductPromoCarousel from '@/Components/Products/ProductPromoCarousel.vue';
@@ -49,6 +50,7 @@ getPromoProducts();
     <div class="text-h2 my-5 text-center">
         Inizia da qui!
     </div>
+    <Jumbotron/>
     <CategoryCards class="mb-5"/>
     <div v-for="(promo, i) in promoProducts" :key="i">
         <ProductPromoCarousel

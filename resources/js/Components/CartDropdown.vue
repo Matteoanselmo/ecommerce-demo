@@ -40,7 +40,7 @@
         </v-list-item>
 
         <v-list-item>
-            <v-btn rounded="xl" color="primary" block>Checkout</v-btn>
+            <v-btn v-if="isAuthenticated" rounded="xl" color="primary" block :href="route('checkout')">Checkout</v-btn>
         </v-list-item>
 
         <v-list-item class="text-center">
@@ -58,23 +58,19 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
+const page = usePage();
 const menu = ref(false);
 const cartStore = useCartStore();
-
+const isAuthenticated = computed(() => !!page.props.auth.user);
 // Accedi direttamente ai dati dallo store Pinia, che sono già reattivi
 const cartProducts = computed(() => cartStore.items);
 const itemCount = computed(() => cartStore.itemCount);
 const totalAmount = computed(() => cartStore.totalAmount);
 
-// Watch su itemCount per rilevare cambiament
-
-const viewCart = () => {
-    // Logica per visualizzare il carrello completo
-};
 </script>
 
 <style scoped>

@@ -27,11 +27,6 @@
                         </v-btn>
                     </v-card-actions>
                 </v-card>
-
-                <!-- <div class="text-h6">{{  }}</div>
-                <div class="text-h4">
-                    X {{ product.quantity }}
-                </div> -->
             </v-col>
             </v-row>
         </v-card>
@@ -58,7 +53,8 @@
                 </div>
             </v-card>
         <v-card class="pa-4" rounded="xl">
-            <v-btn color="primary" rounded="xl" block class="my-4">Checkout</v-btn>
+            <v-btn color="primary" rounded="xl" block class="my-4" @click="checkIfAuthenticated()">Checkout</v-btn>
+            <CheckAuthDialog v-model="loginPrompt" :text="'Per completare l\'ordine devi effettuare il Login'"/>
             <v-btn clas block class="my-4" variant="plain">
                 <Link
                     text="o Continua lo Shopping"
@@ -75,12 +71,16 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
-import { Link, Head } from '@inertiajs/vue3';
+import { Link, Head, usePage, router } from '@inertiajs/vue3';
+import CheckAuthDialog from '@/Components/CheckAuthDialog.vue';
 
+const page = usePage();
+
+const isAuthenticated = computed(() => !!page.props.auth.user);
 const cartStore = useCartStore();
-
+const loginPrompt = ref(false);
 // Estrarre i dati dallo store
 const cartProducts = cartStore.items;
 
@@ -90,6 +90,16 @@ const shipping = 500; // Importo fisso o calcolato separatamente
 const tax = computed(() => (subtotal.value + shipping) * 0.08); // 8% di imposta ipotetica
 const orderTotal = computed(() => subtotal.value + shipping + tax.value);
 
+function checkIfAuthenticated(){
+    if(!isAuthenticated.value){
+        loginPrompt.value = true;
+    } else{
+        loginPrompt.value = false;
+        router.get('checkout');
+    }
+}
+
+console.log(isAuthenticated)
 </script>
 
 <style scoped>

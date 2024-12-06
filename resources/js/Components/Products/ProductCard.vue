@@ -3,6 +3,8 @@
     :min-height="200"
     :options="{'threshold':0.5}"
     transition="fade-transition"
+    data-aos="fade-up"
+    data-aos-duration="800"
     >
         <template v-if="productsStore.loading">
             <v-skeleton-loader
@@ -19,6 +21,7 @@
             elevation="0"
             color="background"
             rounded="xl"
+
             >
                 <v-img
                     :src="product.cover_image_url"

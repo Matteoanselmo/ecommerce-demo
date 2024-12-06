@@ -42,13 +42,49 @@
                 <div class="text-h6 mb-4">
                     Informazioni Contatto
                 </div>
+                <v-row>
+                    <v-col cols="12" lg="6" >
+                        <v-list density="compact" selectable="true" v-model:selected="selectedAddress">
+                            <v-list-subheader>Indirizzi</v-list-subheader>
+                            <v-list-item v-for="(address, index) in addresses" :key="address.id">
+                                <v-card
+                            rounded="xl"
+                            class="py-4 px-4"
+                            border="0"
+                            elevation="0"
+                            :title="address.address + ' - ' + address.house_number"
+                        >
+                            <v-card-text>
+                                <p class="text-body-2 mb-1">{{ address.city }}, {{ address.state }}, {{ address.country }}</p>
+                                <p class="text-body-2 mb-1">{{ address.postal_code }}</p>
+                                <p v-if="address.company_name">{{ address.company_name }}</p>
+                                <p>{{ address.recipient_name }}</p>
+                                <p>{{ address.phone_number }}</p>
+                            </v-card-text>
+                            <v-card-actions class="justify-end">
+                                <v-btn
+                                    icon="mdi mdi-pencil"
+                                    color="warning"
+                                    @click="openDialog(index)"
+                                ></v-btn>
+                                <v-btn
+                                    icon="mdi mdi-delete"
+                                    color="red"
+                                    @click="deleteAddress(address.id)"
+                                ></v-btn>
+                            </v-card-actions>
+                        </v-card>
+                            </v-list-item>
+                        </v-list>
+                    </v-col>
+                </v-row>
 
-                <form @submit.prevent="pay">
+                <!-- <form @submit.prevent="pay">
                     <v-card rounded="xl" elevation="0" class="mb-5 py-4 px-4">
                         <v-text-field
                             v-model.trim="name"
                             label="Nome Completo"
-                            variant="solo"
+
                             prepend-inner-icon="mdi-account"
                             :error-messages="nameError"
                             @blur="validateName"
@@ -56,7 +92,6 @@
                         <v-text-field
                             v-model.trim="email"
                             label="Email"
-                            variant="solo"
                             :rules="emailRules"
                             :error-messages="emailError"
                             @blur="validateEmail"
@@ -66,10 +101,33 @@
                         <v-text-field
                             v-model.trim="phone"
                             label="Numero di Telefono"
-                            variant="solo"
                             :error-messages="phoneError"
                             prepend-inner-icon="mdi-phone"
                             @blur="validatePhone"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model.trim="provincia"
+                            label="Provincia"
+                            prepend-inner-icon="mdi-map-marker-outline"
+                            type="text"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model.trim="comune"
+                            label="Comune"
+                            prepend-inner-icon="mdi-bank-outline"
+                            type="text"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model.trim="address"
+                            label="Via ( specificare interno se presente )"
+                            prepend-inner-icon="mdi-home-city-outline"
+                            type="text"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model.trim="cap"
+                            label="Cap"
+                            prepend-inner-icon="mdi-road-variant"
+                            type="text"
                         ></v-text-field>
                     </v-card>
                     <v-card rounded="xl" elevation="0" class="mb-5 py-4 px-4">
@@ -82,30 +140,35 @@
                             >
                         </div>
                     </v-card>
-                </form>
+                </form> -->
             </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script setup>
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
 import { loadStripe } from "@stripe/stripe-js";
 import { getCurrentInstance } from 'vue';
 
 const { proxy } = getCurrentInstance();
-
+const page = usePage()
 const cartStore = useCartStore();
-
+const addresses = ref([]);
+const selectedAddress = ref(null);
 const subtotal = computed(() => cartStore.totalAmount);
 const shipping = 500; // Importo fisso o calcolato separatamente
 const tax = computed(() => (subtotal.value + shipping) * 0.08); // 8% di imposta ipotetica
 const orderTotal = computed(() => subtotal.value + shipping + tax.value);
-const name = ref("");
-const email = ref("");
+const name = ref(page.props.auth.user.name || "");
+const email = ref(page.props.auth.user.email || "");
 const phone = ref("");
+const address = ref("");
+const cap = ref("");
+const provincia = ref("");
+const comune = ref("");
 const nameError = ref("");
 const emailError = ref("");
 const phoneError = ref("");
@@ -135,6 +198,22 @@ const validateEmail = () => {
 const validatePhone = () => {
     phoneError.value = phone.value ? "" : "Numero di telefono richiesto";
 };
+
+
+function fetchAddresses() {
+    axios.get('/api/user-addresses')
+    .then((res) => {
+        addresses.value = res.data;
+        // Imposta l'indirizzo predefinito se esiste
+        const primaryAddress = addresses.value.find(address => address.is_primary);
+        if (primaryAddress) {
+            selectedAddress.value = primaryAddress;
+        }
+    })
+    .catch((e) => {
+        console.error(e);
+    });
+}
 
 
 const pay = async () => {
@@ -214,6 +293,6 @@ onMounted(async () => {
         console.error("Errore durante la creazione del payment intent:", error);
     }
 });
-
+fetchAddresses();
 console.log(cartStore.items)
 </script>
