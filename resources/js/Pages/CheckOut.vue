@@ -42,44 +42,22 @@
                 <div class="text-h6 mb-4">
                     Informazioni Contatto
                 </div>
-                <v-row>
-                    <v-col cols="12" lg="6" >
-                        <v-list density="compact" selectable="true" v-model:selected="selectedAddress">
-                            <v-list-subheader>Indirizzi</v-list-subheader>
-                            <v-list-item v-for="(address, index) in addresses" :key="address.id">
-                                <v-card
-                            rounded="xl"
-                            class="py-4 px-4"
-                            border="0"
-                            elevation="0"
-                            :title="address.address + ' - ' + address.house_number"
-                        >
-                            <v-card-text>
-                                <p class="text-body-2 mb-1">{{ address.city }}, {{ address.state }}, {{ address.country }}</p>
-                                <p class="text-body-2 mb-1">{{ address.postal_code }}</p>
-                                <p v-if="address.company_name">{{ address.company_name }}</p>
-                                <p>{{ address.recipient_name }}</p>
-                                <p>{{ address.phone_number }}</p>
-                            </v-card-text>
-                            <v-card-actions class="justify-end">
-                                <v-btn
-                                    icon="mdi mdi-pencil"
-                                    color="warning"
-                                    @click="openDialog(index)"
-                                ></v-btn>
-                                <v-btn
-                                    icon="mdi mdi-delete"
-                                    color="red"
-                                    @click="deleteAddress(address.id)"
-                                ></v-btn>
-                            </v-card-actions>
-                        </v-card>
-                            </v-list-item>
-                        </v-list>
-                    </v-col>
-                </v-row>
-
-                <!-- <form @submit.prevent="pay">
+                <Address
+                    @address-selected="handleAddressSelected"
+                />
+                <form @submit.prevent="pay">
+                    <v-card rounded="xl" elevation="0" class="mb-5 py-4 px-4">
+                        <div id="payment-element"></div>
+                        <div class="d-flex justify-center">
+                            <v-btn
+                                class="text-center mt-4"
+                                type="submit"
+                                >Paga</v-btn
+                            >
+                        </div>
+                    </v-card>
+                </form>
+                <!--
                     <v-card rounded="xl" elevation="0" class="mb-5 py-4 px-4">
                         <v-text-field
                             v-model.trim="name"
@@ -130,16 +108,7 @@
                             type="text"
                         ></v-text-field>
                     </v-card>
-                    <v-card rounded="xl" elevation="0" class="mb-5 py-4 px-4">
-                        <div id="payment-element"></div>
-                        <div class="d-flex justify-center">
-                            <v-btn
-                                class="text-center mt-4"
-                                type="submit"
-                                >Paga</v-btn
-                            >
-                        </div>
-                    </v-card>
+
                 </form> -->
             </v-col>
         </v-row>
@@ -152,69 +121,29 @@ import { ref, computed, onMounted } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
 import { loadStripe } from "@stripe/stripe-js";
 import { getCurrentInstance } from 'vue';
+import Address from '@/Components/User/Address.vue';
+
 
 const { proxy } = getCurrentInstance();
 const page = usePage()
 const cartStore = useCartStore();
-const addresses = ref([]);
-const selectedAddress = ref(null);
 const subtotal = computed(() => cartStore.totalAmount);
 const shipping = 500; // Importo fisso o calcolato separatamente
 const tax = computed(() => (subtotal.value + shipping) * 0.08); // 8% di imposta ipotetica
+const selectedAddress = ref(null);
 const orderTotal = computed(() => subtotal.value + shipping + tax.value);
-const name = ref(page.props.auth.user.name || "");
-const email = ref(page.props.auth.user.email || "");
-const phone = ref("");
-const address = ref("");
-const cap = ref("");
-const provincia = ref("");
-const comune = ref("");
-const nameError = ref("");
-const emailError = ref("");
-const phoneError = ref("");
 const clientSecret = ref("");
 
 let elements = ref(null);
 let paymentElement = ref(null);
 
-// Regola di validazione email con Vuetify
-const emailRules = [
-    v => !!v || "Email richiesta",
-    v => /.+@.+\..+/.test(v) || "Email non valida",
-];
-
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
-
-const validateName = () => {
-    nameError.value = name.value ? "" : "Nome richiesto";
-};
-
-const validateEmail = () => {
-    emailError.value =
-        email.value && /.+@.+\..+/.test(email.value) ? "" : "Email non valida";
-};
-
-const validatePhone = () => {
-    phoneError.value = phone.value ? "" : "Numero di telefono richiesto";
-};
-
-
-function fetchAddresses() {
-    axios.get('/api/user-addresses')
-    .then((res) => {
-        addresses.value = res.data;
-        // Imposta l'indirizzo predefinito se esiste
-        const primaryAddress = addresses.value.find(address => address.is_primary);
-        if (primaryAddress) {
-            selectedAddress.value = primaryAddress;
-        }
-    })
-    .catch((e) => {
-        console.error(e);
-    });
+// Funzione per gestire l'evento address-selected
+function handleAddressSelected(address) {
+    selectedAddress.value = address; // Salva l'indirizzo selezionato
+    console.log(selectedAddress.value)
 }
-
 
 const pay = async () => {
     const stripe = await stripePromise;
@@ -227,9 +156,16 @@ const pay = async () => {
             confirmParams: {
                 payment_method_data: {
                     billing_details: {
-                        name: name.value,
-                        email: email.value,
-                        phone: phone.value,
+                        "address": {
+                            "city": selectedAddress.value.city,
+                            "country": selectedAddress.value.country,
+                            "line1": selectedAddress.value.address + ' ' + selectedAddress.value.house_number,
+                            "postal_code": selectedAddress.value.postal_code,
+                            "state": selectedAddress.value.state
+                        },
+                        name: selectedAddress.value.recipient_name,
+                        email: page.props.auth.user.name,
+                        phone: selectedAddress.value.phone_number,
                     },
                 },
             },
@@ -293,6 +229,4 @@ onMounted(async () => {
         console.error("Errore durante la creazione del payment intent:", error);
     }
 });
-fetchAddresses();
-console.log(cartStore.items)
 </script>

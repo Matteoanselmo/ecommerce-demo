@@ -10,17 +10,20 @@
                 <v-card
                     rounded="xl"
                     class="py-4 px-4"
-                    border="0"
+                    border="1"
                     elevation="0"
+                    :class="{ 'selected-card': selectedCard === index }"
                     :title="address.address + ' - ' + address.house_number"
+                    @click="handleCardClick(address, index)"
+                    height="352"
                 >
-                    <v-card-text>
+                    <v-card-subtitle>
                         <p class="text-body-2 mb-1">{{ address.city }}, {{ address.state }}, {{ address.country }}</p>
                         <p class="text-body-2 mb-1">{{ address.postal_code }}</p>
                         <p v-if="address.company_name">{{ address.company_name }}</p>
                         <p>{{ address.recipient_name }}</p>
                         <p>{{ address.phone_number }}</p>
-                    </v-card-text>
+                    </v-card-subtitle>
                     <v-card-actions class="justify-end">
                         <v-btn
                             icon="mdi mdi-pencil"
@@ -107,12 +110,16 @@
 import { ref } from 'vue';
 import axios from 'axios';
 import { useNotificationStore } from '@/stores/notification.store';
+
 // Stato degli indirizzi
 const addresses = ref([]);
 const notificationStore = useNotificationStore();
+const emit = defineEmits(['address-selected']);
+
 // Stato del dialog
 const dialogVisible = ref(false);
 const editingIndex = ref(null); // Indica se stiamo modificando o aggiungendo
+const selectedCard = ref(null); // Tiene traccia della card selezionata
 const form = ref({
     recipient_name: '',
     company_name: '',
@@ -131,10 +138,22 @@ function getAddresses() {
         .get('/api/user-addresses')
         .then((res) => {
             addresses.value = res.data;
+            // Seleziona automaticamente l'indirizzo primario
+            const primaryIndex = addresses.value.findIndex((address) => address.is_primary === 1);
+            if (primaryIndex !== -1) {
+                selectedCard.value = primaryIndex;
+                emit('address-selected', addresses.value[primaryIndex]); // Emetti l'indirizzo primario selezionato
+            }
         })
         .catch((e) => {
             console.error(e);
         });
+}
+
+// Gestisci il click sulla card
+function handleCardClick(address, index) {
+    selectedCard.value = index;
+    emit('address-selected', address);
 }
 
 // Apri il dialog per aggiungere o modificare
@@ -142,10 +161,8 @@ function openDialog(index = null) {
     editingIndex.value = index;
 
     if (index !== null) {
-        // Modifica: popola il form con i dati esistenti
         Object.assign(form.value, addresses.value[index]);
     } else {
-        // Aggiunta: resetta il form
         resetForm();
     }
 
@@ -175,21 +192,21 @@ function resetForm() {
 
 function saveAddress() {
     if (editingIndex.value === null) {
-        // Salva un nuovo indirizzo
         axios
             .post('/api/user-addresses', form.value)
             .then((res) => {
-                // Aggiungi il nuovo indirizzo alla lista
-                getAddresses()
+                getAddresses();
                 notificationStore.notify(res.data.message, res.data.color);
                 closeDialog();
             })
             .catch((error) => {
-                console.error( error);
-                notificationStore.notify('Si è verificato un errore durante il salvataggio dell\'indirizzo.', danger);
+                console.error(error);
+                notificationStore.notify(
+                    "Si è verificato un errore durante il salvataggio dell'indirizzo.",
+                    'danger'
+                );
             });
     } else {
-        // Aggiorna un indirizzo esistente usando POST con metodo PUT
         const addressId = addresses.value[editingIndex.value].id;
         axios
             .post(`/api/user-addresses/${addressId}`, form.value, {
@@ -198,36 +215,47 @@ function saveAddress() {
                 },
             })
             .then((res) => {
-                // Aggiorna l'indirizzo nella lista
                 getAddresses();
                 notificationStore.notify('Indirizzo aggiornato con successo.', 'info');
                 closeDialog();
             })
             .catch((error) => {
                 console.error(error);
-                notificationStore.notify('Si è verificato un errore durante l\'aggiornamento dell\'indirizzo.' , 'danger');
+                notificationStore.notify(
+                    "Si è verificato un errore durante l'aggiornamento dell'indirizzo.",
+                    'danger'
+                );
             });
     }
 }
 
-
-// Elimina un indirizzo
 function deleteAddress(id) {
     if (window.confirm('Sei sicuro di voler eliminare questo indirizzo?')) {
         axios
             .delete(`/api/user-addresses/${id}`)
             .then(() => {
                 getAddresses();
-                notificationStore.notify('Indirizzo eliminato con successo.' , 'success');
+                notificationStore.notify('Indirizzo eliminato con successo.', 'success');
             })
             .catch((error) => {
                 console.error('Errore durante l\'eliminazione:', error);
-                notificationStore.notify('Si è verificato un errore durante l\'eliminazione dell\'indirizzo.', 'danger');
+                notificationStore.notify(
+                    "Si è verificato un errore durante l'eliminazione dell'indirizzo.",
+                    'danger'
+                );
             });
     }
 }
 
-
 // Inizializza caricando gli indirizzi
 getAddresses();
 </script>
+
+
+<style scoped>
+.selected-card {
+    border: 2px solid #2A9BF3 !important;
+    transform: scale(0.95);
+    transition: transform 0.5s, border-color 0.2s;
+}
+</style>
