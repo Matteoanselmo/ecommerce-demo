@@ -31,6 +31,12 @@
             </v-card>
         </template>
 
+        <template #item.fattura="{ item }" >
+            <a class="v-btn v-btn--elevated v-theme--myCustomTheme v-btn--density-default v-btn--size-small v-btn--variant-outlined" :href="item.fattura" download target="blank" v-if="item.fattura">
+                <v-icon icon="mdi-download"></v-icon>
+            </a>
+        </template>
+
         <template #item.actions="{ item }" >
             <Link
                 as="button"
@@ -67,6 +73,14 @@
                     :disabled="!isEditable && !isCreateMode"
                     @update:modelValue="handleSelectChange(header.key, selectedItem[header.model])"
                 ></v-select>
+                <v-file-input
+                    v-else-if="header.type === 'input'"
+                    accept="application/*"
+                    v-model="selectedItem[header.model]"
+                    label="Carica la ricevuta / fattura"
+                    :show-size="true"
+                    :disabled="!isEditable && !isCreateMode"
+                ></v-file-input>
                 <v-text-field
                     v-else-if="header.key !== 'actions' && header.isEditable"
                     variant="solo-filled"
@@ -175,16 +189,44 @@ function handleOptionsUpdate(options) {
         search: searchParams,
     });
 }
-// Funzione per salvare le modifiche (PATCH)
+
 function saveChanges() {
+    // Controlla se esiste una chiave `undefined` e se è un file
+    if (selectedItem.value.fattura instanceof File) {
+        const formData = new FormData();
+        formData.append('fattura', selectedItem.value.fattura);
+
+        // Carica il file prima di inviare la PATCH
+        axios.post(`/api/${props.type}/${selectedItem.value.id}/upload`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        .then(res => {
+            // Aggiungi l'URL della fattura all'oggetto selezionato
+            selectedItem.value.fattura = res.data.fattura;
+
+            // Procedi con la PATCH dopo il caricamento
+            patchData();
+        })
+        .catch(e => {
+            notificationStore.notify(e.response?.data?.message || 'Errore durante il caricamento del file', 'danger');
+        });
+    } else {
+        // Se non c'è un file, invia direttamente la PATCH
+        patchData();
+    }
+}
+
+function patchData() {
     axios.patch(`/api/${props.type}/${selectedItem.value.id}`, selectedItem.value)
     .then(res => {
-        console.log(res)
+        console.log(res);
         notificationStore.notify(res.data.message, res.data.color);
         emit('updateItems');
-    }).catch((e) => {
-        notificationStore.notify(e, 'danger')
-        console.error(e)
+        closeModal();
+    })
+    .catch(e => {
+        notificationStore.notify(e.response?.data?.message || 'Errore durante il salvataggio', 'danger');
+        console.error(e);
     });
 }
 

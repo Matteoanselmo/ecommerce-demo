@@ -122,6 +122,15 @@ const headers = ref([
         isEditable: false
     },
     {
+        title: 'Fattura',
+        align: 'start',
+        sortable: false,
+        key: 'fattura',
+        model: 'fattura',
+        type: 'input',
+        isEditable: true
+    },
+    {
         title: "Azioni",
         key: "actions",
         align: 'end',

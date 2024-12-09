@@ -134,6 +134,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Ordini
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::patch('/order/{id}', [OrderController::class, 'update'])->name('orders.update');
+    Route::post('/order/{id}/upload', [OrderController::class, 'uploadFattura'])->name('orders.fattura');
+
     // User
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/user/{id}', [UserController::class, 'show']);
