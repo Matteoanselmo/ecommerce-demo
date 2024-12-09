@@ -49,9 +49,9 @@
                 {{ $formatPrice(item.total_amount) }}
             </template>
             <template #item.fattura="{ item }">
-                <v-btn icon v-if="item.fattura" size="small">
-                    <v-icon icon="mdi mdi-download"></v-icon>
-                </v-btn>
+                <a class="v-btn v-btn--elevated v-theme--myCustomTheme v-btn--density-default v-btn--size-small v-btn--variant-outlined" :href="item.fattura" download target="blank" v-if="item.fattura">
+                <v-icon icon="mdi-download"></v-icon>
+            </a>
             </template>
         </v-data-table-server>
     </div>
