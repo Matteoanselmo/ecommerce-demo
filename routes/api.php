@@ -108,6 +108,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Ticket
     Route::get('/support-tickets', [UserSupportTicketController::class, 'index']);
     Route::post('/support-tickets', [UserSupportTicketController::class, 'store']);
+    Route::put('/support-tickets/{id}', [UserSupportTicketController::class, 'update']);
 });
 
 // Admin

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\SupportTicketResource;
+use App\Models\SupportTicket;
+use Illuminate\Support\Facades\Auth;
 
 class SupportTicketController extends Controller {
 
@@ -52,6 +54,34 @@ class SupportTicketController extends Controller {
 
         return response()->json($ticket, 201);
     }
+
+    public function update(Request $request, $id) {
+        // Valida i dati in ingresso
+        $validated = $request->validate([
+            'product' => 'nullable|string',
+            'subject' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        // // Recupera il ticket verificando che appartenga all'utente autenticato
+        $ticket = SupportTicket::findOrFail($id);
+
+        // Se il ticket non esiste o non appartiene all'utente, restituisci un errore
+        if (!$ticket) {
+            return response()->json([
+                'message' => 'Ticket non trovato o non autorizzato.',
+            ], 403);
+        }
+
+        // Aggiorna i campi del ticket
+        $ticket->update($validated);
+
+        return response()->json([
+            'message' => 'Ticket aggiornato con successo.',
+            'data' => new SupportTicketResource($ticket),
+        ]);
+    }
+
 
     public function destroy($id) {
         // Recupera il ticket verificando che appartenga all'utente autenticato
