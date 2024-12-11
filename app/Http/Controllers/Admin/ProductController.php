@@ -53,16 +53,33 @@ class ProductController extends Controller {
     }
 
     public function store(Request $request) {
-        // Valida i dati in arrivo
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'subcategory_id' => 'required|exists:sub_categories,id',
-            'category_id' => 'required|exists:categories,id',
-            'categorydetails_id' => 'nullable|exists:category_details,id',
-            'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+        \Log::info($request->all());
+
+        try {
+            // Valida i dati in arrivo
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric|min:0',
+                'subcategory_id' => 'required|exists:sub_categories,id',
+                'category_id' => 'required|exists:categories,id',
+                'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+                'brand_id' => 'nullable|numeric|min:0',
+                'color_id' => 'nullable|numeric|min:0'
+            ]);
+            \Log::info('Validazione completata con successo', $validatedData);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Errore di validazione', [
+                'errors' => $e->errors(),
+                'input' => $request->all(),
+            ]);
+            return response()->json([
+                'message' => 'Errore di validazione',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+
+        \Log::info('Passate le validazioni');
 
         // Crea il prodotto
         $product = Product::create([
@@ -71,7 +88,8 @@ class ProductController extends Controller {
             'price' => $validatedData['price'],
             'subcategory_id' => $validatedData['subcategory_id'],
             'category_id' => $validatedData['category_id'],
-            'categorydetails_id' => $validatedData['categorydetails_id'] ?? null,
+            'brand_id' => $validatedData['brand_id'] ?? null,
+            'color_id' => $validatedData['color_id'] ?? null,
         ]);
 
         // Gestione delle immagini caricate su S3
@@ -170,5 +188,45 @@ class ProductController extends Controller {
             'message' => 'Immagine eliminata correttamente',
             'color' => 'success'
         ]);
+    }
+
+    public function destroy($id) {
+        try {
+            // Trova il prodotto tramite l'ID
+            $product = Product::findOrFail($id);
+
+            // Elimina le immagini associate
+            foreach ($product->images as $image) {
+                $fullUrl = $image->image_url;
+                $relativePath = str_replace(env('S3_BASE_URL'), '', $fullUrl);
+
+                // Cancella l'immagine dal bucket S3
+                if (Storage::disk('s3')->exists($relativePath)) {
+                    Storage::disk('s3')->delete($relativePath);
+                }
+
+                // Elimina il record dell'immagine dal database
+                $image->delete();
+            }
+
+            // Elimina il prodotto dal database
+            $product->delete();
+
+            return response()->json([
+                'message' => 'Prodotto eliminato correttamente',
+                'color' => 'success'
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Prodotto non trovato',
+                'color' => 'danger'
+            ], 404);
+        } catch (\Exception $e) {
+            \Log::error('Errore durante l\'eliminazione del prodotto', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Errore durante l\'eliminazione del prodotto',
+                'color' => 'danger'
+            ], 500);
+        }
     }
 }

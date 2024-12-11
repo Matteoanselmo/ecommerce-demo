@@ -154,17 +154,6 @@ const headers = ref([
         isEditable: true
     },
     {
-        title: 'Sotto-Categoria',
-        align: 'start',
-        sortable: false,
-        key: 'subcategory.name',
-        model: 'subcategory_id',
-        type: 'select',
-        items: subcategories,
-        hidden: true,
-        isEditable: true
-    },
-    {
         title: 'Prezzo',
         align: 'start',
         sortable: false,
@@ -222,17 +211,34 @@ function fetchProducts(options = {}) {
 
 function onSelectChange({ key, value }) {
     console.log(`Chiave selezionata: ${key}, Valore: ${value}`);
-
-    axios.post('/api/get-subcategories-by-id', {
-        category_id: value
-    })
-    .then(res => {
-        // Restituisce i dati ricevuti dal server
-        subcategories.value = res.data;
-    })
-    .catch(e => {
-        console.error(e);
-    });
+    if(key === 'category.name'){
+        axios.get('/api/get-subcategories-by-id/' + value)
+        .then(res => {
+            // Restituisce i dati ricevuti dal server
+            console.log(res.data)
+            headers.value.push(
+                {
+                    title: 'Sotto-Categoria',
+                    align: 'start',
+                    sortable: false,
+                    key: 'subcategory.name',
+                    model: 'subcategory_id',
+                    type: 'select',
+                    items:  subcategories.value = res.data[0].map(subcat => ({
+                        id: subcat.id,
+                        name: subcat.name,
+                    })),
+                    hidden: true,
+                    isEditable: true
+                },
+            );
+        })
+        .catch(e => {
+            console.error(e);
+        });
+    } else if (key === 'creazione'){
+        headers.value.splice(-1)
+    }
 }
 
 // Funzione per recuperare le categorie

@@ -147,7 +147,10 @@ const props = defineProps({
 const notificationStore = useNotificationStore();
 const search = ref('');
 const showModal = ref(false);
-const selectedItem = ref({});
+const selectedItem = ref({
+    category_id: null,
+    subcategory_id: null,
+});
 const isEditable = ref(false);
 const isCreateMode = ref(false);
 // Computed property per filtrare gli items
@@ -252,9 +255,12 @@ function createNewItem() {
         .then(res => {
             notificationStore.notify(res.data.message, res.data.color);
             emit('updateItems'); // Aggiorna la lista
+            handleSelectChange('creazione', true)
             closeModal(); // Chiudi il modale
         })
         .catch(e => {
+            console.error(e);
+            handleSelectChange('creazione', false)
             notificationStore.notify(e.response?.data?.message || 'Errore nella creazione', 'danger');
         });
 }

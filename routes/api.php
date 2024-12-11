@@ -67,7 +67,7 @@ Route::get('/search-products', function (Request $request) {
 Route::post('/search', [UserSearchController::class, 'search']);
 // Sotto Categorie
 Route::post('/get-subcategories', [SubCategoryController::class, 'getSubCategoryFromCategory']);
-Route::post('/get-subcategories-by-id', [SubCategoryController::class, 'getSubCategoriesByCategoryId']);
+Route::get('/get-subcategories-by-id/{id}', [SubCategoryController::class, 'getSubCategoriesByCategoryId']);
 
 // Taglie
 Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);
