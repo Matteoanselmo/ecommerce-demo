@@ -68,6 +68,7 @@
                                                 class="ms-4"
                                                 :disabled="loginForm.processing"
                                                 :loading="loginForm.processing"
+                                                type="submit"
                                             >
                                                 Log in
                                             </v-btn>
