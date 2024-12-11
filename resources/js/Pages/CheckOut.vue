@@ -28,10 +28,6 @@
                         <p>Spedizione</p>
                         <p>{{ $formatPrice(shipping) }}</p>
                     </div>
-                    <div class="d-flex align-center justify-space-between py-4 border-b-md">
-                        <p>Tasse</p>
-                        <p>{{ $formatPrice(tax) }}</p>
-                    </div>
                     <div class="d-flex align-center justify-space-between py-4 ">
                         <p>Totale Ordine</p>
                         <p>{{ $formatPrice(orderTotal) }}</p>
@@ -57,59 +53,6 @@
                         </div>
                     </v-card>
                 </form>
-                <!--
-                    <v-card rounded="xl" elevation="0" class="mb-5 py-4 px-4">
-                        <v-text-field
-                            v-model.trim="name"
-                            label="Nome Completo"
-
-                            prepend-inner-icon="mdi-account"
-                            :error-messages="nameError"
-                            @blur="validateName"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model.trim="email"
-                            label="Email"
-                            :rules="emailRules"
-                            :error-messages="emailError"
-                            @blur="validateEmail"
-                            prepend-inner-icon="mdi-email"
-                            type="email"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model.trim="phone"
-                            label="Numero di Telefono"
-                            :error-messages="phoneError"
-                            prepend-inner-icon="mdi-phone"
-                            @blur="validatePhone"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model.trim="provincia"
-                            label="Provincia"
-                            prepend-inner-icon="mdi-map-marker-outline"
-                            type="text"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model.trim="comune"
-                            label="Comune"
-                            prepend-inner-icon="mdi-bank-outline"
-                            type="text"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model.trim="address"
-                            label="Via ( specificare interno se presente )"
-                            prepend-inner-icon="mdi-home-city-outline"
-                            type="text"
-                        ></v-text-field>
-                        <v-text-field
-                            v-model.trim="cap"
-                            label="Cap"
-                            prepend-inner-icon="mdi-road-variant"
-                            type="text"
-                        ></v-text-field>
-                    </v-card>
-
-                </form> -->
             </v-col>
         </v-row>
     </v-container>
@@ -122,16 +65,16 @@ import { useCartStore } from '@/stores/cartStore';
 import { loadStripe } from "@stripe/stripe-js";
 import { getCurrentInstance } from 'vue';
 import Address from '@/Components/User/Address.vue';
+import { useNotificationStore } from '@/stores/notification.store';
 
-
+const notification = useNotificationStore();
 const { proxy } = getCurrentInstance();
 const page = usePage()
 const cartStore = useCartStore();
 const subtotal = computed(() => cartStore.totalAmount);
 const shipping = 500; // Importo fisso o calcolato separatamente
-const tax = computed(() => (subtotal.value + shipping) * 0.08); // 8% di imposta ipotetica
 const selectedAddress = ref(null);
-const orderTotal = computed(() => subtotal.value + shipping + tax.value);
+const orderTotal = computed(() => subtotal.value + shipping);
 const clientSecret = ref("");
 
 let elements = ref(null);
@@ -164,7 +107,7 @@ const pay = async () => {
                             "state": selectedAddress.value.state
                         },
                         name: selectedAddress.value.recipient_name,
-                        email: page.props.auth.user.name,
+                        email: page.props.auth.user.email,
                         phone: selectedAddress.value.phone_number,
                     },
                 },
@@ -173,32 +116,30 @@ const pay = async () => {
 
         if (error) {
             // Qua gestirei l'errore con notification store senza router
-            router.post('/payment-response', {
-                status: 'error',
-                message: error.message,
-            });
+            notification.notify(error, 'danger')
+            console.error(error)
         } else if (paymentIntent.status === 'succeeded') {
             // Qua userei axios e tramite api un check sullo status poi creare il nuovo Order, e rimandare alla pagina dedicata nella then con router successivamente
-            router.post('/payment-response', {
-                status: 'success',
+            axios.post('/api/payment-response', {
+                status: 'confirmed',
                 message: 'Pagamento effettuato con successo!',
                 paymentIntent: paymentIntent,
+                products : cartStore.items
+            }).then((res) => {
+                cartStore.clearCart();
+                router.get(route('home'));
+            }).catch((e) => {
+                console.error(e)
             });
         } else {
             // Qua userei axios e tramite api e fare un check sullo status e rimandare alla pagina iniziale nella then con router successivamente
-            router.post('/payment-response', {
-                status: 'pending',
-                message: `Lo stato del pagamento è: ${paymentIntent.status}`,
-                paymentIntent: paymentIntent,
-            });
+            notification.notify(`Lo stato del pagamento è: ${paymentIntent.status}`, 'info')
+
         }
     } catch (error) {
         console.error("Errore durante il processo di pagamento:", error);
         // qua usa notification store!!
-        router.post('/payment-response', {
-            status: 'error',
-            message: error.message,
-        });
+        notification.notify(error, 'danger')
     }
 };
 
@@ -213,7 +154,7 @@ onMounted(async () => {
 
         // Ottieni il clientSecret dal server
         const response = await axios.post("/api/create-payment-intent", {
-            amount: cartStore.totalAmount, // Amount in cents
+            amount: orderTotal.value, // Amount in cents
             description: description, // Passa la descrizione al server
         });
 
@@ -229,4 +170,6 @@ onMounted(async () => {
         console.error("Errore durante la creazione del payment intent:", error);
     }
 });
+
+console.log(cartStore.items);
 </script>

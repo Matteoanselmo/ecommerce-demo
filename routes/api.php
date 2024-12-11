@@ -48,6 +48,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Guest
 
+// CheckOut
+Route::post('/payment-response', [PaymentController::class, 'handlePaymentResponse'])
+    ->name('payment.response');
 // Categorie
 Route::get('/all-categories', [CategoryController::class, 'index']);
 Route::get('/sub-categories', [SubCategoryController::class, 'index']);

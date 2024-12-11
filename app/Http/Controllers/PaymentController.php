@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
 
@@ -29,12 +32,43 @@ class PaymentController extends Controller {
         }
     }
     public function handlePaymentResponse(Request $request) {
+        \Log::info($request->all());
+
+        $paymentIntent = $request->input('paymentIntent');
+        $products = $request->input('products');
+        $userId = auth()->id(); // Supponiamo che l'utente sia autenticato
+
+
+        // Crea un nuovo ordine
+        $order = Order::create([
+            'user_id' => $userId,
+            'status' => 'confirmed',
+            'order_date' => now(),
+            'order_number' => $paymentIntent['id'], // Usa l'ID di PaymentIntent come numero ordine
+            'total_amount' => $paymentIntent['amount'],
+            'payment' => $paymentIntent['payment_method_types'][0], // Es. 'card'
+            'details' => $paymentIntent['description'], // Dettagli aggiuntivi dal PaymentIntent
+        ]);
+
+        $pivotData = [];
+        foreach ($products as $product) {
+            $pivotData[$product['id']] = [
+                'price_at_order' => $product['price'],
+                'order_quantity' => $product['quantity'],
+            ];
+            $productModel = Product::find($product['id']);
+            if ($productModel) {
+                $productModel->sizes()->updateExistingPivot($product['sizeId'], [
+                    'stock' => \DB::raw('stock - ' . $product['quantity']), // Sottrai la quantità ordinata
+                ]);
+            }
+        }
+
+        $order->products()->sync($pivotData);
 
         return Inertia::render('Welcome', [
-            'status' => $request->input('status'),
             'message' => $request->input('message'),
             'paymentIntent' => $request->input('paymentIntent'),
-            'description' => $request->input('description'),
         ]);
     }
 }

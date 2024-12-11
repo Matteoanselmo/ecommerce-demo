@@ -11,13 +11,12 @@ import { ref } from 'vue';
 const promoProducts = ref([]);
 
 function getPromoProducts() {
-  axios
-    .get('/api/promo-products')
+    axios.get('/api/promo-products')
     .then((res) => {
-      promoProducts.value = res.data; // Adatta i dati con i gruppi di sconto e prodotti
+    promoProducts.value = res.data; // Adatta i dati con i gruppi di sconto e prodotti
     })
     .catch((e) => {
-      console.error(e);
+        console.error(e);
     });
 }
 
@@ -28,14 +27,6 @@ defineProps({
     },
     canRegister: {
         type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
     },
 });
 

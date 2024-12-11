@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Product;
@@ -47,9 +48,6 @@ Route::get('/prodotti', function (Request $request) {
 })->name('products.list');
 
 Route::get('/prodotti/{id}', [ProductController::class, 'show'])->name('product.detail');
-
-Route::post('/payment-response', [PaymentController::class, 'handlePaymentResponse'])
-    ->name('payment.response');
 
 // ADMIN
 Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->group(function () {
