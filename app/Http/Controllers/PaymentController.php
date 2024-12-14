@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
+use App\Notifications\AdminOrderPushNotification;
+use App\Notifications\NewOrderNotification;
+use App\Notifications\OrderThankYouNotification;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Stripe\PaymentIntent;
@@ -65,6 +69,17 @@ class PaymentController extends Controller {
         }
 
         $order->products()->sync($pivotData);
+
+        // Invia notifica all'utente
+        $user = auth()->user();
+        $user->notify(new OrderThankYouNotification($order, $products));
+
+        // Invia notifiche all'admin
+        $adminUsers = User::where('role', 'admin')->get(); // Supponendo che gli admin siano identificati da un ruolo
+        foreach ($adminUsers as $admin) {
+            $admin->notify(new NewOrderNotification($order, $user));
+            $admin->notify(new AdminOrderPushNotification($order));
+        }
 
         return Inertia::render('Welcome', [
             'message' => $request->input('message'),

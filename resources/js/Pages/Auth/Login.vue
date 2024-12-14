@@ -114,6 +114,7 @@
                                             v-model="registerForm.password_confirmation"
                                             label="Conferma Password"
                                             type="password"
+                                            @keydown.enter.prevent="submitRegister"
                                             required
                                             :error-messages="
                                                 registerForm.errors.password_confirmation
@@ -127,6 +128,7 @@
                                                 class="ms-4 mb-4"
                                                 :disabled="registerForm.processing"
                                                 :loading="registerForm.processing"
+                                                type="submit"
                                             >
                                                 Registrati
                                             </v-btn>
