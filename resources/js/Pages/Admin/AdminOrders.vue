@@ -95,7 +95,7 @@ const headers = ref([
         key: 'status',
         model: 'status',
         type: 'select',
-        items: ['confirmed', 'returned'],
+        items: ['confirmed', 'in_progress ', 'on_delivery', 'delivered ', 'returned'],
         isEditable: true
     },
     {

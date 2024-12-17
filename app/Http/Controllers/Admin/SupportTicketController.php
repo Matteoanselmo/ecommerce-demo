@@ -56,7 +56,7 @@ class SupportTicketController extends Controller {
     // Aggiorna lo stato del ticket (solo admin)
     public function updateStatus(Request $request, $id) {
         $ticket = SupportTicket::findOrFail($id);
-
+        \Log::info($request->all());
         $request->validate([
             'status' => 'required|in:Aperto,In Attesa,Chiuso',
         ]);

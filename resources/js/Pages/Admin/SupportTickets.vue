@@ -91,9 +91,11 @@ const headers = ref([
         title: 'Status',
         align: 'start',
         sortable: false,
+        key: 'status',
+        model: 'status',
         type: 'select',
         items: ['Aperto', 'In Attesa', 'Chiuso'],
-        key: 'status',
+        isEditable: true
     },
     {
         title: "Azioni",

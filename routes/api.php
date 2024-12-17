@@ -121,6 +121,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/dashboard/traffic', [OverviewController::class, 'getTrafficData']);
     Route::get('/dashboard/disk-space', [OverviewController::class, 'getDiskSpace']);
     Route::get('/dashboard/top-products', [OverviewController::class, 'getTopProductsData']);
+    Route::get('/dashboard/user-count', [OverviewController::class, 'getUsersCount']);
+    Route::get('/dashboard/order-count', [OverviewController::class, 'getOrdersCountByStatus']);
+    Route::get('/dashboard/payment-usage', [OverviewController::class, 'getPaymentMethodsUsage']);
+    Route::post('/dashboard/reveniue-period', [OverviewController::class, 'getRevenueByPeriod']);
 
     // Personalizzazioni
     Route::post('/discount-banner', [DiscountBannerController::class, 'store']);

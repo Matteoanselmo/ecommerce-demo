@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Notifications\InvoiceUploaded;
+use App\Notifications\OrderStatusUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -56,7 +58,6 @@ class OrderController extends Controller {
     public function update(Request $request, $id) {
         $order = Order::with('user')->findOrFail($id);
         $data = $request->all();
-        \Log::info(count($data));
 
         // Validazione dei dati in arrivo
         $validatedData = $request->validate([
@@ -78,9 +79,13 @@ class OrderController extends Controller {
             $order->shipped_in = $validatedData['shipped_in'];
         }
 
-        // Salva i cambiamenti nel database
         $order->save();
 
+        $user = $order->user;
+
+        if ($user) {
+            $user->notify(new OrderStatusUpdated($order));
+        }
         return response()->json([
             'message' => 'Ordine aggiornato con successo.',
             'color' => 'info',
@@ -111,6 +116,15 @@ class OrderController extends Controller {
             $order->fattura = Storage::disk('s3')->url($path);
             $order->save();
         }
+
+        // Recupera l'utente associato all'ordine
+        $user = $order->user;
+
+        // Invia la notifica all'utente
+        if ($user) {
+            $user->notify(new InvoiceUploaded($order));
+        }
+
 
         return response()->json([
             'message' => 'Fattura caricata con successo.',
