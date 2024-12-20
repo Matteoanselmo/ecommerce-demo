@@ -49,6 +49,14 @@
                     @itemsUpdated="fetchColors"
                 />
             </v-col>
+            <v-col cols="6">
+                <ChipGroup
+                    :input="'text'"
+                    :items="certifications"
+                    :type="'certifications'"
+                    @itemsUpdated="fetchCertification"
+                />
+            </v-col>
         </v-row>
     </v-container>
 </template>
@@ -69,6 +77,7 @@ const page = ref(1);
 const loading = ref(true);
 const brands = ref([]);
 const colors = ref([]);
+const certifications = ref([]);
 const categories = ref([]); // Stato per memorizzare le categorie
 const subcategories = ref([]); // Stato per memorizzare le sotto-categorie
 
@@ -265,10 +274,18 @@ function fetchColors() {
         console.log(e);
     });
 }
+function fetchCertification() {
+    axios.get(`/api/certifications`).then((res) => {
+        certifications.value = res.data;
+    }).catch((e) => {
+        console.error(e);
+    });
+}
 
 fetchCategories();
 fetchBrands();
 fetchColors();
+fetchCertification();
 // Utilizza lodash debounce per ritardare la chiamata alla funzione di ricerca
 const debouncedfetchProducts = debounce(fetchProducts, 500);
 </script>

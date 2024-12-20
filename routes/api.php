@@ -188,6 +188,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/certifications', [CertificationController::class, 'index']);
     Route::get('/certifications/{productId}', [CertificationController::class, 'getProductCertifications']);
     Route::post('/product/{productId}/certifications', [CertificationController::class, 'updateProductCertifications']);
+    Route::post('/certifications', [CertificationController::class, 'store']);
+    Route::patch('/certifications/{id}', [CertificationController::class, 'update']);
+    Route::delete('/certifications/{id}', [CertificationController::class, 'destroy']);
 
     // Brand
     Route::prefix('/brands')->group(function () {

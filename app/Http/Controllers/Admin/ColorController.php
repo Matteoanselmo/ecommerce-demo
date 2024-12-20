@@ -66,7 +66,7 @@ class ColorController extends Controller {
 
         return response()->json([
             'message' => 'Colore eliminato correttamente',
-            'color' => 'success'
+            'color' => 'info'
         ]);
     }
 }
