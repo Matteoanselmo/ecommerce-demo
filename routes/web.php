@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
@@ -58,6 +59,8 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
     Route::get('/orders', function () {
         return Inertia::render('Admin/AdminOrders');
     })->name('admin.orders');
+
+    Route::get('/order-details/{id}', [OrderController::class, 'show'])->name('order.details');
 
     Route::get('/customization', function () {
         return Inertia::render('Admin/Customization');

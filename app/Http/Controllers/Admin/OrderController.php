@@ -10,6 +10,7 @@ use App\Notifications\OrderStatusUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 
 class OrderController extends Controller {
     public function index(Request $request) {
@@ -50,9 +51,14 @@ class OrderController extends Controller {
     }
 
     public function show($id) {
-        $order = Order::with('products', 'user')->findOrFail($id);
+        $order = Order::with('products', 'user', 'shippingAddress', 'billingAddress')->findOrFail($id);
 
-        return response()->json($order);
+        return Inertia::render(
+            'Admin/OrderDetails',
+            [
+                'order' => $order
+            ]
+        );
     }
 
     public function update(Request $request, $id) {

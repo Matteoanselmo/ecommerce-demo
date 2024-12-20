@@ -3,6 +3,7 @@ import { Head, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import OrdersTable from '@/Components/User/OrdersTable.vue';
 import Address from '@/Components/User/Address.vue';
+import BillingAddresses from '@/Components/User/BillingAddresses.vue';
 import WishList from '@/Components/User/WishList.vue';
 import TicketManager from '@/Components/User/TicketManager.vue';
 
@@ -71,6 +72,7 @@ function getInitials(name) {
                     <!-- Address Table -->
                     <v-tabs-window-item value="addresses">
                         <Address/>
+                        <BillingAddresses/>
                     </v-tabs-window-item>
                     <v-tabs-window-item value="wishlist">
                         <WishList/>

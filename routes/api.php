@@ -23,6 +23,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\User\AddressController;
+use App\Http\Controllers\User\BillingAddressController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\User\SupportTicketController as UserSupportTicketController;
 use App\Http\Controllers\User\WishlistController;
@@ -107,6 +108,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/user-addresses', [AddressController::class, 'store']);
     Route::put('/user-addresses/{id}', [AddressController::class, 'update']);
     Route::delete('/user-addresses/{id}', [AddressController::class, 'destroy']);
+
+    // Billing Addresses
+    Route::get('/billing-addresses', [BillingAddressController::class, 'index']);
+    Route::post('/billing-addresses', [BillingAddressController::class, 'store']);
+    Route::put('/billing-addresses/{id}', [BillingAddressController::class, 'update']);
+    Route::delete('/billing-addresses/{id}', [BillingAddressController::class, 'destroy']);
+
 
     // Ticket
     Route::get('/support-tickets', [UserSupportTicketController::class, 'index']);

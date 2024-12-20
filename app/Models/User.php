@@ -66,4 +66,8 @@ class User extends Authenticatable {
     public function addresses() {
         return $this->hasMany(UserAddress::class);
     }
+    // Relazione con BillingAddress
+    public function billingAddresses() {
+        return $this->hasMany(BillingAddress::class);
+    }
 }

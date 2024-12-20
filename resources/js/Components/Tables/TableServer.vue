@@ -36,6 +36,11 @@
                 <v-icon icon="mdi-download"></v-icon>
             </a>
         </template>
+        <template #item.order_number="{ item }" >
+            <a :href="route('order.details', item.id)">
+                {{ item.order_number }}
+            </a>
+        </template>
 
         <template #item.actions="{ item }" >
             <Link

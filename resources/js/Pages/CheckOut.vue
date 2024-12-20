@@ -41,6 +41,9 @@
                 <Address
                     @address-selected="handleAddressSelected"
                 />
+                <BillingAddresses
+                    @billing-address-selected="handleAddressSelected"
+                />
                 <form @submit.prevent="pay">
                     <v-card rounded="xl" elevation="0" class="mb-5 py-4 px-4">
                         <div id="payment-element"></div>
@@ -65,6 +68,7 @@ import { useCartStore } from '@/stores/cartStore';
 import { loadStripe } from "@stripe/stripe-js";
 import { getCurrentInstance } from 'vue';
 import Address from '@/Components/User/Address.vue';
+import BillingAddresses from '@/Components/User/BillingAddresses.vue';
 import { useNotificationStore } from '@/stores/notification.store';
 
 const notification = useNotificationStore();

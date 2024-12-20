@@ -18,7 +18,7 @@ class OrderSeeder extends Seeder {
                 'status' => ['confirmed', 'in_progress', 'on_delivery', 'delivered', 'returned'][array_rand(['confirmed', 'in_progress', 'on_delivery', 'delivered', 'returned'])], // Stato casuale
                 'shipping_number' => Str::random(10), // Numero di spedizione casuale
                 'order_date' => now()->subDays(rand(1, 30)), // Data ordine random tra oggi e 30 giorni fa
-                'total_amount' => rand(1000, 5000), // Importo totale casuale decimale tra 100.0 e 500.0
+                'total_amount' => rand(1000, 5000), // Importo totale casuale tra 1000 e 5000 (cent)
                 'user_id' => rand(1, 5), // Assumi che ci siano almeno 5 utenti
                 'order_number' => $orderNumber++, // Numero di ordine incrementale
 
@@ -28,6 +28,10 @@ class OrderSeeder extends Seeder {
                 'payment' => ['credit_card', 'paypal', 'bank_transfer'][array_rand(['credit_card', 'paypal', 'bank_transfer'])], // Metodo di pagamento casuale
                 'details' => Str::random(20), // Dettagli ordine casuali
                 'fattura' => null, // Lasciato vuoto se non si conosce un URL valido
+
+                // Nuovi campi per le foreign keys
+                'shipping_address_id' => rand(1, 22), // ID casuale da 1 a 25 per gli indirizzi di spedizione
+                'billing_address_id' => rand(1, 21), // ID casuale da 1 a 21 per gli indirizzi di fatturazione
             ]);
         }
     }

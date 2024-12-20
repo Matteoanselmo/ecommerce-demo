@@ -13,15 +13,17 @@ class CreateOrdersTable extends Migration {
     public function up() {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); // Colonna per la relazione con l'utente
+            $table->unsignedBigInteger('user_id'); // Relazione con l'utente
+            $table->unsignedBigInteger('shipping_address_id'); // Relazione con user_addresses
+            $table->unsignedBigInteger('billing_address_id'); // Relazione con billing_addresses
             $table->string('status'); // Stato dell'ordine
             $table->date('order_date'); // Data dell'ordine
             $table->string('shipping_number')->nullable(); // Numero di spedizione
-            $table->string('order_number')->unique(); // Numero dell'ordine univoco
+            $table->string('order_number')->unique(); // Numero univoco dell'ordine
             $table->integer('total_amount'); // Totale dell'ordine
 
             // Nuovi campi aggiunti
-            $table->date('data')->nullable(); // Data generica senza orario
+            $table->date('data')->nullable(); // Data generica
             $table->date('shipped_in')->nullable(); // Data di spedizione
             $table->string('payment')->nullable(); // Metodo di pagamento
             $table->string('details')->nullable(); // Dettagli dell'ordine
@@ -29,8 +31,10 @@ class CreateOrdersTable extends Migration {
 
             $table->timestamps();
 
-            // Chiave esterna per la relazione con la tabella users
+            // Chiavi esterne
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('shipping_address_id')->references('id')->on('user_addresses')->onDelete('cascade');
+            $table->foreign('billing_address_id')->references('id')->on('billing_addresses')->onDelete('cascade');
         });
     }
 
