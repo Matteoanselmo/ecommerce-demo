@@ -9,14 +9,26 @@ class CreateBillingAddressesTable extends Migration {
         Schema::create('billing_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('name'); // Nome privato o denominazione azienda
-            $table->string('tax_id')->nullable(); // Partita IVA o Codice Fiscale
+            $table->enum('type', ['private', 'company']); // Tipo di dati: privato o azienda
+
+            // Campi comuni
             $table->string('address'); // Indirizzo
-            $table->string('house_number')->nullable(); // Numero civico
-            $table->string('postal_code'); // CAP
+            $table->string('internal')->nullable(); // Interno
             $table->string('city'); // Città
-            $table->string('state'); // Provincia
+            $table->string('postal_code'); // CAP
+            $table->string('state')->nullable(); // Provincia
             $table->string('country'); // Paese
+            $table->string('tax_code')->nullable(); // Codice Fiscale (privato e azienda)
+
+            // Campi per i privati
+            $table->string('first_name')->nullable(); // Nome (solo privato)
+            $table->string('last_name')->nullable(); // Cognome (solo privato)
+
+            // Campi per le aziende
+            $table->string('company_name')->nullable(); // Ragione Sociale (solo azienda)
+            $table->string('vat_number')->nullable(); // Partita IVA (solo azienda)
+            $table->string('sdi_code')->nullable(); // Codice SDI (solo azienda)
+
             $table->string('phone_number')->nullable(); // Telefono
             $table->boolean('is_primary')->default(false); // Indica l'indirizzo principale
             $table->timestamps();

@@ -36,23 +36,27 @@ class PaymentController extends Controller {
         }
     }
     public function handlePaymentResponse(Request $request) {
-        \Log::info($request->all());
 
         $paymentIntent = $request->input('paymentIntent');
         $products = $request->input('products');
+        $addressId = $request->input('addressId');
+        $billingId = $request->input('billingId');
         $userId = auth()->id(); // Supponiamo che l'utente sia autenticato
 
 
         // Crea un nuovo ordine
         $order = Order::create([
             'user_id' => $userId,
-            'status' => 'confirmed',
+            'status' => $request->input('status', 'pending'), // Usa lo stato passato nella richiesta, default 'pending'
             'order_date' => now(),
             'order_number' => $paymentIntent['id'], // Usa l'ID di PaymentIntent come numero ordine
-            'total_amount' => $paymentIntent['amount'],
-            'payment' => $paymentIntent['payment_method_types'][0], // Es. 'card'
-            'details' => $paymentIntent['description'], // Dettagli aggiuntivi dal PaymentIntent
+            'total_amount' => $paymentIntent['amount'], // Totale pagamento
+            'payment' => $paymentIntent['payment_method_types'][0] ?? 'unknown', // Metodo di pagamento
+            'details' => $paymentIntent['description'] ?? 'N/A', // Dettagli aggiuntivi dal PaymentIntent
+            'shipping_address_id' => $addressId,
+            'billing_address_id' => $billingId,
         ]);
+
 
         $pivotData = [];
         foreach ($products as $product) {
@@ -75,7 +79,8 @@ class PaymentController extends Controller {
         $user->notify(new OrderThankYouNotification($order, $products));
 
         // Invia notifiche all'admin
-        $adminUsers = User::where('role', 'admin')->get(); // Supponendo che gli admin siano identificati da un ruolo
+        $adminUsers = User::where('role', 'admin')->get();
+
         foreach ($adminUsers as $admin) {
             $admin->notify(new NewOrderNotification($order, $user));
             $admin->notify(new AdminOrderPushNotification($order));

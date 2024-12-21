@@ -31,7 +31,7 @@ const appName = import.meta.env.VITE_APP_NAME || 'Security Fire';
 const formatPrice = (price) => {
     // Dividi il prezzo per ottenere due cifre decimali
     let formattedPrice = (price / 100).toFixed(2).replace('.', ',');
-    return formattedPrice + ' €';
+    return '€ ' + formattedPrice;
 };
 
 createInertiaApp({

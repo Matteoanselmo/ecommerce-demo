@@ -33,18 +33,28 @@ class AddressController extends Controller {
             'is_primary' => 'boolean',
         ]);
 
-        // Imposta l'indirizzo come primario se indicato
-        if ($validated['is_primary'] ?? false) {
-            Auth::user()->addresses()->update(['is_primary' => false]);
+        $user = Auth::user();
+
+        // Controlla se l'utente ha già indirizzi
+        $hasAddresses = $user->addresses()->exists();
+
+        // Se non esistono indirizzi, imposta is_primary su true
+        if (!$hasAddresses) {
+            $validated['is_primary'] = true;
+        } elseif ($validated['is_primary'] ?? false) {
+            // Se impostato come primario, aggiorna gli altri indirizzi per rimuovere il flag
+            $user->addresses()->update(['is_primary' => false]);
         }
 
-        Auth::user()->addresses()->create($validated);
+        // Crea il nuovo indirizzo
+        $user->addresses()->create($validated);
 
         return response()->json([
             'message' => 'Indirizzo aggiunto correttamente!',
-            'color' => 'success'
+            'color' => 'success',
         ]);
     }
+
 
     /**
      * Aggiorna un indirizzo esistente dell'utente autenticato

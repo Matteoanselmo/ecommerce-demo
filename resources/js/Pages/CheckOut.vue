@@ -42,7 +42,7 @@
                     @address-selected="handleAddressSelected"
                 />
                 <BillingAddresses
-                    @billing-address-selected="handleAddressSelected"
+                    @billing-address-selected="handleBillingSelected"
                 />
                 <form @submit.prevent="pay">
                     <v-card rounded="xl" elevation="0" class="mb-5 py-4 px-4">
@@ -78,6 +78,7 @@ const cartStore = useCartStore();
 const subtotal = computed(() => cartStore.totalAmount);
 const shipping = 500; // Importo fisso o calcolato separatamente
 const selectedAddress = ref(null);
+const selectBilling = ref(null);
 const orderTotal = computed(() => subtotal.value + shipping);
 const clientSecret = ref("");
 
@@ -90,6 +91,11 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY);
 function handleAddressSelected(address) {
     selectedAddress.value = address; // Salva l'indirizzo selezionato
     console.log(selectedAddress.value)
+}
+// Funzione per gestire l'evento billing-address-selected
+function handleBillingSelected(billing) {
+    selectBilling.value = billing;
+    console.log(selectBilling.value)
 }
 
 const pay = async () => {
@@ -104,15 +110,15 @@ const pay = async () => {
                 payment_method_data: {
                     billing_details: {
                         "address": {
-                            "city": selectedAddress.value.city,
-                            "country": selectedAddress.value.country,
-                            "line1": selectedAddress.value.address + ' ' + selectedAddress.value.house_number,
-                            "postal_code": selectedAddress.value.postal_code,
-                            "state": selectedAddress.value.state
+                            "city": selectBilling.value.city,
+                            "country": selectBilling.value.country,
+                            "line1": selectBilling.value.address,
+                            "postal_code": selectBilling.value.postal_code,
+                            "state": selectBilling.value.state
                         },
-                        name: selectedAddress.value.recipient_name,
+                        name: selectBilling.value.type === 'company' ? selectBilling.value.company_name : selectBilling.value.first_name + ' ' + selectBilling.value.last_name,
                         email: page.props.auth.user.email,
-                        phone: selectedAddress.value.phone_number,
+                        phone: selectBilling.value.phone_number ?  selectBilling.value.phone_number : '',
                     },
                 },
             },
@@ -128,7 +134,9 @@ const pay = async () => {
                 status: 'confirmed',
                 message: 'Pagamento effettuato con successo!',
                 paymentIntent: paymentIntent,
-                products : cartStore.items
+                products : cartStore.items,
+                addressId : selectedAddress.value.id,
+                billingId : selectBilling.value.id,
             }).then((res) => {
                 cartStore.clearCart();
                 router.get(route('home'));

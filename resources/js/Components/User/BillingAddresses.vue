@@ -2,8 +2,7 @@
     <div class="py-5 px-4">
         <div class="d-flex align-center justify-space-between">
             <div class="text-h4 mb-4">Indirizzi di Fatturazione</div>
-            <v-btn icon="mdi mdi-plus" color="info" class="mb-2" @click="openDialog()">
-            </v-btn>
+            <v-btn icon="mdi mdi-plus" color="info" class="mb-2" @click="openDialog()"></v-btn>
         </div>
         <v-row>
             <v-col cols="12" sm="6" lg="4" v-for="(address, index) in billingAddresses" :key="address.id">
@@ -13,28 +12,23 @@
                     border="1"
                     elevation="0"
                     :class="{ 'selected-card': selectedCard === index }"
-                    :title="address.address + ' - ' + address.house_number"
+                    :title="address.address + ' - ' + (address.house_number || '')"
                     @click="handleCardClick(address, index)"
                     height="352"
                 >
                     <v-card-subtitle>
                         <p class="text-body-2 mb-1">{{ address.city }}, {{ address.state }}, {{ address.country }}</p>
                         <p class="text-body-2 mb-1">{{ address.postal_code }}</p>
-                        <p>{{ address.name }}</p>
-                        <p v-if="address.tax_id">P.IVA/C.F.: {{ address.tax_id }}</p>
+                        <p v-if="address.type === 'private'">{{ address.first_name }} {{ address.last_name }}</p>
+                        <p v-if="address.type === 'company'">{{ address.company_name }}</p>
+                        <p v-if="address.tax_code">C.F.: {{ address.tax_code }}</p>
+                        <p v-if="address.vat_number">P.IVA: {{ address.vat_number }}</p>
+                        <p v-if="address.sdi_code">SDI: {{ address.sdi_code }}</p>
                         <p>{{ address.phone_number }}</p>
                     </v-card-subtitle>
                     <v-card-actions class="justify-end">
-                        <v-btn
-                            icon="mdi mdi-pencil"
-                            color="warning"
-                            @click="openDialog(index)"
-                        ></v-btn>
-                        <v-btn
-                            icon="mdi mdi-delete"
-                            color="red"
-                            @click="deleteBillingAddress(address.id)"
-                        ></v-btn>
+                        <v-btn icon="mdi mdi-pencil" color="warning" @click="openDialog(index)"></v-btn>
+                        <v-btn icon="mdi mdi-delete" color="red" @click="deleteBillingAddress(address.id)"></v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -50,14 +44,41 @@
                 </v-card-title>
                 <v-card-text>
                     <v-form>
+                        <v-select
+                            v-model="form.type"
+                            :items="['private', 'company']"
+                            label="Tipo (Privato/Azienda)"
+                            required
+                        ></v-select>
                         <v-text-field
-                            v-model="form.name"
-                            label="Nome/Denominazione"
+                            v-if="form.type === 'private'"
+                            v-model="form.first_name"
+                            label="Nome (Privati)"
+                        ></v-text-field>
+                        <v-text-field
+                            v-if="form.type === 'private'"
+                            v-model="form.last_name"
+                            label="Cognome (Privati)"
+                        ></v-text-field>
+                        <v-text-field
+                            v-if="form.type === 'company'"
+                            v-model="form.company_name"
+                            label="Ragione Sociale (Aziende)"
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="form.tax_code"
+                            label="Codice Fiscale (Obbligatorio per Privati e Aziende)"
                             required
                         ></v-text-field>
                         <v-text-field
-                            v-model="form.tax_id"
-                            label="P.IVA / Codice Fiscale"
+                            v-if="form.type === 'company'"
+                            v-model="form.vat_number"
+                            label="Partita IVA (Aziende)"
+                        ></v-text-field>
+                        <v-text-field
+                            v-if="form.type === 'company'"
+                            v-model="form.sdi_code"
+                            label="Codice SDI (Aziende)"
                         ></v-text-field>
                         <v-text-field
                             v-model="form.address"
@@ -65,9 +86,8 @@
                             required
                         ></v-text-field>
                         <v-text-field
-                            v-model="form.house_number"
-                            label="N. Civico"
-                            required
+                            v-model="form.internal"
+                            label="Interno (Opzionale)"
                         ></v-text-field>
                         <v-text-field
                             v-model="form.postal_code"
@@ -91,14 +111,13 @@
                         ></v-text-field>
                         <v-text-field
                             v-model="form.phone_number"
-                            label="Telefono"
-                            required
+                            label="Telefono (Opzionale)"
                         ></v-text-field>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn text color="success" @click="saveBillingAddress">Salva</v-btn>
+                    <v-btn text color="success" @click="saveBillingAddress" :disabled="!isFormValid">Salva</v-btn>
                     <v-btn text color="red" @click="closeDialog">Annulla</v-btn>
                 </v-card-actions>
             </v-card>
@@ -107,23 +126,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import axios from 'axios';
 import { useNotificationStore } from '@/stores/notification.store';
 
-// Stato degli indirizzi di fatturazione
 const billingAddresses = ref([]);
 const notificationStore = useNotificationStore();
 const emit = defineEmits(['billing-address-selected']);
 
-// Stato del dialog
 const dialogVisible = ref(false);
 const editingIndex = ref(null);
 const selectedCard = ref(null);
 const form = ref({
-    name: '',
-    tax_id: '',
+    type: 'private',
+    first_name: '',
+    last_name: '',
+    company_name: '',
+    tax_code: '',
+    vat_number: '',
+    sdi_code: '',
     address: '',
+    internal: '',
     house_number: '',
     postal_code: '',
     city: '',
@@ -132,11 +155,28 @@ const form = ref({
     phone_number: '',
 });
 
-// Carica gli indirizzi di fatturazione dal server
+// Computed property per validare i campi obbligatori
+const isFormValid = computed(() => {
+    const baseValidation =
+        form.value.address &&
+        form.value.postal_code &&
+        form.value.city &&
+        form.value.state &&
+        form.value.country;
+
+    if (form.value.type === 'private') {
+        return baseValidation && form.value.first_name && form.value.last_name && form.value.tax_code;
+    } else if (form.value.type === 'company') {
+        return baseValidation && form.value.company_name && form.value.tax_code;
+    }
+    return false;
+});
+
 function getBillingAddresses() {
     axios
         .get('/api/billing-addresses')
         .then((res) => {
+            console.log(res.data)
             billingAddresses.value = res.data;
         })
         .catch((e) => {
@@ -144,13 +184,11 @@ function getBillingAddresses() {
         });
 }
 
-// Gestisci il click sulla card
 function handleCardClick(address, index) {
     selectedCard.value = index;
     emit('billing-address-selected', address);
 }
 
-// Apri il dialog per aggiungere o modificare
 function openDialog(index = null) {
     editingIndex.value = index;
 
@@ -163,18 +201,22 @@ function openDialog(index = null) {
     dialogVisible.value = true;
 }
 
-// Chiudi il dialog
 function closeDialog() {
     dialogVisible.value = false;
     resetForm();
 }
 
-// Resetta il form
 function resetForm() {
     Object.assign(form.value, {
-        name: '',
-        tax_id: '',
+        type: 'private',
+        first_name: '',
+        last_name: '',
+        company_name: '',
+        tax_code: '',
+        vat_number: '',
+        sdi_code: '',
         address: '',
+        internal: '',
         house_number: '',
         postal_code: '',
         city: '',
@@ -184,7 +226,6 @@ function resetForm() {
     });
 }
 
-// Salva o modifica un indirizzo di fatturazione
 function saveBillingAddress() {
     if (editingIndex.value === null) {
         axios
@@ -224,7 +265,6 @@ function saveBillingAddress() {
     }
 }
 
-// Elimina un indirizzo di fatturazione
 function deleteBillingAddress(id) {
     if (window.confirm('Sei sicuro di voler eliminare questo indirizzo?')) {
         axios
@@ -243,7 +283,6 @@ function deleteBillingAddress(id) {
     }
 }
 
-// Inizializza caricando gli indirizzi di fatturazione
 getBillingAddresses();
 </script>
 

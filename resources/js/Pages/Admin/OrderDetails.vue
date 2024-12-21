@@ -1,4 +1,7 @@
 <template>
+    <Head
+        title="Dettaglio Ordine"
+    />
     <v-container class="py-5">
     <!-- Titolo -->
     <v-row>
@@ -21,7 +24,7 @@
     <!-- Indirizzo di Spedizione -->
     <v-row class="mt-4">
         <v-col cols="6">
-            <v-card class="pa-4" elevation="0" rounded="xl" height="220">
+            <v-card class="pa-4" elevation="0" rounded="xl" height="270">
                 <h2 class="text-h5">Indirizzo di Spedizione</h2>
                 <p><strong>Destinatario:</strong> {{ order.shipping_address.recipient_name }}</p>
                 <p><strong>Indirizzo:</strong> {{ order.shipping_address.address }}, {{ order.shipping_address.house_number }}</p>
@@ -31,10 +34,12 @@
             </v-card>
         </v-col>
         <v-col cols="6">
-            <v-card class="pa-4" elevation="0" rounded="xl">
-                <h2 class="text-h5">Indirizzo di Fatturazione</h2>
-                <p><strong>Nome/Denominazione:</strong> {{ order.billing_address.name }}</p>
-                <p><strong>Partita IVA/C.F.:</strong> {{ order.billing_address.tax_id }}</p>
+            <v-card class="pa-4" elevation="0" rounded="xl" height="270">
+                <h2 class="text-h5">Indirizzo di Fatturazione ({{ order.billing_address.type }})</h2>
+                <p><strong>Nome/Denominazione:</strong> {{ order.billing_address.type === 'company' ? order.billing_address.company_name : order.billing_address.first_name + ' ' + order.billing_address.last_name }}</p>
+                <p v-if="order.billing_address.type === 'company'"><strong>Partita IVA:</strong> {{ order.billing_address.vat_number }}</p>
+                <p v-if="order.billing_address.type === 'company'"><strong>Codice SDI:</strong> {{ order.billing_address.sdi_code }}</p>
+                <p><strong>Codice Fiscale:</strong> {{ order.billing_address.tax_code }}</p>
                 <p><strong>Indirizzo:</strong> {{ order.billing_address.address }}, {{ order.billing_address.house_number }}</p>
                 <p><strong>CAP:</strong> {{ order.billing_address.postal_code }}</p>
                 <p><strong>Città:</strong> {{ order.billing_address.city }}</p>
@@ -61,18 +66,30 @@
     <!-- Prodotti nell'Ordine -->
     <v-row class="mt-4">
         <v-col>
-        <v-card class="pa-4" elevation="0" rounded="xl">
-            <h2 class="text-h5">Prodotti nell'Ordine</h2>
-            <v-row>
-            <v-col cols="4"  v-for="product in order.products" :key="product.id">
-                <v-card class="pa-3 mb-3" elevation="0" rounded="xl" height="180">
-                    <p><strong>Nome:</strong> {{ product.name }}</p>
-                    <p><strong>Quantità:</strong> {{ product.pivot.order_quantity }}</p>
-                    <p><strong>Prezzo:</strong> {{ $formatPrice(product.pivot.price_at_order) }}</p>
-                </v-card>
-            </v-col>
-            </v-row>
-        </v-card>
+            <v-card class="pa-4" elevation="0" rounded="xl">
+                <v-data-table
+                    :headers="headers"
+                    :items="order.products"
+                    item-value="id"
+                    class="elevation-0"
+                    dense
+                >
+                    <template v-slot:top>
+                        <v-toolbar flat>
+                            <v-toolbar-title><strong>Prodotti nell'Ordine</strong></v-toolbar-title>
+                            <v-spacer></v-spacer>
+                        </v-toolbar>
+                    </template>
+                    <template v-slot:[`item.name`]="{ item }">
+                        <Link :href="route('admin.product.crud', item)" class="text-info">
+                            {{ item.name }}
+                        </Link>
+                    </template>
+                    <template v-slot:[`item.pivot.price_at_order`]="{ item }">
+                        {{ $formatPrice(item.pivot.price_at_order) }}
+                    </template>
+                </v-data-table>
+            </v-card>
         </v-col>
     </v-row>
     </v-container>
@@ -80,10 +97,16 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, Head, Link } from '@inertiajs/vue3';
+
+const headers = ref([
+    { title: 'Nome', value: 'name' },
+    { title: 'Quantità', value: 'pivot.order_quantity' },
+    { title: 'Prezzo', value: 'pivot.price_at_order' },
+]);
+
 
 const { props } = usePage();
-console.log(props.order)
 const order = reactive(props.order);
 </script>
 

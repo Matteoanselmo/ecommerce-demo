@@ -211,6 +211,7 @@ function fetchProducts(options = {}) {
             totalItems.value = res.data.total;
             page.value = res.data.current_page;
             loading.value = false;
+            console.log(res.data)
         })
         .catch((e) => {
             console.error(e);

@@ -37,9 +37,15 @@
             </a>
         </template>
         <template #item.order_number="{ item }" >
-            <a :href="route('order.details', item.id)">
+            <a :href="route('order.details', item.id)" class="text-info">
                 {{ item.order_number }}
             </a>
+        </template>
+        <template #item.total_amount="{ item }" >
+            {{ $formatPrice(item.total_amount) }}
+        </template>
+        <template #item.price="{ item }" >
+            {{ $formatPrice(item.price) }}
         </template>
 
         <template #item.actions="{ item }" >

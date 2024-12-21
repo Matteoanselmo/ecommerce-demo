@@ -16,47 +16,68 @@ class BillingAddressController extends Controller {
     public function store(Request $request) {
         // Validazione dei dati
         $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'name' => 'required|string|max:255', // Nome privato o denominazione azienda
-            'tax_id' => 'nullable|string|max:50', // Partita IVA o Codice Fiscale
-            'address' => 'required|string|max:255', // Indirizzo
-            'house_number' => 'nullable|string|max:20', // Numero civico
-            'postal_code' => 'required|string|max:10', // CAP
-            'city' => 'required|string|max:100', // Città
-            'state' => 'required|string|max:100', // Provincia
-            'country' => 'required|string|max:100', // Paese
-            'phone_number' => 'nullable|string|max:20', // Telefono
-            'is_primary' => 'boolean', // Indirizzo principale
+            'type' => 'required|in:private,company', // Tipo di indirizzo
+            'address' => 'required|string|max:255',
+            'internal' => 'nullable|string|max:50', // Interno
+            'city' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:10',
+            'state' => 'nullable|string|max:100',
+            'country' => 'required|string|max:100',
+            'first_name' => 'nullable|string|max:100', // Solo per privati
+            'last_name' => 'nullable|string|max:100', // Solo per privati
+            'tax_code' => 'required|string|max:50', // Codice Fiscale (obbligatorio per entrambi)
+            'company_name' => 'nullable|string|max:255', // Solo per aziende
+            'vat_number' => 'nullable|string|max:50', // Solo per aziende
+            'sdi_code' => 'nullable|string|max:7', // Solo per aziende
+            'phone_number' => 'nullable|string|max:20',
+            'is_primary' => 'boolean',
         ]);
 
-        // Se l'indirizzo è primario, rimuovi il flag dagli altri indirizzi dell'utente
-        if ($validatedData['is_primary'] ?? false) {
-            BillingAddress::where('user_id', $validatedData['user_id'])
-                ->update(['is_primary' => false]);
+        $userId = Auth::id();
+
+        // Controlla se l'utente ha già indirizzi di fatturazione
+        $existingAddresses = BillingAddress::where('user_id', $userId)->exists();
+
+        // Se non esistono altri indirizzi, imposta is_primary su true
+        if (!$existingAddresses) {
+            $validatedData['is_primary'] = true;
+        } elseif ($validatedData['is_primary'] ?? false) {
+            // Se l'indirizzo è impostato come primario, rimuovi il flag dagli altri indirizzi
+            BillingAddress::where('user_id', $userId)->update(['is_primary' => false]);
         }
 
+        // Aggiungi user_id ai dati validati
+        $validatedData['user_id'] = $userId;
+
         // Crea il nuovo indirizzo di fatturazione
-        BillingAddress::create($validatedData);
+        $billingAddress = BillingAddress::create($validatedData);
 
         return response()->json([
             'message' => 'Indirizzo di fatturazione creato con successo!',
-            'color' => 'success'
+            'billing_address' => $billingAddress,
+            'color' => 'success',
         ]);
     }
+
 
     public function update(Request $request, $id) {
         // Validazione dei dati
         $validated = $request->validate([
-            'name' => 'required|string|max:255', // Nome privato o denominazione azienda
-            'tax_id' => 'nullable|string|max:50', // Partita IVA o Codice Fiscale
-            'address' => 'required|string|max:255', // Indirizzo
-            'house_number' => 'nullable|string|max:20', // Numero civico
-            'postal_code' => 'required|string|max:10', // CAP
-            'city' => 'required|string|max:100', // Città
-            'state' => 'required|string|max:100', // Provincia
-            'country' => 'required|string|max:100', // Paese
-            'phone_number' => 'nullable|string|max:20', // Telefono
-            'is_primary' => 'boolean', // Indirizzo principale
+            'type' => 'required|in:private,company', // Tipo di indirizzo
+            'address' => 'required|string|max:255',
+            'internal' => 'nullable|string|max:50', // Interno
+            'city' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:10',
+            'state' => 'nullable|string|max:100',
+            'country' => 'required|string|max:100',
+            'first_name' => 'nullable|string|max:100', // Solo per privati
+            'last_name' => 'nullable|string|max:100', // Solo per privati
+            'tax_code' => 'required|string|max:50', // Codice Fiscale (obbligatorio per entrambi)
+            'company_name' => 'nullable|string|max:255', // Solo per aziende
+            'vat_number' => 'nullable|string|max:50', // Solo per aziende
+            'sdi_code' => 'nullable|string|max:7', // Solo per aziende
+            'phone_number' => 'nullable|string|max:20',
+            'is_primary' => 'boolean',
         ]);
 
         // Trova l'indirizzo di fatturazione specifico dell'utente autenticato
@@ -70,7 +91,10 @@ class BillingAddressController extends Controller {
         // Aggiorna l'indirizzo con i dati validati
         $billingAddress->update($validated);
 
-        return response()->json($billingAddress);
+        return response()->json([
+            'message' => 'Indirizzo di fatturazione aggiornato con successo!',
+            'billing_address' => $billingAddress,
+        ]);
     }
 
     public function destroy($id) {
