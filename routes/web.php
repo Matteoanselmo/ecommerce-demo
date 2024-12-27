@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Discount;
 use App\Models\Product;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -86,6 +87,10 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
         return Inertia::render('Admin/Sizes');
     })->name('admin.sizes');
 
+    Route::get('/discounts', function () {
+        return Inertia::render('Admin/Discount');
+    })->name('admin.discounts');
+
     Route::get('/products/{product}', function ($productId) {
         $product = Product::with([
             'subCategory',        // Carica la sub-categoria associata
@@ -102,6 +107,13 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
             'product' => $product
         ]);
     })->name('admin.product.crud');
+
+    Route::get('/discount/{discount}', function ($id) {
+        $discount = Discount::with(['products:id,name', 'categories:id,name'])->findOrFail($id);
+        return Inertia::render('Admin/DiscountCrud', [
+            'discount' => $discount
+        ]);
+    })->name('admin.discount.crud');
 
 
 

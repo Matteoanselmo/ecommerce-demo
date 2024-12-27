@@ -51,13 +51,13 @@
         <template #item.actions="{ item }" >
             <Link
                 as="button"
-                :href="route('admin.product.crud', { product: item.id })"
+                :href="route('admin.' + props.type + '.crud', { id: item.id })"
                 v-if="props.crud.includes('show')"
                 class="v-btn v-theme--myCustomTheme v-btn--density-default v-btn--size-small v-btn--variant-outlined me-3 text-warning"
             >
-                <v-icon icon="mdi mdi-edit-outline">
+                <span class="mdi mdi-edit-outline">
 
-                </v-icon>
+                </span>
             </Link>
             <v-btn v-if="props.crud.includes('update')" variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
                 <span class="mdi mdi-file-edit-outline"></span>

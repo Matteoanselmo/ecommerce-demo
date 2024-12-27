@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CertificationController;
 use App\Http\Controllers\Admin\ColorController as AdminColorController;
 use App\Http\Controllers\Admin\DatasheetController;
+use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
@@ -223,4 +224,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::patch('/{id}', [AdminColorController::class, 'update']); // Aggiornamento di un brand esistente
         Route::delete('/{id}', [AdminColorController::class, 'destroy']); // Eliminazione di un brand
     });
+
+    // Discount
+    Route::get('/discounts', [DiscountController::class, 'index']);
+    Route::post('/discount', [DiscountController::class, 'store']);
+    Route::patch('/discount', [DiscountController::class, 'update']);
+    Route::delete('/discount', [DiscountController::class, 'destroy']);
 });
