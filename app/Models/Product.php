@@ -148,4 +148,8 @@ class Product extends Model {
     public function color() {
         return $this->belongsTo(Color::class);
     }
+
+    public function datasheets(): HasMany {
+        return $this->hasMany(Datasheet::class);
+    }
 }

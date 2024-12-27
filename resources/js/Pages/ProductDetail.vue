@@ -113,7 +113,7 @@
         >
         <v-tab value="one">Recensioni</v-tab>
         <v-tab value="two">FAQ</v-tab>
-        <v-tab value="three">License</v-tab>
+        <v-tab value="three">Scheda Tecnica / PDF</v-tab>
         </v-tabs>
 
         <v-card-text>
@@ -166,7 +166,23 @@
             </v-tabs-window-item>
 
             <v-tabs-window-item value="three">
-            Three
+                <div  class="d-flex mb-3" width="100%">
+                    <v-card
+                        rounded="xl"
+                        elevation="0"
+                        border="md"
+                        width="150"
+                        prepend-icon="mdi mdi-file-pdf-box"
+                        v-for="(datasheet, index) in props.product.data.datasheets"
+                        :key="index"
+                        :subtitle="datasheet.name"
+                        class="mr-2"
+                    >
+                    <v-card-actions>
+                        <v-btn color="info" icon="mdi mdi-download" :href="datasheet.path"  target="blank" download></v-btn>
+                    </v-card-actions>
+                    </v-card>
+                </div>
             </v-tabs-window-item>
         </v-tabs-window>
         </v-card-text>
@@ -198,10 +214,10 @@ function addToCartAnimation(){
         cartAnimation.value = false; // Disattiva l'animazione dopo 1 secondo
     }, 1000);
 }
+
 const cartStore = useCartStore();
 const tab = ref(0);
 
-console.log(page.props)
 </script>
 
 <style scoped>

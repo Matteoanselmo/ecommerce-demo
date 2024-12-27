@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\CertificationController;
 use App\Http\Controllers\Admin\ColorController as AdminColorController;
+use App\Http\Controllers\Admin\DatasheetController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\Admin\SupportTicketController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ColorController;
+use App\Http\Controllers\DatasheetController as ControllersDatasheetController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\User\AddressController;
 use App\Http\Controllers\User\BillingAddressController;
@@ -85,7 +87,8 @@ Route::get('/price-policies', [PricePolicyController::class, 'index']);
 // Ricerche
 Route::post('/user-searches', [UserSearchController::class, 'store']);
 Route::get('/user-searches', [UserSearchController::class, 'index']);
-
+// Datasheets
+Route::get('/product-datasheets/{productId}', [ControllersDatasheetController::class, 'index']);
 // Brands
 Route::get('/all-brands', [BrandController::class, 'index']);
 // Color
@@ -121,6 +124,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/support-tickets', [UserSupportTicketController::class, 'store']);
     Route::put('/support-tickets/{id}', [UserSupportTicketController::class, 'update']);
 });
+
+
 
 // Admin
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
@@ -199,6 +204,12 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/certifications', [CertificationController::class, 'store']);
     Route::patch('/certifications/{id}', [CertificationController::class, 'update']);
     Route::delete('/certifications/{id}', [CertificationController::class, 'destroy']);
+
+    // Datasheets
+
+    Route::get('/datasheets/{productId}', [DatasheetController::class, 'index']); // Mostra una singola scheda tecnica
+    Route::post('/datasheets/{productId}', [DatasheetController::class, 'store']); // Crea una nuova scheda tecnica
+    Route::delete('/datasheets/{id}', [DatasheetController::class, 'destroy']); // Elimina una scheda tecnica
 
     // Brand
     Route::prefix('/brands')->group(function () {

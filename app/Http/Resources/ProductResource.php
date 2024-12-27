@@ -49,6 +49,7 @@ class ProductResource extends JsonResource {
                     'name' => $certification->name,
                 ];
             }),
+            'datasheets' => $this->datasheets,
         ];
     }
 }
