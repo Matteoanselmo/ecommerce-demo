@@ -49,16 +49,16 @@
         </template>
 
         <template #item.actions="{ item }" >
-            <Link
+            <v-btn
                 as="button"
                 :href="route('admin.' + props.type + '.crud', { id: item.id })"
                 v-if="props.crud.includes('show')"
-                class="v-btn v-theme--myCustomTheme v-btn--density-default v-btn--size-small v-btn--variant-outlined me-3 text-warning"
+                color="warning"
+                variant="outlined" size="small"
+                class="me-3"
             >
-                <span class="mdi mdi-edit-outline">
-
-                </span>
-            </Link>
+                <span class="mdi mdi-file-edit-outline"></span>
+            </v-btn>
             <v-btn v-if="props.crud.includes('update')" variant="outlined" size="small" color="warning" class="me-3" @click="openModal(item)">
                 <span class="mdi mdi-file-edit-outline"></span>
             </v-btn>

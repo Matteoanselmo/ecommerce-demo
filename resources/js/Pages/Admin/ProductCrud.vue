@@ -349,7 +349,6 @@ import { usePage, Head } from '@inertiajs/vue3';
 import { VNumberInput } from 'vuetify/labs/VNumberInput'
 import RatingStars from '@/Components/Reviews/RatingStars.vue';
 import { useNotificationStore } from '@/stores/notification.store';
-import { data } from 'autoprefixer';
 
 const notificationStore = useNotificationStore();
 const { props } = usePage();

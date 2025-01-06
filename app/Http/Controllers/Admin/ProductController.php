@@ -9,6 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller {
+
+    public function __construct() {
+        $this->middleware(['auth:sanctum', 'admin']);
+    }
+
+    public function allProducts() {
+        $products = Product::get(['id', 'name']);
+        return response()->json($products);
+    }
+
     public function index(Request $request) {
         $perPage = $request->input('per_page', 10);
         $page = $request->input('page', 1);

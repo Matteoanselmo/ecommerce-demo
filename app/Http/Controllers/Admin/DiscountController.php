@@ -73,30 +73,54 @@ class DiscountController extends Controller {
             $discount->categories()->attach($validated['categories']);
         }
 
-        return response()->json($discount->load(['products:id,name', 'categories:id,name']), 201);
+        return response()->json([
+            'message' => 'Sconto creato correttamente!',
+            'color' => 'success',
+        ]);
     }
 
 
     // Update a discount
     public function update(Request $request, $id) {
+        // Trova lo sconto
         $discount = Discount::find($id);
 
         if (!$discount) {
             return response()->json(['message' => 'Discount not found'], 404);
         }
 
+        // Validazione dei dati
         $validated = $request->validate([
-            'name' => 'string|max:255',
-            'discount_value' => 'numeric',
-            'discount_type' => 'string|in:percentage,fixed',
-            'start_date' => 'date',
-            'end_date' => 'date|after:start_date',
+            'name' => 'required|string|max:255',
+            'discount_value' => 'required|numeric',
+            'discount_type' => 'required|string|in:percentage,fixed',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'categories' => 'array',
+            'categories.*' => 'integer|exists:categories,id',
+            'products' => 'array',
+            'products.*' => 'integer|exists:products,id',
         ]);
 
+        // Aggiorna i campi dello sconto
         $discount->update($validated);
 
-        return response()->json($discount);
+        // Sincronizza le categorie e i prodotti associati
+        if (isset($validated['categories'])) {
+            $discount->categories()->sync($validated['categories']);
+        }
+
+        if (isset($validated['products'])) {
+            $discount->products()->sync($validated['products']);
+        }
+
+        // Ritorna lo sconto aggiornato con le relazioni caricate
+        return response()->json([
+            'message' => 'Sconto aggiornato correttamente!',
+            'color' => 'info'
+        ]);
     }
+
 
     // Delete a discount
     public function destroy($id) {
@@ -108,6 +132,9 @@ class DiscountController extends Controller {
 
         $discount->delete();
 
-        return response()->json(['message' => 'Discount deleted successfully']);
+        return response()->json([
+            'message' => 'Sconto eliminato correttamente!',
+            'color' => 'info',
+        ]);
     }
 }

@@ -60,6 +60,7 @@ Route::get('/all-categories', [CategoryController::class, 'index']);
 Route::get('/sub-categories', [SubCategoryController::class, 'index']);
 // Prodotti
 Route::get('/get-products', [ProductController::class, 'getProductsByCategory']);
+
 Route::post('/filter-products', [ProductController::class, 'filterProducts']);
 Route::get('/promo-products', [ProductController::class, 'getDiscountedProducts']);
 Route::get('/search-products', function (Request $request) {
@@ -173,6 +174,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     // Prodotti
     Route::get('/products', [AdminProductController::class, 'index']);
+    Route::get('/all-products', [AdminProductController::class, 'allProducts']);
     Route::get('/product/{id}', [AdminProductController::class, 'show']);
     Route::post('/product', [AdminProductController::class, 'store']);
     Route::put('/product/{id}', [AdminProductController::class, 'update']);
@@ -228,6 +230,6 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Discount
     Route::get('/discounts', [DiscountController::class, 'index']);
     Route::post('/discount', [DiscountController::class, 'store']);
-    Route::patch('/discount', [DiscountController::class, 'update']);
-    Route::delete('/discount', [DiscountController::class, 'destroy']);
+    Route::patch('/discount/{id}', [DiscountController::class, 'update']);
+    Route::delete('/discount/{id}', [DiscountController::class, 'destroy']);
 });
