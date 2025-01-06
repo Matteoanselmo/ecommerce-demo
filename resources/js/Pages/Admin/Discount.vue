@@ -1,8 +1,8 @@
 <template>
     <Head title="Sconti"/>
-    <v-container>
+    <v-container fluid>
         <v-row>
-            <v-col cols="10" class="pb-0 mt-5">
+            <v-col cols="3" class="pb-0 mt-5">
                 <div class="d-flex justify-between">
                     <!-- Cicliamo su searchFields per generare i campi di input -->
                     <v-text-field

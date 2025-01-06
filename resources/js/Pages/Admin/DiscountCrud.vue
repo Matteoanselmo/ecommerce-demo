@@ -26,10 +26,10 @@
                     :items="['percentage', 'fixed']"
                     v-model="discount.discount_type"
                     outlined
-                />
+                ></v-select>
 
                 <!-- Selezione delle categorie -->
-                <v-select
+                <v-autocomplete
                     label="Categorie"
                     v-model="selectedCategories"
                     :items="categories"
@@ -38,10 +38,10 @@
                     multiple
                     chips
                     outlined
-                />
+                ></v-autocomplete>
 
                 <!-- Selezione dei prodotti -->
-                <v-select
+                <v-autocomplete
                     v-model="selectedProducts"
                     :items="products"
                     label="Prodotti"
@@ -49,7 +49,8 @@
                     item-value="id"
                     chips
                     multiple
-                ></v-select>
+                    @update:model-value="console.log(selectedProducts)"
+                ></v-autocomplete>
             </v-card-text>
             <v-card-actions class="justify-end">
                 <v-btn color="primary" @click="updateDiscount()">Salva</v-btn>
@@ -96,7 +97,7 @@ function fetchProducts() {
         });
 }
 // Salvataggio dello sconto
-const updateDiscount = () => {
+function updateDiscount() {
     axios.patch(`/api/discount/${discount.value.id}`, {
         ...discount.value,
         categories: selectedCategories.value,
@@ -112,7 +113,7 @@ const updateDiscount = () => {
             // Inserire un messaggio di errore
         });
 };
-// ti manca da gestire l'eliminazione delle categorie e dei prodotti
+
 fetchCategories();
 fetchProducts();
 </script>
