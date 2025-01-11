@@ -30,4 +30,11 @@ class SubCategoryController extends Controller {
 
         return response()->json($category->subCategories);
     }
+
+    public function getSubCategoriesByCategoryId($id) {
+
+        $subCategory = SubCategory::where('category_id', $id)->get();
+
+        return response()->json([$subCategory]);
+    }
 }

@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Discount;
 use App\Models\Product;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +36,10 @@ Route::get('/carello', function () {
     return Inertia::render('CartPage');
 })->name('cart');
 
+Route::get('/checkout', function () {
+    return Inertia::render('CheckOut');
+})->name('checkout');
+
 
 Route::get('auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
@@ -54,6 +61,8 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
         return Inertia::render('Admin/AdminOrders');
     })->name('admin.orders');
 
+    Route::get('/order-details/{id}', [OrderController::class, 'show'])->name('order.details');
+
     Route::get('/customization', function () {
         return Inertia::render('Admin/Customization');
     })->name('admin.customization');
@@ -69,6 +78,18 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
     Route::get('/products', function () {
         return Inertia::render('Admin/Products');
     })->name('admin.products');
+
+    Route::get('/categories', function () {
+        return Inertia::render('Admin/Categories');
+    })->name('admin.categories');
+
+    Route::get('/sizes', function () {
+        return Inertia::render('Admin/Sizes');
+    })->name('admin.sizes');
+
+    Route::get('/discounts', function () {
+        return Inertia::render('Admin/Discount');
+    })->name('admin.discounts');
 
     Route::get('/products/{product}', function ($productId) {
         $product = Product::with([
@@ -86,6 +107,13 @@ Route::prefix('admin/dashboard')->middleware(['auth', 'verified', 'admin'])->gro
             'product' => $product
         ]);
     })->name('admin.product.crud');
+
+    Route::get('/discount/{discount}', function ($id) {
+        $discount = Discount::with(['products:id,name', 'categories:id,name'])->findOrFail($id);
+        return Inertia::render('Admin/DiscountCrud', [
+            'discount' => $discount
+        ]);
+    })->name('admin.discount.crud');
 
 
 

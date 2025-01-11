@@ -27,7 +27,6 @@ class Handler extends ExceptionHandler {
     }
 
     public function render($request, Throwable $exception) {
-        // Mappa colori basata sui codici di stato
         $statusColors = [
             200 => 'success',
             201 => 'success',
@@ -35,14 +34,27 @@ class Handler extends ExceptionHandler {
             401 => 'warning',
             403 => 'warning',
             404 => 'error',
+            422 => 'warning',
             500 => 'error',
         ];
 
-        // Per le richieste API (risposta JSON)
+        // Gestione degli errori di validazione
+        if ($exception instanceof ValidationException) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'Validation error',
+                    'errors' => $exception->errors(),
+                    'status_code' => 422,
+                    'color' => 'warning',
+                ], 422);
+            }
+        }
+
+        // Gestione delle richieste JSON
         if ($request->wantsJson()) {
             $statusCode = 500;
             $message = 'Something went wrong';
-            $color = 'error'; // Colore di default
+            $color = 'error';
 
             if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
                 $statusCode = 404;
@@ -50,38 +62,38 @@ class Handler extends ExceptionHandler {
             } elseif ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
                 $statusCode = $exception->getStatusCode();
                 $message = $exception->getMessage() ?: 'Something went wrong';
+            } elseif ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+                $statusCode = 401;
+                $message = 'Unauthenticated';
             }
-
-            // Assegna il colore in base allo status code
-            $color = $statusColors[$statusCode] ?? 'error';
 
             return response()->json([
                 'message' => $message,
                 'status_code' => $statusCode,
-                'color' => $color,
+                'color' => $statusColors[$statusCode] ?? 'error',
             ], $statusCode);
         }
 
-        // Per le richieste HTTP normali (come pagine web)
-        $statusCode = 500;
-        $message = 'Something went wrong';
-        $color = 'error'; // Colore di default per pagine web
+        // Per richieste HTTP normali
+        if (!$request->expectsJson()) {
+            if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+                return inertia('ErrorPage', [
+                    'statusCode' => 404,
+                    'message' => 'Page not found',
+                    'color' => 'error',
+                ]);
+            }
 
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            $statusCode = 404;
-            $message = 'Page not found';
-        } elseif ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
-            $statusCode = $exception->getStatusCode();
-            $message = $exception->getMessage() ?: 'Something went wrong';
+            if ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+                return inertia('ErrorPage', [
+                    'statusCode' => $exception->getStatusCode(),
+                    'message' => $exception->getMessage() ?: 'Something went wrong',
+                    'color' => $statusColors[$exception->getStatusCode()] ?? 'error',
+                ]);
+            }
         }
 
-        // Assegna il colore in base allo status code per le richieste web
-        $color = $statusColors[$statusCode] ?? 'error';
-
-        return inertia('ErrorPage', [
-            'statusCode' => $statusCode,
-            'message' => $message,
-            'color' => $color,
-        ]);
+        // Default error handler
+        return parent::render($request, $exception);
     }
 }

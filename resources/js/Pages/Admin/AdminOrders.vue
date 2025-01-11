@@ -28,6 +28,7 @@
                     :type="'order'"
                     :page="page"
                     :search-fields="searchFields"
+                    :crud="['update', 'delete']"
                     @updateItems="fetchOrders"
                 />
             </v-col>
@@ -72,30 +73,67 @@ const headers = ref([
         type: 'text'
     },
     {
-        title: 'Data',
+        title: 'Data Ordine',
         align: 'start',
         sortable: false,
         key: 'order_date',
-        type: 'date'
+        type: 'date',
+        isEditable: false
+    },
+    {
+        title: 'Data Spedizione',
+        align: 'start',
+        sortable: false,
+        key: 'data',
+        type: 'date',
+        isEditable: true
     },
     {
         title: 'Stato',
         align: 'start',
         sortable: false,
         key: 'status',
+        model: 'status',
         type: 'select',
-        items: ['confirmed', 'returned'],
+        items: ['confirmed', 'in_progress ', 'on_delivery', 'delivered ', 'returned'],
+        isEditable: true
     },
     {
         title: 'Numero spedizione',
         align: 'start',
         sortable: false,
         key: 'shipping_number',
+        type: 'text',
+        isEditable: true
+    },
+    {
+        title: 'Tipo di Pagamento',
+        align: 'start',
+        sortable: false,
+        key: 'payment',
         type: 'text'
+    },
+    {
+        title: 'Totale Ordine',
+        align: 'start',
+        sortable: false,
+        key: 'total_amount',
+        type: 'number',
+        isEditable: false
+    },
+    {
+        title: 'Fattura',
+        align: 'start',
+        sortable: false,
+        key: 'fattura',
+        model: 'fattura',
+        type: 'input',
+        isEditable: true
     },
     {
         title: "Azioni",
         key: "actions",
+        align: 'end',
         sortable: false
     },
 ]);
@@ -132,7 +170,6 @@ function fetchOrders(options = {}) {
             totalItems.value = res.data.total;
             page.value = res.data.current_page;
             loading.value = false;
-            console.log(res.data)
         })
         .catch((e) => {
             console.log(e);

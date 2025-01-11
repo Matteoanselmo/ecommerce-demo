@@ -29,7 +29,7 @@ const props = defineProps({
 const items = ref([]);
 
 function fetchCategorie() {
-    axios.get('/api/categories')
+    axios.get('/api/all-categories')
     .then((res) => {
         res.data.forEach(category => {
         const route = {

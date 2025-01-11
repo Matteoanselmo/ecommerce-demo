@@ -1,11 +1,16 @@
 <?php
 
+use App\Http\Controllers\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\CertificationController;
+use App\Http\Controllers\Admin\ColorController as AdminColorController;
+use App\Http\Controllers\Admin\DatasheetController;
+use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OverviewController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Admin\SizeController;
+use App\Http\Controllers\Admin\SizeController as AdminSizeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DiscountBannerController;
@@ -13,9 +18,17 @@ use App\Http\Controllers\InfoPolicyController;
 use App\Http\Controllers\PricePolicyController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReturnPolicyController;
+use App\Http\Controllers\SizeController;
 use App\Http\Controllers\SubCategoryController;
-use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\Admin\SupportTicketController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\ColorController;
+use App\Http\Controllers\DatasheetController as ControllersDatasheetController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\User\AddressController;
+use App\Http\Controllers\User\BillingAddressController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
+use App\Http\Controllers\User\SupportTicketController as UserSupportTicketController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\UserSearchController;
 use App\Models\Product;
@@ -37,17 +50,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Guest
-Route::get('/categories', [CategoryController::class, 'index']);
+// Guest
+
+// CheckOut
+Route::post('/payment-response', [PaymentController::class, 'handlePaymentResponse'])
+    ->name('payment.response');
+// Categorie
+Route::get('/all-categories', [CategoryController::class, 'index']);
 Route::get('/sub-categories', [SubCategoryController::class, 'index']);
+// Prodotti
 Route::get('/get-products', [ProductController::class, 'getProductsByCategory']);
 
+Route::post('/filter-products', [ProductController::class, 'filterProducts']);
 Route::get('/promo-products', [ProductController::class, 'getDiscountedProducts']);
-
-Route::post('/search', [UserSearchController::class, 'search']);
-Route::post('/get-subcategories', [SubCategoryController::class, 'getSubCategoryFromCategory']);
-
-
 Route::get('/search-products', function (Request $request) {
     $searchTerm = $request->input('query'); // Recupera il termine di ricerca dalla query string
     $products = Product::where('name', 'like', '%' . $searchTerm . '%')->get(); // Cerca nei nomi dei prodotti
@@ -57,21 +72,62 @@ Route::get('/search-products', function (Request $request) {
     return response()->json($products); // Restituisci i risultati in formato JSON
 });
 
+Route::post('/search', [UserSearchController::class, 'search']);
+// Sotto Categorie
+Route::post('/get-subcategories', [SubCategoryController::class, 'getSubCategoryFromCategory']);
+Route::get('/get-subcategories-by-id/{id}', [SubCategoryController::class, 'getSubCategoriesByCategoryId']);
 
+// Taglie
+Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);
+Route::get('/product/{productId}/sizes', [SizeController::class, 'getSizesByProduct']);
+
+// Allegati
 Route::get('/discount-banner', [DiscountBannerController::class, 'index']);
 Route::get('/info-policies', [InfoPolicyController::class, 'index']);
 Route::get('/return-policies', [ReturnPolicyController::class, 'index']);
 Route::get('/price-policies', [PricePolicyController::class, 'index']);
-
+// Ricerche
 Route::post('/user-searches', [UserSearchController::class, 'store']);
 Route::get('/user-searches', [UserSearchController::class, 'index']);
-
+// Datasheets
+Route::get('/product-datasheets/{productId}', [ControllersDatasheetController::class, 'index']);
+// Brands
+Route::get('/all-brands', [BrandController::class, 'index']);
+// Color
+Route::get('/all-colors', [ColorController::class, 'index']);
+// Pagamento
+Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent']);
 // User
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user-orders', [UserOrderController::class, 'index']);
+
+    // WishList
     Route::get('/user-recent-wishlist', [WishlistController::class, 'recent']);
+    Route::get('/exist/wishlist/{productId}', [WishlistController::class, 'exists']);
     Route::get('/user-wishlist', [WishlistController::class, 'index']);
+    Route::post('/wishlist', [WishlistController::class, 'store']);
+    Route::delete('/wishlist/{productId}', [WishlistController::class, 'destroy']);
+
+    // Addresses
+    Route::get('/user-addresses', [AddressController::class, 'index']);
+    Route::post('/user-addresses', [AddressController::class, 'store']);
+    Route::put('/user-addresses/{id}', [AddressController::class, 'update']);
+    Route::delete('/user-addresses/{id}', [AddressController::class, 'destroy']);
+
+    // Billing Addresses
+    Route::get('/billing-addresses', [BillingAddressController::class, 'index']);
+    Route::post('/billing-addresses', [BillingAddressController::class, 'store']);
+    Route::put('/billing-addresses/{id}', [BillingAddressController::class, 'update']);
+    Route::delete('/billing-addresses/{id}', [BillingAddressController::class, 'destroy']);
+
+
+    // Ticket
+    Route::get('/support-tickets', [UserSupportTicketController::class, 'index']);
+    Route::post('/support-tickets', [UserSupportTicketController::class, 'store']);
+    Route::put('/support-tickets/{id}', [UserSupportTicketController::class, 'update']);
 });
+
+
 
 // Admin
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
@@ -80,6 +136,10 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/dashboard/traffic', [OverviewController::class, 'getTrafficData']);
     Route::get('/dashboard/disk-space', [OverviewController::class, 'getDiskSpace']);
     Route::get('/dashboard/top-products', [OverviewController::class, 'getTopProductsData']);
+    Route::get('/dashboard/user-count', [OverviewController::class, 'getUsersCount']);
+    Route::get('/dashboard/order-count', [OverviewController::class, 'getOrdersCountByStatus']);
+    Route::get('/dashboard/payment-usage', [OverviewController::class, 'getPaymentMethodsUsage']);
+    Route::post('/dashboard/reveniue-period', [OverviewController::class, 'getRevenueByPeriod']);
 
     // Personalizzazioni
     Route::post('/discount-banner', [DiscountBannerController::class, 'store']);
@@ -96,6 +156,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Ordini
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::patch('/order/{id}', [OrderController::class, 'update'])->name('orders.update');
+    Route::post('/order/{id}/upload', [OrderController::class, 'uploadFattura'])->name('orders.fattura');
+
     // User
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/user/{id}', [UserController::class, 'show']);
@@ -111,6 +174,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     // Prodotti
     Route::get('/products', [AdminProductController::class, 'index']);
+    Route::get('/all-products', [AdminProductController::class, 'allProducts']);
     Route::get('/product/{id}', [AdminProductController::class, 'show']);
     Route::post('/product', [AdminProductController::class, 'store']);
     Route::put('/product/{id}', [AdminProductController::class, 'update']);
@@ -118,15 +182,54 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::delete('/product-images/{imageId}', [AdminProductController::class, 'destroyImage']);
 
     //Taglie
-    Route::get('/size/{categoryId}', [SizeController::class, 'getSizesByCategory']);
-    Route::get('/product/{productId}/sizes', [SizeController::class, 'getSizesByProduct']);
-    Route::post('/product/{productId}/sizes', [SizeController::class, 'updateProductSizes']);
-    Route::post('/product/{productId}/sizes-with-stock', [SizeController::class, 'updateProductSizesWithStock']);
+    Route::get('/sizes', [AdminSizeController::class, 'index']);
+    Route::post('/product/{productId}/sizes', [AdminSizeController::class, 'updateProductSizes']);
+    Route::post('/product/{productId}/sizes-with-stock', [AdminSizeController::class, 'updateProductSizesWithStock']);
+    Route::post('/size', [AdminSizeController::class, 'store']);
+    Route::patch('/size/{sizeId}', [AdminSizeController::class, 'update']);
+    Route::delete('/size/{sizeId}', [AdminSizeController::class, 'destroy']);
 
     //Categorie
     Route::post('/product/{productId}/category', [AdminCategoryController::class, 'updateProductCategory']);
+    Route::get('/categories', [AdminCategoryController::class, 'index']);
+    Route::post('/category', [AdminCategoryController::class, 'store']);
+    Route::patch('/category/{id}', [AdminCategoryController::class, 'update']);
+    Route::delete('/category/{id}', [AdminCategoryController::class, 'destroy']);
 
     // Faqs
     Route::post('/product/{productId}/faqs', [FaqController::class, 'saveFaqs']);
     Route::delete('/faqs/{faqId}', [FaqController::class, 'deleteFaq']);
+
+    // Certificazioni
+    Route::get('/certifications', [CertificationController::class, 'index']);
+    Route::get('/certifications/{productId}', [CertificationController::class, 'getProductCertifications']);
+    Route::post('/product/{productId}/certifications', [CertificationController::class, 'updateProductCertifications']);
+    Route::post('/certifications', [CertificationController::class, 'store']);
+    Route::patch('/certifications/{id}', [CertificationController::class, 'update']);
+    Route::delete('/certifications/{id}', [CertificationController::class, 'destroy']);
+
+    // Datasheets
+
+    Route::get('/datasheets/{productId}', [DatasheetController::class, 'index']); // Mostra una singola scheda tecnica
+    Route::post('/datasheets/{productId}', [DatasheetController::class, 'store']); // Crea una nuova scheda tecnica
+    Route::delete('/datasheets/{id}', [DatasheetController::class, 'destroy']); // Elimina una scheda tecnica
+
+    // Brand
+    Route::prefix('/brands')->group(function () {
+        Route::post('/', [AdminBrandController::class, 'store']); // Creazione di un nuovo brand
+        Route::patch('/{id}', [AdminBrandController::class, 'update']); // Aggiornamento di un brand esistente
+        Route::delete('/{id}', [AdminBrandController::class, 'destroy']); // Eliminazione di un brand
+    });
+    // Color
+    Route::prefix('/colors')->group(function () {
+        Route::post('/', [AdminColorController::class, 'store']); // Creazione di un nuovo brand
+        Route::patch('/{id}', [AdminColorController::class, 'update']); // Aggiornamento di un brand esistente
+        Route::delete('/{id}', [AdminColorController::class, 'destroy']); // Eliminazione di un brand
+    });
+
+    // Discount
+    Route::get('/discounts', [DiscountController::class, 'index']);
+    Route::post('/discount', [DiscountController::class, 'store']);
+    Route::patch('/discount/{id}', [DiscountController::class, 'update']);
+    Route::delete('/discount/{id}', [DiscountController::class, 'destroy']);
 });

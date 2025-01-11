@@ -19,6 +19,8 @@ class Product extends Model {
         'category_id',
         'price',
         'categorydetails_id',
+        'brand_id',
+        'color_id'
     ];
 
     public function getDiscountedPrice() {
@@ -133,5 +135,21 @@ class Product extends Model {
 
     public function sizes() {
         return $this->belongsToMany(Size::class, 'product_sizes')->withPivot('stock');
+    }
+
+    public function certifications() {
+        return $this->belongsToMany(Certification::class);
+    }
+
+    public function brand() {
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function color() {
+        return $this->belongsTo(Color::class);
+    }
+
+    public function datasheets(): HasMany {
+        return $this->hasMany(Datasheet::class);
     }
 }

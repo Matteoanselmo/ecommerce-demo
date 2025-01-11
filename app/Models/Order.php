@@ -17,7 +17,15 @@ class Order extends Model {
         'order_number',
         'total_amount',
         'user_id',
+        'shipping_address_id',
+        'billing_address_id',
+        'data',
+        'shipped_in',
+        'payment',
+        'details',
+        'fattura',
     ];
+
 
     /*
     lo status potra essere in diversi stati ovvero:
@@ -36,5 +44,15 @@ class Order extends Model {
     // Relazione con Products (un ordine può avere molti prodotti)
     public function products(): BelongsToMany {
         return $this->belongsToMany(Product::class, 'order_product')->withPivot('price_at_order', 'order_quantity');
+    }
+
+    // Relazione con UserAddress (un ordine ha un indirizzo di spedizione)
+    public function shippingAddress(): BelongsTo {
+        return $this->belongsTo(UserAddress::class, 'shipping_address_id');
+    }
+
+    // Relazione con BillingAddress (un ordine ha un indirizzo di fatturazione)
+    public function billingAddress(): BelongsTo {
+        return $this->belongsTo(BillingAddress::class, 'billing_address_id');
     }
 }

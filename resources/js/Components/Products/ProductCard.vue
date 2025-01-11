@@ -3,6 +3,8 @@
     :min-height="200"
     :options="{'threshold':0.5}"
     transition="fade-transition"
+    data-aos="fade-up"
+    data-aos-duration="800"
     >
         <template v-if="productsStore.loading">
             <v-skeleton-loader
@@ -14,16 +16,19 @@
         </template>
         <template v-else>
             <v-card
-            class="mx-auto my-4"
+            class="mx-auto my-4 px-2 py-2"
             max-width="344"
             elevation="0"
             color="background"
+            rounded="xl"
+
             >
                 <v-img
                     :src="product.cover_image_url"
                     alt="Product Image"
                     :height="props.expanded ? '400px' : '200px'"
                     class="rounded-lg p-2 position-relative"
+                    rounded="xl"
                     cover
                 >
                     <div class="promo-label" v-if="props.expanded && product.original_price > product.price ">
@@ -64,10 +69,6 @@
                         :ratings="product.rating_star"
                     />
                 </v-card-actions>
-                <v-card-actions class="justify-between" v-if="props.expanded">
-                    <v-btn width="100%" variant="tonal" text="aggiungi al carrello" color="secondary" @click="cartStore.addItem(product)">
-                    </v-btn>
-                </v-card-actions>
             </v-card>
         </template>
     </v-lazy>
@@ -103,6 +104,50 @@ const productsStore = useProductStore();
     border-radius: 12px;
 } */
 
+.v-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.v-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.v-img {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    margin: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.v-img:hover {
+    filter: brightness(0.8);
+    transform: scale(1.05);
+}
+
+.hover-button {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.v-img:hover .hover-button {
+    opacity: 1;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.v-card-actions {
+    padding-bottom: 16px;
+}
 .v-img {
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;

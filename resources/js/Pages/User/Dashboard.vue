@@ -1,75 +1,96 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import ProductCard from '@/Components/Products/ProductCard.vue';
+import OrdersTable from '@/Components/User/OrdersTable.vue';
+import Address from '@/Components/User/Address.vue';
+import BillingAddresses from '@/Components/User/BillingAddresses.vue';
+import WishList from '@/Components/User/WishList.vue';
+import TicketManager from '@/Components/User/TicketManager.vue';
 
-const links = ref([
+const page = usePage()
+const user = ref(page.props.auth.user);
+const tab = ref("");
+const sidebarLinks = ref([
     {
-        icon: "mdi mdi-order-alphabetical-ascending",
-        link: "user.dashboard",
-        title: 'Ordini'
+        icon: "mdi mdi-cart-outline",
+        tab: "dashboard",
+        title: 'I miei ordini',
     },
     {
-        icon: "mdi mdi-order-alphabetical-ascending",
-        link: "user.dashboard",
-        title: 'Indirizzi'
+        icon: "mdi mdi-home-outline",
+        tab: "addresses",
+        title: 'I miei indirizzi',
     },
     {
-        icon: "mdi mdi-list-box-outline",
-        link: "user.wishlist",
-        title: 'Lista'
+        icon: "mdi mdi-heart-outline",
+        tab: "wishlist",
+        title: 'WishList',
     },
     {
-        icon: "mdi mdi-face-man-profile",
-        link: "user.dashboard",
-        title: 'Profilo'
+        icon: "mdi mdi-help-circle-outline",
+        tab: "ticket",
+        title: 'Serve aiuto?',
     },
-])
+]);
 
-const recentWishList = ref([]);
-
-function getRecentWishList(){
-    axios.get('/api/user-recent-wishlist')
-        .then((res) => {
-            recentWishList.value = res.data;
-        }).catch((e) =>{
-            console.error(e)
-        })
+function getInitials(name) {
+    if (!name) return '';
+    return name
+        .split(' ') // Divide il nome completo in parole
+        .map(word => word.charAt(0)) // Prende la prima lettera di ogni parola
+        .join('') // Unisce le lettere in una stringa
+        .toUpperCase(); // Trasforma tutto in maiuscolo
 }
 
-getRecentWishList();
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="I miei ordini" />
 
-    <v-container class="mt-5" fluid >
-        <v-row class="mb-5" >
-            <!-- Card Ordini -->
-            <v-col cols="6" v-for="(card, i) in links" :key="i">
-                <v-card class="d-flex align-center justify-center" rounded="xl" height="150"  color="primary" >
-                    <v-card-text class="d-flex align-center justify-center">
-                        <Link as="button" :href="route(card.link)">
-                            <v-icon :icon="card.icon" class="mr-2"></v-icon>
-                            <strong class="text-h6">{{ card.title }}</strong>
-                        </Link>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
-        <v-divider></v-divider>
+    <v-container fluid>
         <v-row>
-            <v-col cols="12">
-                <div class="text-h4">
-                    Continua ad Acquistare
+            <!-- Sidebar -->
+            <v-col cols="12" md="3" >
+                <div class="py-5 px-4" >
+                    <v-avatar size="56" color="primary" class="mb-3">{{ getInitials( user.name) }}</v-avatar>
+                    <div class="text-h6">{{  user.name }}</div>
                 </div>
+                <v-divider></v-divider>
+                <v-tabs v-model="tab" align-tabs="center" direction="vertical" density="comfortable" >
+                    <v-tab class="ms-0" v-for="(link, i) in sidebarLinks" :key="i" :value="link.tab" :prepend-icon="link.icon" >{{ link.title }}</v-tab>
+                </v-tabs>
             </v-col>
-            <v-col cols="6" md="3" v-for="(product, i) in recentWishList" :key="i">
-                <ProductCard
-                    :product="product"
-                    :expanded="false"
-                />
+
+            <!-- Main Content -->
+            <v-col cols="12" md="9">
+                <v-tabs-window v-model="tab">
+
+                    <!-- Orders Table -->
+                    <v-tabs-window-item value="dashboard">
+                        <OrdersTable/>
+                    </v-tabs-window-item>
+                    <!-- Address Table -->
+                    <v-tabs-window-item value="addresses">
+                        <Address/>
+                        <BillingAddresses/>
+                    </v-tabs-window-item>
+                    <v-tabs-window-item value="wishlist">
+                        <WishList/>
+                    </v-tabs-window-item>
+                    <v-tabs-window-item value="ticket">
+                        <TicketManager/>
+                    </v-tabs-window-item>
+                </v-tabs-window>
             </v-col>
         </v-row>
     </v-container>
 </template>
+
+<style scoped>
+.bg-light {
+    background-color: #f8f9fa;
+}
+.text-decoration-none {
+    text-decoration: none;
+}
+</style>

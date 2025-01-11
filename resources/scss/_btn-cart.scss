@@ -1,0 +1,23 @@
+.product-detail-container {
+.btn-add-to-cart {
+    background-color: green !important; // Aggiungi !important se desideri assicurarti che non venga sovrascritto
+    color: white !important;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+
+    &.success {
+    background-color: #28a745 !important; // Success color
+    color: white !important;
+    transform: scale(1.05);
+    }
+
+    .cart-icon {
+    margin-right: 8px;
+    transition: opacity 0.3s ease;
+    }
+
+    .button-text,
+    .added-text {
+    transition: opacity 0.3s ease;
+    }
+}
+}

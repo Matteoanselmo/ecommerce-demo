@@ -19,11 +19,9 @@ export default defineConfig({
         }),
     ],
     server: {
-        // //     // https: true,
+        // https: true,
         hmr: {
-            //host: '192.168.1.154',
-            // //         //host: '172.20.10.8',
-            //         host: 'localhost',
+            host: '192.168.1.219',
         },
     }
 });

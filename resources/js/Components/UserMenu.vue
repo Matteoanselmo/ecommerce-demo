@@ -20,7 +20,7 @@ const goToDashboard = () => {
     if(user.role === 'admin'){
         window.location.href = route('admin.dashboard');
     } else if(user.role === 'user'){
-        window.location.href = route('dashboard');
+        window.location.href = route('user.dashboard');
     } else {
         window.location.href = route('home');
     }

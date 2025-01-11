@@ -1,22 +1,24 @@
 <script setup>
 import { Head } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
+import Jumbotron from '@/Components/Home/Jumbotron.vue';
 import DiscountBanner from '@/Components/DiscountBanner.vue';
 import CategoryCards from '@/Components/Products/CategoryCards.vue';
 import ProductPromoCarousel from '@/Components/Products/ProductPromoCarousel.vue';
 import SecurityBanner from '@/Components/SecurityBanner.vue';
+import AboutUs from '@/Components/Reviews/AboutUs.vue';
+import HeroVideo from '@/Components/Home/HeroVideo.vue';
 import { ref } from 'vue';
 
 const promoProducts = ref([]);
 
 function getPromoProducts() {
-  axios
-    .get('/api/promo-products')
+    axios.get('/api/promo-products')
     .then((res) => {
-      promoProducts.value = res.data; // Adatta i dati con i gruppi di sconto e prodotti
+    promoProducts.value = res.data; // Adatta i dati con i gruppi di sconto e prodotti
     })
     .catch((e) => {
-      console.error(e);
+        console.error(e);
     });
 }
 
@@ -27,14 +29,6 @@ defineProps({
     },
     canRegister: {
         type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
     },
 });
 
@@ -49,6 +43,9 @@ getPromoProducts();
     <div class="text-h2 my-5 text-center">
         Inizia da qui!
     </div>
+    <Jumbotron/>
+    <HeroVideo/>
+    <AboutUs/>
     <CategoryCards class="mb-5"/>
     <div v-for="(promo, i) in promoProducts" :key="i">
         <ProductPromoCarousel

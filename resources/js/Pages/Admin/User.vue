@@ -1,5 +1,5 @@
 <template>
-    <Head title="Clienti" />
+    <Head title="Utenti" />
     <v-container>
         <v-row>
             <v-col cols="6" class="pb-0 mt-5">
@@ -63,6 +63,7 @@ const headers = ref([
         sortable: false,
         type: 'text',
         key: 'name',
+        isEditable: true
     },
     {
         title: 'Email',
@@ -70,6 +71,7 @@ const headers = ref([
         sortable: false,
         type: 'email',
         key: 'email',
+        isEditable: true
     },
     {
         title: 'Ruolo',
@@ -78,6 +80,7 @@ const headers = ref([
         type: 'select',
         items: ['admin', 'user'],
         key: 'role',
+        isEditable: true
     },
     {
         title: 'Password',
@@ -86,10 +89,12 @@ const headers = ref([
         sortable: false,
         type: 'password',
         key: 'password',
+        isEditable: true
     },
     {
         title: "Azioni",
         key: "actions",
+        align: 'end',
         sortable: false
     },
 ]);

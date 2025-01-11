@@ -16,7 +16,7 @@
         <v-list-item
         v-for="(product, i) in cartProducts"
         :key="i"
-        :subtitle="'€ ' + product.price"
+        :subtitle="'€ ' + $formatPrice(product.price)"
         :title="product.quantity + 'x ' + product.name"
         >
         <template v-slot:prepend>
@@ -29,21 +29,21 @@
             color="error"
             variant="text"
             block
-            @click="cartStore.removeItem(product.id)"
+            @click="cartStore.removeItem(product)"
             ></v-btn>
         </template>
         </v-list-item>
 
         <v-divider></v-divider>
 
-        <v-list-item title="Totale" :subtitle="'€ ' + totalAmount">
+        <v-list-item title="Totale" :subtitle="'€ ' + $formatPrice(totalAmount)">
         </v-list-item>
 
         <v-list-item>
-        <v-btn color="primary" block>Checkout</v-btn>
+            <v-btn v-if="isAuthenticated" rounded="xl" color="primary" block :href="route('checkout')">Checkout</v-btn>
         </v-list-item>
 
-        <v-list-item>
+        <v-list-item class="text-center">
             <!-- <v-btn  @click="viewCart">Visualizza il carrello</v-btn> -->
 
             <Link
@@ -58,23 +58,19 @@
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
+const page = usePage();
 const menu = ref(false);
 const cartStore = useCartStore();
-
+const isAuthenticated = computed(() => !!page.props.auth.user);
 // Accedi direttamente ai dati dallo store Pinia, che sono già reattivi
 const cartProducts = computed(() => cartStore.items);
 const itemCount = computed(() => cartStore.itemCount);
 const totalAmount = computed(() => cartStore.totalAmount);
 
-// Watch su itemCount per rilevare cambiament
-
-const viewCart = () => {
-    // Logica per visualizzare il carrello completo
-};
 </script>
 
 <style scoped>

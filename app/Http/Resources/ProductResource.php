@@ -21,6 +21,7 @@ class ProductResource extends JsonResource {
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'colors' => $this->color,
             'description' => $this->description,
             'original_price' => intval($originalPrice), // Prezzo originale come intero
             'price' => intval($discountedPrice), // Prezzo scontato come intero
@@ -32,7 +33,23 @@ class ProductResource extends JsonResource {
             'images' => $this->images,
             'discounts' => $this->discounts,
             'faqs' => $this->faqs,
-            'reviews' => $this->userReviews()
+            'reviews' => $this->userReviews(),
+            'sizes' => $this->sizes->filter(function ($size) {
+                return $size->pivot->stock > 1;
+            })->map(function ($size) {
+                return [
+                    'id' => $size->id,
+                    'name' => $size->name,
+                    'stock' => $size->pivot->stock,
+                ];
+            }),
+            'certifications' => $this->certifications->map(function ($certification) {
+                return [
+                    'id' => $certification->id,
+                    'name' => $certification->name,
+                ];
+            }),
+            'datasheets' => $this->datasheets,
         ];
     }
 }

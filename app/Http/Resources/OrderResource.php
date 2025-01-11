@@ -25,6 +25,9 @@ class OrderResource extends JsonResource {
             'user_name' => $this->user->name,
             'user_email' => $this->user->email,
             'user_id' => $this->user->id,
+            'payment' => $this->payment,
+            'data' => $this->data,
+            "fattura" => $this->fattura,
 
             // Prodotti inclusi come array
             'products' => $this->products->map(function ($product) {

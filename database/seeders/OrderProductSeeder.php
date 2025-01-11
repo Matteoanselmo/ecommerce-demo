@@ -5,31 +5,29 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class OrderProductSeeder extends Seeder
-{
+class OrderProductSeeder extends Seeder {
     /**
      * Run the database seeds.
      */
-    public function run()
-    {
+    public function run() {
         // Esempio di record per la tabella pivot order_product
         $orderProducts = [
             [
                 'order_id' => 1, // Assicurati che questo ordine esista
                 'product_id' => 1, // Assicurati che questo prodotto esista
-                'price_at_order' => 19.99,
+                'price_at_order' => 1999,
                 'order_quantity' => 3
             ],
             [
                 'order_id' => 1,
                 'product_id' => 3,
-                'price_at_order' => 30.00,
+                'price_at_order' => 3000,
                 'order_quantity' => 2
             ],
             [
                 'order_id' => 2,
                 'product_id' => 2,
-                'price_at_order' => 12.50,
+                'price_at_order' => 1250,
                 'order_quantity' => 5
             ],
             // Aggiungi altri record a seconda delle necessità

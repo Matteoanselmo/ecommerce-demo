@@ -20,7 +20,9 @@ import UserMenu from './Components/UserMenu.vue';
 import ProductSearcBar from './Components/Products/ProductSearcBar.vue';
 import Notification from './Components/Notification.vue';
 import NewsLetter from './Components/NewsLetter.vue';
+import WishlistHeart from './Components/Products/WishlistHeart.vue';
 import { VDateInput } from 'vuetify/lib/labs/components.mjs';
+import { VNumberInput } from 'vuetify/lib/labs/VNumberInput/index.mjs';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate)
@@ -29,7 +31,7 @@ const appName = import.meta.env.VITE_APP_NAME || 'Security Fire';
 const formatPrice = (price) => {
     // Dividi il prezzo per ottenere due cifre decimali
     let formattedPrice = (price / 100).toFixed(2).replace('.', ',');
-    return formattedPrice + ' €';
+    return '€ ' + formattedPrice;
 };
 
 createInertiaApp({
@@ -62,6 +64,8 @@ createInertiaApp({
             .component('notification', Notification)
             .component('newsletter', NewsLetter)
             .component('v-date-input', VDateInput)
+            .component('v-number-input', VNumberInput)
+            .component('wish-list-heart', WishlistHeart)
             .use(vuetify);
 
         app.config.globalProperties.$formatPrice = formatPrice;

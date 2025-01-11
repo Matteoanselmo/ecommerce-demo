@@ -24,7 +24,7 @@
                         />
                     </v-col>
                     <v-col cols="2" class="d-flex justify-end position-fixed top-50 right-0" style="z-index: 5;">
-                        <v-card class="px-2 py-1" rounded="xl">
+                        <v-card class="px-2 py-1" rounded="xl" elevation="0">
                             <v-checkbox
                                 class="d-flex flex-column align-center justify-center px-2"
                                 color="warning"
@@ -41,7 +41,7 @@
                         <v-row>
                             <v-col cols="12">
                                 <v-form :disabled="!isChange" :loading="loading">
-                                    <v-card class="px-2 py-2" :title="'Prodotto: '+ props.product.name" rounded="xl">
+                                    <v-card class="px-2 py-2" :title="'Prodotto: '+ props.product.name" rounded="xl" elevation="0">
                                         <v-text-field label="titolo"  v-model="props.product.name" variant="solo-filled"></v-text-field>
                                         <v-textarea label="descrizione"  v-model="props.product.description" variant="solo-filled"></v-textarea>
                                         <VNumberInput
@@ -70,7 +70,7 @@
                                                 ></v-skeleton-loader>
                                                 <v-img
                                                     v-else
-                                                    :src="'/storage/' + image.image_url"
+                                                    :src="image.image_url"
                                                     aspect-ratio="1"
                                                     class="bg-grey-lighten-2 rounded"
                                                     elevation="18"
@@ -99,12 +99,55 @@
                                             <v-btn color="success" class="me-2" :disabled="!isChange" @click="updateProduct()">
                                                 Salva
                                             </v-btn>
-                                            <v-btn color="info">
+                                            <v-btn color="danger">
                                                 Annulla
                                             </v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </v-form>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-card elevation="0" rounded="xl">
+                                    <v-card-text>
+                                        <div  class="d-flex mb-3" width="100%">
+                                            <v-card
+                                                rounded="xl"
+                                                elevation="0"
+                                                border="md"
+                                                width="150"
+                                                prepend-icon="mdi mdi-file-pdf-box"
+                                                v-for="(datasheet, index) in productDataSheet"
+                                                :key="index"
+                                                :subtitle="datasheet.name"
+                                                class="mr-2"
+                                            >
+                                            <v-card-actions>
+                                                <v-btn color="info" icon="mdi mdi-download" :href="datasheet.path"  target="blank" download></v-btn>
+                                                <v-btn color="danger" icon="mdi mdi-delete-outline" @click="deleteDataSheet(datasheet.id)"></v-btn>
+                                            </v-card-actions>
+                                            </v-card>
+                                        </div>
+                                        <v-file-input
+                                            label="Carica Certificati PDF"
+                                            variant="solo-filled"
+                                            prepend-icon="mdi-file-pdf-box"
+                                            :show-size="true"
+                                            counter
+                                            color="primary"
+                                            multiple
+                                            v-model="productDataSheetInput"
+                                            accept="application/pdf"
+                                            :loading="loading"
+                                            :disabled="!isChange"
+                                            @update:model-value="console.log(productDataSheetInput)"
+                                        ></v-file-input>
+                                    </v-card-text>
+                                    <v-card-actions class="justify-end">
+                                        <v-btn color="success" text="salva" :disabled="!isChange" @click="saveDataSheets()"></v-btn>
+                                        <v-btn color="danger" text="annulla"></v-btn>
+                                    </v-card-actions>
+                                </v-card>
+
                             </v-col>
                         </v-row>
                     </v-col>
@@ -112,7 +155,7 @@
                         <v-row class="flex-column">
                             <v-col>
                                 <v-form>
-                                    <v-card title="Categoria" class="px-2" rounded="xl">
+                                    <v-card title="Categoria" class="px-2" rounded="xl" elevation="0">
                                         <v-chip-group v-model="selectedCategory" filter :disabled="!isChange" @update:model-value="getSizesByCategory()">
                                             <v-chip v-for="category in categories" :key="category" :value="category.id">
                                                 {{ category.name }}
@@ -122,7 +165,7 @@
                                             <v-btn color="success" @click=" updateProductCategory()" :disabled="props.product.category_id === selectedCategory">
                                                 <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                             </v-btn>
-                                            <v-btn color="info" @click="cancelCategoryUpdate()" :disabled="props.product.category_id === selectedCategory">
+                                            <v-btn color="danger" @click="cancelCategoryUpdate()" :disabled="props.product.category_id === selectedCategory">
                                                 <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                             </v-btn>
                                         </v-card-actions>
@@ -131,7 +174,7 @@
                             </v-col>
                             <v-col>
                                 <v-form>
-                                    <v-card title="Sotto-Categoria" class="px-2" rounded="xl">
+                                    <v-card title="Sotto-Categoria" class="px-2" rounded="xl" elevation="0">
                                         <v-chip-group v-model="selectedSubCategory" filter :disabled="!isChange">
                                             <v-chip v-for="subcategory in subCategories" :key="subcategory" :value="subcategory">
                                                 {{ subcategory }}
@@ -141,7 +184,7 @@
                                             <v-btn color="success">
                                                 <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                             </v-btn>
-                                            <v-btn color="info">
+                                            <v-btn color="danger">
                                                 <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                             </v-btn>
                                         </v-card-actions>
@@ -150,7 +193,7 @@
                             </v-col>
                             <v-col>
                                 <v-form>
-                                    <v-card title="Taglie" class="px-2" rounded="xl">
+                                    <v-card title="Taglie" class="px-2" rounded="xl" elevation="0">
                                         <v-chip-group v-model="productSizes" multiple :disabled="!isChange">
                                             <v-chip v-for="size in categorySizes" :key="size.id" :value="size.id" filter>
                                                 {{ size.name }}
@@ -160,7 +203,7 @@
                                             <v-btn color="success" @click="updateProductSizes()">
                                                 <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                             </v-btn>
-                                            <v-btn color="info">
+                                            <v-btn color="danger">
                                                 <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                             </v-btn>
                                         </v-card-actions>
@@ -172,7 +215,7 @@
                         <v-row v-if="selectedSizes.length">
                             <v-col >
                                 <v-card rounded="xl" title="Stock Taglie">
-                                    <v-card-text v-for="size in selectedSizes" :key="size.id" class="pb-0">
+                                    <v-card-text v-for="size in selectedSizes" :key="size.id" class="pb-0" elevation="0">
                                         <v-text-field
                                         variant="solo-filled"
                                         :label="`Stock per taglia ${size.name}`"
@@ -185,17 +228,38 @@
                                         <v-btn color="success" @click="updateProductSizesWithStock()">
                                             <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                         </v-btn>
-                                        <v-btn color="info" >
-                                            <v-icon icon="mdi mdi-close" size="small"></v-icon>
+                                        <v-btn color="danger" >
+                                            <v-icon icon="mdi mdi-close"  size="small"></v-icon>
                                         </v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </v-col>
                         </v-row>
+                        <v-row>
+                            <v-col>
+                                <v-form>
+                                    <v-card title="Certificazioni" class="px-2" rounded="xl" elevation="0">
+                                        <v-chip-group v-model="productCertifications" multiple :disabled="!isChange">
+                                            <v-chip v-for="certification in certifications" :key="certification.id" :value="certification.id" filter>
+                                                {{ certification.name }}
+                                            </v-chip>
+                                        </v-chip-group>
+                                        <v-card-actions class="justify-end">
+                                            <v-btn color="success" @click="updateProductCertifications()">
+                                                <v-icon icon="mdi mdi-check" size="small"></v-icon>
+                                            </v-btn>
+                                            <v-btn color="danger">
+                                                <v-icon icon="mdi mdi-close" size="small"></v-icon>
+                                            </v-btn>
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-form>
+                            </v-col>
+                        </v-row>
                     </v-col>
                     <v-col cols="4" v-if="props.product.discounts.length" v-for="(discount, i) in props.product.discounts" :key="i" >
                         <v-form >
-                            <v-card class="px-2"  title="Sconto Prodotto"  rounded="xl">
+                            <v-card class="px-2"  title="Sconto Prodotto"  rounded="xl" elevation="0">
                                 <v-card-title v-if="discount.pivot.discountable_type !== 'App\\Models\\Product'">
                                     Attenzione questo sconto è applicato a più prodotti!
                                 </v-card-title>
@@ -222,7 +286,7 @@
                                     <v-btn color="success">
                                         <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                     </v-btn>
-                                    <v-btn color="info">
+                                    <v-btn color="danger">
                                         <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                     </v-btn>
                                 </v-card-actions>
@@ -231,14 +295,15 @@
                     </v-col>
                     <v-col >
                         <v-form :disabled="!isChange" :loading="loading" >
-                            <v-card class="px-2" rounded="xl">
+                            <v-card class="px-2" rounded="xl" elevation="0">
                                 <v-card-title class="d-flex justify-space-between">
                                     FAQS
                                     <v-btn
                                         icon
-                                        color="primary"
+                                        color="info"
                                         @click="addFaq"
                                         :disabled="!isChange"
+                                        variant="text"
                                     >
                                         <v-icon icon="mdi mdi-plus"></v-icon>
                                     </v-btn>
@@ -251,12 +316,13 @@
                                         </div>
                                         <v-btn
                                             icon
-                                            color="red"
                                             @click="deleteFaq(faq.id)"
                                             :disabled="!isChange"
                                             size="small"
+                                            color="red"
+                                            variant="text"
                                         >
-                                            <v-icon icon="mdi mdi-delete" size="x-small"></v-icon>
+                                            <v-icon icon="mdi mdi-delete"  size="small"></v-icon>
                                         </v-btn>
                                     </div>
                                 </v-card-text>
@@ -264,7 +330,7 @@
                                     <v-btn color="success" @click="saveFaqs()">
                                         <v-icon icon="mdi mdi-check" size="small"></v-icon>
                                     </v-btn>
-                                    <v-btn color="info" @click="resetFaqs">
+                                    <v-btn color="danger" @click="resetFaqs">
                                         <v-icon icon="mdi mdi-close" size="small"></v-icon>
                                     </v-btn>
                                 </v-card-actions>
@@ -308,10 +374,13 @@ const loading = ref(false);
 const selectedCategory = ref(props.product.category.id ? props.product.category.id : "")
 const selectedSubCategory = ref(props.product.subcategory ? props.product.subcategory.name : "");
 const productSizes = ref([]);
+const productDataSheet = ref([]);
+const productDataSheetInput = ref([]);
 const categorySizes = ref([]);
 const selectedSizes = ref([]);
 const productImagesInput = ref([]);
-
+const productCertifications = ref([]);
+const certifications = ref([]);
 // Porodotto
 function updateProduct() {
     const formData = new FormData();
@@ -327,17 +396,13 @@ function updateProduct() {
         });
     }
 
-    // Debug: stampa il contenuto di formData
-    // for (let [key, value] of formData.entries()) {
-    //     console.log(`${key}:`, value);
-    // }
-
     axios.post(`/api/product/${props.product.id}`, formData)
     .then(res => {
         console.log(res.data)
         notificationStore.notify(res.data.message, res.data.color);
         // // Aggiorna i dati locali con la risposta dell'API
         props.product = res.data.product;
+        productImagesInput.value = [];
     })
     .catch(error => {
         console.error(error.response ? error.response.data : error);
@@ -364,10 +429,112 @@ function removeImage(index){
     notificationStore.notify("Immagine rimossa con successo", "success");
 }
 
+// Certificazioni
+function fetchDataSheets(){
+    axios.get('/api/datasheets/' + props.product.id)
+    .then((res) => {
+        console.log(res);
+        productDataSheet.value = res.data;
+    }).catch((e) => {
+        console.error(e)
+    })
+}
+
+function saveDataSheets() {
+    if (!productDataSheetInput.value || productDataSheetInput.value.length === 0) {
+        console.error("Nessun file selezionato.");
+        return;
+    }
+
+    loading.value = true; // Imposta lo stato di caricamento
+
+    // Prepara i file per il caricamento
+    const formData = new FormData();
+    productDataSheetInput.value.forEach((file) => {
+        formData.append('file[]', file); // Aggiungi i file al form data
+    });
+
+    // Endpoint con il product ID
+    const endpoint = `/api/datasheets/${props.product.id}`;
+
+    axios.post(endpoint, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    })
+        .then((res) => {
+            notificationStore.notify(res.data.message, res.data.color);
+            fetchDataSheets(); // Richiama la funzione per aggiornare i datasheets
+            productDataSheetInput.value = []; // Reset dell'input file
+        })
+        .catch((e) => {
+            console.error("Errore durante il caricamento dei file:", e);
+            notificationStore.notify("Errore durante il caricamento dei file", 'danger');
+        })
+        .finally(() => {
+            loading.value = false; // Reset dello stato di caricamento
+        });
+}
+
+function deleteDataSheet(id){
+    if(window.confirm("Sei sicuro di voler eliminare questo file?")){
+        loading.value = true;
+        axios.delete(`/api/datasheets/${id}`)
+        .then((res) => {
+            fetchDataSheets();
+            notificationStore.notify(res.data.message, res.data.color);
+            loading.value = false;
+        }).catch((e) => {
+
+            console.error(e)
+            notificationStore.notify(e, "danger")
+        })
+    }
+}
+
+
+function fetchCertification(){
+    axios.get('/api/certifications/')
+    .then((res) => {
+        certifications.value = res.data;
+        getProductCertifications();
+    }).catch((e) => {
+        console.error(e)
+    })
+}
+
+function getProductCertifications(){
+    axios.get('/api/certifications/' + props.product.id)
+    .then((res) =>{
+        console.log(res);
+
+        res.data.forEach(certification => {
+            productCertifications.value.push(certification.id)
+        });
+    }).catch((e)=>{
+        console.error(e)
+    })
+}
+
+function updateProductCertifications() {
+    axios.post(`/api/product/${props.product.id}/certifications`, {
+        certification_ids: productCertifications.value
+    })
+    .then((res) => {
+        getProductCertifications();
+        notificationStore.notify(res.data.message, res.data.color);
+    })
+    .catch((e) => {
+        console.error(e);
+        notificationStore.notify(e, "danger");
+    });
+}
+
+
 // Categorie
 function fetchCategories(){
     loading.value = true;
-    axios.get('/api/categories')
+    axios.get('/api/all-categories')
     .then((res) => {
         res.data.forEach(category => {
             categories.value.push(category);
@@ -416,6 +583,7 @@ function fetchSubCategories(){
     })
 }
 
+// Taglie
 function getSizesByCategory(){
     axios.get('/api/size/' + selectedCategory.value)
     .then((res) => {
@@ -530,7 +698,8 @@ function resetFaqs() {
 
 fetchCategories();
 fetchSubCategories();
-console.log(props.product);
+fetchCertification();
+fetchDataSheets();
 
 watch(() => props.product.category.name, (newValue) => {
     selectedCategory.value = newValue;

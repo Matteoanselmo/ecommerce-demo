@@ -6,6 +6,7 @@ export const useProductStore = defineStore({
     id: "product",
     state: () => ({
         products: [],
+        colors: [],
         category: null,
         subCategories: [],
         ratingtar: null,
@@ -42,7 +43,6 @@ export const useProductStore = defineStore({
                 this.loading = false; // Unset loading state on error
             });
         },
-
         getProducts(page = null) {
             if (page) {
                 this.page = page;  // Update current page in the store
@@ -67,7 +67,14 @@ export const useProductStore = defineStore({
                     this.loading = false;
                 });
         },
-
+        getColors() {
+            axios.get('/api/all-colors')
+                .then((res) => {
+                    this.colors = res.data;
+                }).catch((e) => {
+                    console.error(e)
+                })
+        },
         // Metodo per gestire i risultati della ricerca in tempo reale
         fetchSearchResults(query) {
             this.loading = true; // Set loading state
@@ -115,6 +122,21 @@ export const useProductStore = defineStore({
                 console.error(err);
             });
         },
+        fetchFilteredProducts(filters) {
+            this.loading = true;
+            axios.post('/api/filter-products', filters)
+                .then((res) => {
+                    this.products = res.data.data;
+                    this.pagination.total = res.data.meta.total;
+                    this.pagination.last_page = res.data.meta.last_page;
+                    this.pagination.current_page = res.data.meta.current_page;
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    console.error(err);
+                    this.loading = false;
+                });
+        }
     },
     persist: true,
 });
