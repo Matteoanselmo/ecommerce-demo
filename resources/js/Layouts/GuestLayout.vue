@@ -6,7 +6,7 @@
                 <v-app-bar-nav-icon @click="toggleDrawer"></v-app-bar-nav-icon>
             </template>
             <v-app-bar-title>
-                <v-img contain src="/images/logo/logo.jpg" max-width="229" />
+                E-Demo
             </v-app-bar-title>
             <v-spacer></v-spacer>
             <template v-slot:append>
